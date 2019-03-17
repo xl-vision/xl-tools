@@ -1,0 +1,48 @@
+{
+  "name": "@xl-vision/xl-vision-scripts",
+  "version": "0.0.1-beta.1",
+  "description": "the scripts for xl-vision",
+  "main": "index.js",
+  "bin": {
+    "xl-vision-scripts": "./lib/index.js"
+  },
+  "scripts": {
+    "test": "gulp test --gulpfile test/gulpfile.js --cwd test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xl-vision/xl-vision-scripts.git"
+  },
+  "keywords": [
+    "xl-vision",
+    "scripts"
+  ],
+  "author": "Rhys Xia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xl-vision/xl-vision-scripts/issues"
+  },
+  "homepage": "https://github.com/xl-vision/xl-vision-scripts#readme",
+  "dependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-transform-runtime": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-react": "^7.0.0",
+    "autoprefixer": "^9.5.0",
+    "awesome-typescript-loader": "^5.2.1",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "chalk": "^2.4.2",
+    "commander": "^2.19.0",
+    "gulp": "^4.0.0",
+    "gulp-babel": "^8.0.0",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-typescript": "^5.0.1",
+    "merge2": "^1.2.3",
+    "typescript": "^3.3.3333",
+    "uglifyjs-webpack-plugin": "^2.1.2",
+    "webpack": "^4.29.6",
+    "webpack-merge": "^4.2.1"
+  }
+}

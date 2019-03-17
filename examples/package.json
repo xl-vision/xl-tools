@@ -1,0 +1,6 @@
+{
+  "name": "xl-vision",
+  "dependencies": {
+    "@babel/runtime": "^7.3.4"
+  }
+}

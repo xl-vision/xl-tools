@@ -36,13 +36,21 @@
     "commander": "^2.19.0",
     "gulp": "^4.0.0",
     "gulp-babel": "^8.0.0",
+    "gulp-clean-css": "^4.0.0",
     "gulp-postcss": "^8.0.0",
     "gulp-sass": "^4.0.2",
+    "gulp-tslint": "^8.1.4",
     "gulp-typescript": "^5.0.1",
     "merge2": "^1.2.3",
+    "tslint": "^5.14.0",
+    "tslint-react": "^3.6.0",
+    "tslint-react-hooks": "^2.0.0",
     "typescript": "^3.3.3333",
     "uglifyjs-webpack-plugin": "^2.1.2",
     "webpack": "^4.29.6",
     "webpack-merge": "^4.2.1"
+  },
+  "devDependencies": {
+    "@babel/runtime": "^7.3.4"
   }
 }

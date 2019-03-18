@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/xl-vision-scripts",
-  "version": "0.0.1-beta.5",
+  "version": "0.0.1-beta.6",
   "description": "the scripts for xl-vision",
   "main": "index.js",
   "bin": {

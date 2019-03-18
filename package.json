@@ -1,11 +1,14 @@
 {
   "name": "@xl-vision/xl-vision-scripts",
-  "version": "0.0.1-beta.7",
+  "version": "0.0.1-beta.8",
   "description": "the scripts for xl-vision",
   "main": "index.js",
   "bin": {
     "xl-vision-scripts": "./lib/index.js"
   },
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "test": "gulp test --gulpfile test/gulpfile.js --cwd test/"
   },

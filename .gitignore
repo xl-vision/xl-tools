@@ -9,6 +9,7 @@ examples/es/
 examples/js/
 examples/style/
 examples/dist/
+examples/coverage/
 
 package-lock.json
 

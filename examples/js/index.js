@@ -1,7 +1,16 @@
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
 var A = function A() {
-  _classCallCheck(this, A);
+  (0, _classCallCheck2.default)(this, A);
 };
 
-export { A as default };
+exports.default = A;

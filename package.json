@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/xl-vision-scripts",
-  "version": "0.0.1-beta.11",
+  "version": "0.0.1-beta.12",
   "description": "the scripts for xl-vision",
   "main": "index.js",
   "bin": {
@@ -54,7 +54,8 @@
     "typescript": "^3.3.3333",
     "uglifyjs-webpack-plugin": "^2.1.2",
     "webpack": "^4.29.6",
-    "webpack-merge": "^4.2.1"
+    "webpack-merge": "^4.2.1",
+    "webpackbar": "^3.1.5"
   },
   "devDependencies": {
     "@babel/runtime": "^7.3.4"

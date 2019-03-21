@@ -1,10 +1,10 @@
 {
-  "name": "@xl-vision/xl-vision-scripts",
+  "name": "@xl-vision/xl-tools",
   "version": "0.0.1-beta.14",
   "description": "the scripts for xl-vision",
   "main": "index.js",
   "bin": {
-    "xl-vision-scripts": "./lib/index.js"
+    "xl-tools": "./lib/index.js"
   },
   "files": [
     "lib"
@@ -18,7 +18,9 @@
   },
   "keywords": [
     "xl-vision",
-    "scripts"
+    "scripts",
+    "tool",
+    "cli"
   ],
   "author": "Rhys Xia",
   "license": "MIT",

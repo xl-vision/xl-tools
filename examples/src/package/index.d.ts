@@ -1,1 +1,1 @@
-export default function(): any
+export default function (): JSX.Element

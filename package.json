@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/xl-tools",
-  "version": "0.0.1-beta.18",
+  "version": "0.0.1-beta.19",
   "description": "the scripts for xl-vision",
   "main": "index.js",
   "bin": {
@@ -35,11 +35,11 @@
     "@babel/preset-react": "^7.0.0",
     "@types/jest": "^24.0.11",
     "autoprefixer": "^9.5.0",
-    "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.0.5",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "chalk": "^2.4.2",
     "commander": "^2.19.0",
+    "fork-ts-checker-webpack-plugin": "^1.0.1",
     "gulp": "^4.0.0",
     "gulp-babel": "^8.0.0",
     "gulp-clean-css": "^4.0.0",
@@ -50,6 +50,7 @@
     "jest": "^24.5.0",
     "merge2": "^1.2.3",
     "ts-jest": "^24.0.0",
+    "ts-loader": "^5.3.3",
     "tslint": "^5.14.0",
     "tslint-react": "^3.6.0",
     "tslint-react-hooks": "^2.0.0",

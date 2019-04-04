@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/xl-tools",
-  "version": "0.0.1-beta.22",
+  "version": "0.0.1-beta.23",
   "description": "the scripts for xl-vision",
   "main": "index.js",
   "bin": {
@@ -51,7 +51,9 @@
     "jest": "^24.5.0",
     "merge2": "^1.2.3",
     "stylelint": "^9.10.1",
+    "stylelint-config-rational-order": "^0.0.4",
     "stylelint-config-standard": "^18.2.0",
+    "stylelint-scss": "^3.5.4",
     "ts-jest": "^24.0.0",
     "ts-loader": "^5.3.3",
     "tslint": "^5.14.0",

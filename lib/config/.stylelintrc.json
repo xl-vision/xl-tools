@@ -1,16 +1,15 @@
 {
     "extends": [
-        "stylelint-config-standard"
+        "stylelint-config-standard",
+        "stylelint-config-rational-order"
     ],
-    "plugins": [],
+    "plugins": [
+        "stylelint-scss"
+    ],
     "rules": {
-        "comment-empty-line-before": null,
-        "declaration-empty-line-before": null,
-        "function-name-case": ["lower", {
-            "ignoreFunctions": []
-        }],
-        "no-invalid-double-slash-comments": null,
-        "no-descending-specificity": null
-    },
-    "ignoreFiles": ["components/style/color/{bezierEasing,colorPalette,tinyColor}.less"]
+        "at-rule-no-unknown": null,
+        "scss/at-rule-no-unknown": true,
+        "number-leading-zero": null,
+        "color-hex-length": "long"
+    }
 }

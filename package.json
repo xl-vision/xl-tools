@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/xl-tools",
-  "version": "0.0.1-beta.21",
+  "version": "0.0.1-beta.22",
   "description": "the scripts for xl-vision",
   "main": "index.js",
   "bin": {
@@ -45,10 +45,13 @@
     "gulp-clean-css": "^4.0.0",
     "gulp-postcss": "^8.0.0",
     "gulp-sass": "^4.0.2",
+    "gulp-stylelint": "^8.0.0",
     "gulp-tslint": "^8.1.4",
     "gulp-typescript": "^5.0.1",
     "jest": "^24.5.0",
     "merge2": "^1.2.3",
+    "stylelint": "^9.10.1",
+    "stylelint-config-standard": "^18.2.0",
     "ts-jest": "^24.0.0",
     "ts-loader": "^5.3.3",
     "tslint": "^5.14.0",

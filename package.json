@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "lint": "tslint -p tsconfig.json -c tslint.json"
+    "lint": "tslint -p tsconfig.json && tslint -p tsconfig.test.json"
   },
   "repository": {
     "type": "git",

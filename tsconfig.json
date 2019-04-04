@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
+    "strict": true,
     "target": "es6",
     "module": "commonjs",
-    "declaration": true,
-    "declarationDir": "./bin",
-    "strict": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
-    "rootDir": "./src",
-    "outDir": "./bin",
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true
-  }
+    "declaration": true,
+    "outDir": "./bin",
+    "declarationDir": "./bin",
+  },
+  "include": ["src"]
 }

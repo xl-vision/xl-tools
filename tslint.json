@@ -1,0 +1,23 @@
+{
+    "extends": [
+        "tslint:recommended"
+    ],
+    "linterOptions": {
+        "exclude": []
+    },
+    "jsRules": {},
+    "rules": {
+        "interface-name": false,
+        "semicolon": [true, "never"],
+        "trailing-comma": [true, {
+            "multiline": "never",
+            "singleline": "never"
+        }],
+        "quotemark": [
+            true,
+            "single",
+            "avoid-escape"
+        ]
+    },
+    "rulesDirectory": []
+}

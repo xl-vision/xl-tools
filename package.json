@@ -2,15 +2,10 @@
   "name": "@xl-vision/xl-tools",
   "version": "0.0.1-beta.25",
   "description": "the scripts for xl-vision",
-  "main": "index.js",
-  "bin": {
-    "xl-tools": "./lib/index.js"
-  },
-  "files": [
-    "lib"
-  ],
   "scripts": {
-    "test": "gulp test --gulpfile test/gulpfile.js --cwd test/"
+    "build": "tsc",
+    "test": "jest",
+    "lint": "tslint -p tsconfig.json -c tslint.json"
   },
   "repository": {
     "type": "git",
@@ -28,44 +23,12 @@
     "url": "https://github.com/xl-vision/xl-vision-scripts/issues"
   },
   "homepage": "https://github.com/xl-vision/xl-vision-scripts#readme",
-  "dependencies": {
-    "@babel/core": "^7.3.4",
-    "@babel/plugin-transform-runtime": "^7.3.4",
-    "@babel/preset-env": "^7.3.4",
-    "@babel/preset-react": "^7.0.0",
-    "@types/jest": "^24.0.11",
-    "autoprefixer": "^9.5.0",
-    "babel-loader": "^8.0.5",
-    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
-    "chalk": "^2.4.2",
-    "commander": "^2.19.0",
-    "fork-ts-checker-webpack-plugin": "^1.0.1",
-    "gulp": "^4.0.0",
-    "gulp-babel": "^8.0.0",
-    "gulp-clean-css": "^4.0.0",
-    "gulp-postcss": "^8.0.0",
-    "gulp-sass": "^4.0.2",
-    "gulp-stylelint": "^8.0.0",
-    "gulp-tslint": "^8.1.4",
-    "gulp-typescript": "^5.0.1",
-    "jest": "^24.5.0",
-    "merge2": "^1.2.3",
-    "stylelint": "^9.10.1",
-    "stylelint-config-rational-order": "^0.0.4",
-    "stylelint-config-standard": "^18.2.0",
-    "stylelint-scss": "^3.5.4",
-    "ts-jest": "^24.0.0",
-    "ts-loader": "^5.3.3",
-    "tslint": "^5.14.0",
-    "tslint-react": "^3.6.0",
-    "tslint-react-hooks": "^2.0.0",
-    "typescript": "^3.3.3333",
-    "uglifyjs-webpack-plugin": "^2.1.2",
-    "webpack": "^4.29.6",
-    "webpack-merge": "^4.2.1",
-    "webpackbar": "^3.1.5"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@babel/runtime": "^7.3.4"
+    "@types/jest": "^24.0.11",
+    "jest": "^24.7.1",
+    "ts-jest": "^24.0.1",
+    "tslint": "^5.15.0",
+    "typescript": "^3.4.1"
   }
 }

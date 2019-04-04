@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "declaration": true,
+    "declarationDir": "./bin",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "rootDir": "./src",
+    "outDir": "./bin",
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true
+  }
+}

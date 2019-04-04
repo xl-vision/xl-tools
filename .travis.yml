@@ -19,5 +19,5 @@ jobs:
       script: npm run test -- --coverage && bash <(curl -s https://codecov.io/bash)
 stages:
   - lint
-  - compile
+  - build
   - test

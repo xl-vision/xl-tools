@@ -9,15 +9,13 @@
     "rules": {
         "interface-name": false,
         "semicolon": [true, "never"],
-        "trailing-comma": [true, {
-            "multiline": "never",
-            "singleline": "never"
-        }],
+        "trailing-comma": [true, "alaways"],
         "quotemark": [
             true,
             "single",
             "avoid-escape"
-        ]
+        ],
+        "member-access": false
     },
     "rulesDirectory": []
 }

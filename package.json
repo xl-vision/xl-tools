@@ -23,9 +23,25 @@
     "url": "https://github.com/xl-vision/xl-vision-scripts/issues"
   },
   "homepage": "https://github.com/xl-vision/xl-vision-scripts#readme",
-  "dependencies": {},
+  "dependencies": {
+    "gulp": "^4.0.0",
+    "gulp-stylelint": "^8.0.0",
+    "gulp-tslint": "^8.1.4",
+    "markdownlint": "^0.13.0",
+    "stylelint": "^9.10.1",
+    "stylelint-config-rational-order": "^0.0.4",
+    "stylelint-config-standard": "^18.2.0",
+    "stylelint-scss": "^3.5.4",
+    "through2": "^3.0.1",
+    "tslint": "^5.15.0",
+    "tslint-react": "^4.0.0",
+    "tslint-react-hooks": "^2.0.0"
+  },
   "devDependencies": {
+    "@types/gulp": "^4.0.6",
     "@types/jest": "^24.0.11",
+    "@types/markdownlint": "^0.6.0",
+    "@types/through2": "^2.0.34",
     "jest": "^24.7.1",
     "ts-jest": "^24.0.1",
     "tslint": "^5.15.0",

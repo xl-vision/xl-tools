@@ -1,0 +1,13 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "mdlint": "node ./scripts/mdlint.js",
+    "tslint": "node ./scripts/tslint.js"
+  },
+  "author": "Rhys Xia",
+  "license": "MIT",
+  "dependencies": {
+  }
+}

@@ -1,35 +1,35 @@
-const mdlint = require('../src/task/mdlint')
-const scsslint = require('../src/task/scsslint')
-const tslint = require('../src/task/tslint')
+const lintMd = require('../src/task/lintMd')
+const lintScss = require('../src/task/lintScss')
+const lintTs = require('../src/task/lintTs')
 
 describe('test tasks', () => {
-    it('test mdlint', () => {
+    it('test lintMd', () => {
         expect.assertions(1)
-        return mdlint({
+        return lintMd({
             cwd: __dirname,
-            src: 'files/mdlint.md'
+            src: 'files/lintMd.md'
         }).catch(err => {
-            expect(err.message.replace(/.*mdlint.md/g, '')).toMatchSnapshot()
+            expect(err.message.replace(/.*lintMd.md/g, '')).toMatchSnapshot()
         })
     })
 
-    it('test scsslint', () => {
+    it('test lintScss', () => {
         expect.assertions(1)
-        return scsslint({
+        return lintScss({
             cwd: __dirname,
-            src: 'files/scsslint.scss'
+            src: 'files/lintScss.scss'
         }).catch(err => {
             expect(err.message).toMatchSnapshot()
         })
     })
 
-    it('test tslint', () => {
+    it('test lintTs', () => {
         expect.assertions(1)
-        return tslint({
+        return lintTs({
             cwd: __dirname,
-            src: 'files/tslint.ts'
+            src: 'files/lintTs.ts'
         }).catch(err => {
-            expect(err.message.replace(/:.*tslint.ts/g, '')).toMatchSnapshot()
+            expect(err.message.replace(/:.*lintTs.ts/g, '')).toMatchSnapshot()
         })
     })
 

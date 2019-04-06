@@ -42,7 +42,8 @@
     "stylelint-scss": "^3.5.4",
     "tslint": "^5.15.0",
     "tslint-react": "^4.0.0",
-    "tslint-react-hooks": "^2.0.0"
+    "tslint-react-hooks": "^2.0.0",
+    "typescript": "^3.4.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",

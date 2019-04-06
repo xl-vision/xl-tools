@@ -1,6 +1,6 @@
 const gulp = require('gulp')
-const gulpPostcss = require('gulp-postcss')
-const gulpSass = require('gulp-sass')
+// const gulpPostcss = require('gulp-postcss')
+// const gulpSass = require('gulp-sass')
 const path = require('path')
 const {
     promisefyStream
@@ -16,7 +16,7 @@ module.exports = (props) => {
     const {
         src,
         cwd,
-        configFile
+        // configFile
     } = {
         ...defaultProps,
         ...props
@@ -25,14 +25,6 @@ module.exports = (props) => {
     const stream = gulp.src(src, {
             cwd
         })
-        .pipe(gulpStylelint({
-            syntax: 'scss',
-            configFile,
-            reporters: [{
-                formatter: 'verbose',
-                console: true
-            }]
-        }))
         
     return promisefyStream(stream)
 }

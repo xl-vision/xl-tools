@@ -1,6 +1,6 @@
-const mdlint = require('../lib/task/mdlint')
-const scsslint = require('../lib/task/scsslint')
-const tslint = require('../lib/task/tslint')
+const mdlint = require('../src/task/mdlint')
+const scsslint = require('../src/task/scsslint')
+const tslint = require('../src/task/tslint')
 
 describe('test tasks', () => {
     it('test mdlint', () => {

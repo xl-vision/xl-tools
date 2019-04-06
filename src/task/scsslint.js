@@ -1,28 +1,37 @@
 const gulp = require('gulp')
 const gulpStylelint = require('gulp-stylelint')
 const path = require('path')
+const {
+    promisefyStream
+} = require('../utils/task')
 
 const defaultProps = {
     src: ['src/**/*.scss', 'site/**/*.scss'],
-    configPath: path.resolve(__dirname, '../config/scsslint.config.js')
+    cwd: process.cwd(),
+    configFile: path.resolve(__dirname, '../config/scsslint.config.js')
 }
 
 module.exports = (props) => {
     const {
         src,
-        configPath
+        cwd,
+        configFile
     } = {
         ...defaultProps,
         ...props
     }
 
-    return gulp.src(src)
+    const stream = gulp.src(src, {
+            cwd
+        })
         .pipe(gulpStylelint({
             syntax: 'scss',
-            configFile: configPath,
+            configFile,
             reporters: [{
                 formatter: 'verbose',
                 console: true
             }]
         }))
+        
+    return promisefyStream(stream)
 }

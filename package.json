@@ -2,8 +2,14 @@
   "name": "@xl-vision/xl-tools",
   "version": "0.0.1-beta.25",
   "description": "the scripts for xl-vision",
+  "bin": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "lint": ""
+    "build": "babel src -d dist",
+    "lint": "eslint {src,test}/**/*.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -23,6 +29,7 @@
   "homepage": "https://github.com/xl-vision/xl-vision-scripts#readme",
   "dependencies": {
     "gulp": "^4.0.0",
+    "gulp-markdownlint": "^0.0.1-beta.3",
     "gulp-stylelint": "^8.0.0",
     "gulp-tslint": "^8.1.4",
     "markdownlint": "^0.13.0",
@@ -30,9 +37,18 @@
     "stylelint-config-rational-order": "^0.0.4",
     "stylelint-config-standard": "^18.2.0",
     "stylelint-scss": "^3.5.4",
-    "through2": "^3.0.1",
     "tslint": "^5.15.0",
     "tslint-react": "^4.0.0",
     "tslint-react-hooks": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "eslint": "^5.16.0",
+    "jest": "^24.7.1"
+  },
+  "engines": {
+    "node": ">=8"
   }
 }

@@ -1,11 +1,10 @@
 {
   "name": "@xl-vision/xl-tools",
-  "version": "0.0.2-beta.1",
+  "version": "0.0.2-beta.3",
   "description": "the scripts for xl-vision",
-  "bin": "./bin/index.js",
-  "files": [
-    "lib"
-  ],
+  "bin": {
+    "xl-tool": "./bin/index.js"
+  },
   "scripts": {
     "lint": "eslint {lib,bin}/**/*.js",
     "test": "jest"

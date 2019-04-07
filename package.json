@@ -2,13 +2,12 @@
   "name": "@xl-vision/xl-tools",
   "version": "0.0.1-beta.25",
   "description": "the scripts for xl-vision",
-  "bin": "./dist/index.js",
+  "bin": "./bin/index.js",
   "files": [
-    "dist"
+    "lib"
   ],
   "scripts": {
-    "build": "node ./scripts/build.js",
-    "lint": "eslint {scripts,src,test}/**/*.js",
+    "lint": "eslint {lib,bin}/**/*.js",
     "test": "jest"
   },
   "repository": {
@@ -28,13 +27,24 @@
   },
   "homepage": "https://github.com/xl-vision/xl-vision-scripts#readme",
   "dependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-transform-runtime": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.3.3",
+    "autoprefixer": "^9.5.0",
+    "babel-loader": "^8.0.5",
     "gulp": "^4.0.0",
-    "gulp-markdownlint": "^0.0.1-beta.3",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean": "^0.4.0",
+    "gulp-markdownlint": "^0.0.1-beta.4",
     "gulp-postcss": "^8.0.0",
     "gulp-sass": "^4.0.2",
     "gulp-stylelint": "^8.0.0",
     "gulp-tslint": "^8.1.4",
+    "gulp-typescript": "^5.0.1",
     "markdownlint": "^0.13.0",
+    "merge2": "^1.2.3",
     "node-sass": "^4.11.0",
     "stylelint": "^9.10.1",
     "stylelint-config-rational-order": "^0.0.4",
@@ -43,12 +53,15 @@
     "tslint": "^5.15.0",
     "tslint-react": "^4.0.0",
     "tslint-react-hooks": "^2.0.0",
-    "typescript": "^3.4.2"
+    "typescript": "^3.4.2",
+    "vinyl-named": "^1.1.0",
+    "webpack": "^4.29.6",
+    "webpack-merge": "^4.2.1",
+    "webpack-stream": "^5.2.1",
+    "webpackbar": "^3.1.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",
-    "@babel/core": "^7.4.3",
-    "@babel/preset-env": "^7.4.3",
     "eslint": "^5.16.0",
     "fs-extra": "^7.0.1",
     "globby": "^9.2.0",

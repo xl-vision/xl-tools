@@ -11,11 +11,8 @@ jobs:
     # 代码检查
     - stage: lint
       script: npm run lint
-    - stage: build
-      script: npm run build
     - stage: test
       script: npm run test  -- --coverage && bash <(curl -s https://codecov.io/bash)
 stages:
   - lint
-  - build
   - test

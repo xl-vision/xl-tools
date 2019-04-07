@@ -15,7 +15,3 @@ package-lock.json
 *.njsproj
 *.sln
 *.iml
-
-/src
-/test
-/scripts

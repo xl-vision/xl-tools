@@ -1,9 +1,9 @@
 {
   "name": "@xl-vision/xl-tools",
-  "version": "0.0.2-beta.3",
+  "version": "0.0.2-beta.4",
   "description": "the scripts for xl-vision",
   "bin": {
-    "xl-tool": "./bin/index.js"
+    "xl-tools": "./bin/index.js"
   },
   "scripts": {
     "lint": "eslint {lib,bin}/**/*.js",
@@ -40,8 +40,8 @@
     "fork-ts-checker-webpack-plugin": "^1.0.1",
     "gulp": "^4.0.0",
     "gulp-babel": "^8.0.0",
-    "gulp-clean": "^0.4.0",
-    "gulp-markdownlint": "^0.0.1-beta.4",
+    "gulp-clean-css": "^4.0.0",
+    "gulp-markdownlint": "^0.0.1-beta.5",
     "gulp-postcss": "^8.0.0",
     "gulp-sass": "^4.0.2",
     "gulp-stylelint": "^8.0.0",

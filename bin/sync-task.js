@@ -10,7 +10,7 @@ function warn () {
   }
 
   var taskNames = taskKeys.map(function (key) {
-    return tasks[key]
+    return tasks[key].name
   }).join(', ')
 
   process.exitCode = 1
@@ -25,10 +25,18 @@ function warn () {
 }
 
 function start (e) {
-  tasks[e.uid] = e.name
+  const name = e.name
+  tasks[e.uid] = {
+    name,
+    time: e.time
+  }
+  console.info(chalk.green(`Task '${name}' is started`))
 }
 
 function clear (e) {
+  const duration = e.time - tasks[e.uid].time
+  const name = tasks[e.uid].name
+  console.info(chalk.green(`Task '${name}' is stopped with ${duration}ms`))
   delete tasks[e.uid]
 }
 

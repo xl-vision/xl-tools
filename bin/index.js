@@ -16,12 +16,12 @@ program
       const task = gulp.series(name)
       task(err => {
         if (err) {
-          console.error(err)
+          console.error(err.message)
           process.exit(1)
         }
       })
     } catch (err) {
-      console.error(err)
+      console.error(err.message)
       process.exit(1)
     }
   })

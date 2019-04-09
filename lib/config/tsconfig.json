@@ -6,6 +6,6 @@
         "moduleResolution": "node",
         "noUnusedParameters": true,
         "noUnusedLocals": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
     }
 }

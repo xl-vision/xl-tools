@@ -16,4 +16,4 @@ jobs:
 stages:
   - lint
   - test
-    if false
+    if true==false

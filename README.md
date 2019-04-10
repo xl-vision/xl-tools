@@ -1,7 +1,7 @@
 # xl-tools
 
-[![Build Status](https://api.travis-ci.com/xl-vision/xl-tools.svg?branch=dev)](https://travis-ci.com/xl-vision/xl-tools)
-[![codecov](https://codecov.io/gh/xl-vision/xl-tools/branch/dev/graph/badge.svg)](https://codecov.io/gh/xl-vision/xl-tools)
+[![Build Status](https://api.travis-ci.com/xl-vision/xl-tools.svg?branch=master)](https://travis-ci.com/xl-vision/xl-tools)
+[![codecov](https://codecov.io/gh/xl-vision/xl-tools/branch/master/graph/badge.svg)](https://codecov.io/gh/xl-vision/xl-tools)
 [![Dependencies](https://img.shields.io/david/xl-vision/xl-tools.svg)](https://david-dm.org/xl-vision/xl-tools)
 [![DevDependencies](https://img.shields.io/david/dev/xl-vision/xl-tools.svg)](https://david-dm.org/xl-vision/xl-tools?type=dev)
 

@@ -1,6 +1,6 @@
 const chalk = require('chalk')
 
-const tasks = {}
+const tasks = []
 
 function warn () {
   var taskKeys = Object.keys(tasks)
@@ -10,34 +10,38 @@ function warn () {
   }
 
   var taskNames = taskKeys.map(function (key) {
-    return tasks[key].name
+    return tasks[key]
   }).join(', ')
 
   process.exitCode = 1
 
   console.warn(
-    chalk.red('The following tasks did not complete:'),
+    chalk.yellow('The following tasks did not complete:'),
     chalk.cyan(taskNames)
   )
   console.warn(
-    chalk.red('Did you forget to signal async completion?')
+    chalk.yellow('Did you forget to signal async completion?')
   )
 }
 
 function start (e) {
   const name = e.name
-  tasks[e.uid] = {
-    name,
-    time: e.time
-  }
-  console.info(chalk.green(`Task '${name}' is started`))
+  tasks[e.uid] = name
+  console.info(chalk.green(`Task '${name}' is started.`))
 }
 
 function clear (e) {
-  const duration = e.time - tasks[e.uid].time
-  const name = tasks[e.uid].name
-  console.info(chalk.green(`Task '${name}' is stopped with ${duration}ms`))
-  delete tasks[e.uid]
+  const duration = e.duration[0]
+  const name = e.name
+  const uid = e.uid
+  const error = e.error
+  if (error) {
+    console.error(chalk.red(`Task '${name}' is stopped with error:'`))
+    console.error(chalk.red(error))
+  } else {
+    console.info(chalk.green(`Task '${name}' is completed with ${duration}ms.`))
+  }
+  delete tasks[uid]
 }
 
 function logSyncTask (gulpInst) {

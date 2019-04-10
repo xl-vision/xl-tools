@@ -1,11 +1,13 @@
 {
     "compilerOptions": {
+        "module": "esnext",
         "strictNullChecks": true,
         "target": "es6",
         "jsx": "preserve",
         "moduleResolution": "node",
         "noUnusedParameters": true,
         "noUnusedLocals": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "esModuleInterop": true
     }
 }

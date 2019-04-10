@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/xl-tools",
-  "version": "0.0.2-beta.13",
+  "version": "0.0.2-beta.14",
   "description": "the scripts for xl-vision",
   "bin": {
     "xl-tools": "./bin/index.js"

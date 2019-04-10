@@ -16,7 +16,7 @@ program
       const task = gulp.series(name)
       task(err => {
         if (err) {
-          console.error(err)
+          // console.error(err)
           process.exit(1)
         }
       })

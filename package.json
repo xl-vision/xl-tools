@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/xl-tools",
-  "version": "0.0.2-beta.16",
+  "version": "0.0.2-beta.18",
   "description": "the scripts for xl-vision",
   "bin": {
     "xl-tools": "./bin/index.js"
@@ -73,7 +73,7 @@
     "tslint-react-hooks": "^2.0.0",
     "typescript": "^3.4.2",
     "url-loader": "^1.1.2",
-    "webpack": "^4.29.6",
+    "webpack": "~4.28.4",
     "webpack-dev-server": "^3.2.1",
     "webpack-manifest-plugin": "^2.0.4",
     "webpack-merge": "^4.2.1",
@@ -92,6 +92,6 @@
     "jest": "^24.7.1"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   }
 }

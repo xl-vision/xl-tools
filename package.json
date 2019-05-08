@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/xl-tools",
-  "version": "0.0.2-beta.20",
+  "version": "0.0.2-beta.22",
   "description": "the scripts for xl-vision",
   "bin": {
     "xl-tools": "./bin/index.js"
@@ -46,6 +46,7 @@
     "gulp-clean-css": "^4.0.0",
     "gulp-markdownlint": "^0.0.1-beta.5",
     "gulp-postcss": "^8.0.0",
+    "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
     "gulp-stylelint": "^8.0.0",
     "gulp-tslint": "^8.1.4",

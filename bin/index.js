@@ -12,18 +12,13 @@ program
   .version(pkg.version)
   .command('run <name>')
   .action(function (name) {
-    try {
-      const task = gulp.series(name)
-      task(err => {
-        if (err) {
-          // console.error(err)
-          process.exit(1)
-        }
-      })
-    } catch (err) {
-      console.error(err)
-      process.exit(1)
-    }
+    const task = gulp.series(name)
+    task(err => {
+      if (err) {
+        console.error(err)
+        process.exit(1)
+      }
+    })
   })
 
 program.parse(process.argv)

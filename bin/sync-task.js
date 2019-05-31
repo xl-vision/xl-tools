@@ -37,10 +37,10 @@ function clear (e) {
   const error = e.error
   if (error) {
     console.error(chalk.red(`Task '${name}' is stopped with error:'`))
-    console.error(chalk.red(error))
-  } else {
-    console.info(chalk.green(`Task '${name}' is completed with ${duration}ms.`))
+    console.error(chalk.red(error.message))
+    process.exit(1)
   }
+  console.info(chalk.green(`Task '${name}' is completed with ${duration}ms.`))
   delete tasks[uid]
 }
 

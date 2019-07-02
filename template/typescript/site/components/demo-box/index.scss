@@ -1,0 +1,83 @@
+$padding: 1rem;
+
+$--bg-color: #fff;
+$--border-color: #e6e6e6;
+$--border-radius: 4px;
+$--animation-duration: 0.4s;
+
+.demobox {
+  overflow: hidden;
+  font-size: 1rem;
+  background-color: $--bg-color;
+  border: 1px solid $--border-color;
+  border-radius: $--border-radius;
+
+  .demobox-view {
+    padding: $padding;
+    border-bottom: 1px solid $--border-color;
+  }
+
+  .demobox-wrapper {
+    position: relative;
+    padding: 1rem;
+
+    .demobox-title {
+      position: absolute;
+      top: -$padding / 2;
+      display: inline-block;
+      padding: 0 $padding / 3;
+      font-weight: bold;
+      background-color: $--bg-color;
+    }
+
+    .demobox-desc {
+      display: inline-block;
+      padding-right: 2rem;
+      font-size: 0.9rem;
+      line-height: 0.9rem * 2;
+    }
+
+    .demobox-action {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0.25rem;
+
+      .xl-button {
+        color: lighten($--text-color, 30%);
+        font-size: 2rem;
+      }
+
+      .demobox-showcode {
+        transition: transform $--animation-duration ease;
+      }
+
+      .demobox-showcode-active {
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  .demobox-collapse {
+    transition: all $--animation-duration ease;
+  }
+
+  .demobox-code {
+    padding: $padding;
+    background-color: rgba(#000, 0.15);
+    border-top: 1px dashed $--border-color;
+
+    > p {
+      display: none;
+    }
+
+    code {
+      padding: 0;
+      font-family: Menlo, Monaco, Consolas, Courier, monospace;
+    }
+
+    pre {
+      margin: 0;
+    }
+  }
+}

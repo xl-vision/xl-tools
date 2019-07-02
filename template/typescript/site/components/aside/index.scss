@@ -1,0 +1,23 @@
+.aside {
+  background-color: #fff;
+
+  .menus {
+    margin: 0;
+    margin-left: 0.5rem;
+    padding: 0;
+    list-style: none;
+
+    .menu-name {
+      font-weight: bold;
+    }
+
+    .menu-item {
+      padding: 0.5rem 0.3rem;
+
+      a {
+        color: #333;
+        text-decoration: none;
+      }
+    }
+  }
+}

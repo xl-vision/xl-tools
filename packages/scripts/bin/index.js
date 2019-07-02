@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+const program = require('commander')
+const gulp = require('gulp')
+const pkg = require('../package.json')
+require('../lib/gulpfile')
+const syncTask = require('./sync-task')
+
+syncTask(gulp)
+
+program
+  .version(pkg.version)
+  .command('run <name>')
+  .action(function (name) {
+    const task = gulp.series(name)
+    task(err => {
+      if (err) {
+        console.error(err)
+        process.exit(1)
+      }
+    })
+  })
+
+program.parse(process.argv)

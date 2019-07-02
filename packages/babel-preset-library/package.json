@@ -1,7 +1,7 @@
 {
-  "name": "@xl-vision/babel-preset-app",
-  "version": "1.0.0",
-  "description": "babel-preset-app for build react library",
+  "name": "@xl-vision/babel-preset-library",
+  "version": "0.0.1-beta.1",
+  "description": "babel-preset-library for build react library",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

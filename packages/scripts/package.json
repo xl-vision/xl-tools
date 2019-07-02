@@ -1,0 +1,39 @@
+{
+  "name": "@xl-vision/xl-tools",
+  "version": "0.0.2-beta.33",
+  "description": "the tools for build react libaray",
+  "author": "Rhys Xia",
+  "license": "MIT",
+  "homepage": "https://github.com/xl-vision/xl-tools#readme",
+  "keywords": [
+    "tool",
+    "script",
+    "react",
+    "libaray"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xl-vision/xl-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xl-vision/xl-tools/issues"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "fs-extra": "^8.1.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-typescript": "^5.0.1",
+    "merge2": "^1.2.3",
+    "node-sass": "^4.12.0",
+    "typescript": "^3.5.2"
+  },
+  "devDependencies": {
+  }
+}

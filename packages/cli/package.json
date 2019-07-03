@@ -1,5 +1,5 @@
 {
-  "name": "@xl-vision/xl-tools-cli",
+  "name": "@xl-vision/cli",
   "version": "0.0.1-beta.1",
   "description": "the tools for build react libaray",
   "author": "Rhys Xia",
@@ -23,7 +23,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "chalk": "^2.4.2",
+    "commander": "^2.20.0",
+    "download-git-repo": "^2.0.0",
+    "ora": "^3.4.0",
+    "semver": "^6.2.0",
+    "user-home": "^2.0.0"
   },
-  "devDependencies": {
+  "devDependencies": {},
+  "engines": {
+    "node": ">=8.0.0"
   }
 }

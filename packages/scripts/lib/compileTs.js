@@ -3,8 +3,6 @@ const gulpTs = require('gulp-typescript')
 const gulpBabel = require('gulp-babel')
 const merge2 = require('merge2')
 const getProjectPath = require('../utils/getProjectPath')
-const getConfig = require('../utils/getConfig')
-const {getTarget, TARGET_ES} = require('../utils/target')
 
 const reporter = gulpTs.reporter.defaultReporter()
 
@@ -13,13 +11,10 @@ const overwriteConfig = {
   module: 'ESNext'
 }
 
-module.exports = () => {
-  const srcDir = getConfig('sourceDir')
-  
-  const src = [`${srcDir}/**/*.ts?(x)`, `!**/test/**/*`, `!**/doc/**/*`]
-
-  const dest = getTarget() === TARGET_ES ? getConfig('esDir') : getConfig('libDir')
-
+module.exports = ({
+  src,
+  dest
+}) => {
   const tsProject = gulpTs.createProject(getProjectPath('tsconfig.json'), overwriteConfig)
   const tsResult = gulp.src(src)
     .pipe(tsProject({

@@ -7,7 +7,7 @@ module.exports = (context, options = {}) => {
   ]
 
   let modules = false
-  if(process.env.XL_TOOLS_TARGET === 'lib' || process.env.XL_TOOLS_TARGET === 'site') {
+  if(process.env.XL_TOOLS_TARGET !== 'es') {
     modules = 'commonjs'
   }
 

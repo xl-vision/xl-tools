@@ -1,10 +1,16 @@
 #!/usr/bin/env node
 
 const program = require('commander')
+const create = require('../scripts/create')
 
 program
 .version(require('../package').version)
   .usage('<command> [options]')
-  .command('init', 'generate a new project from template')
+  
+program
+  .command('create <dir>', 'generate a new project from template')
+  .action(function (dir) {
+    create(dir)
+  })
 
-program.parse(program.argv)
+program.parse(process.argv)

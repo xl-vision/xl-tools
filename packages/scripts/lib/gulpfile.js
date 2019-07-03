@@ -39,3 +39,9 @@ gulp.task('compile-js-lib', () => {
   setTarget(TARGET_LIB)
   return compileJs()
 })
+
+gulp.task('lint', gulp.parallel('lint-script', 'lint-style'))
+
+gulp.task('compile-lib', gulp.parallel('compile-scss-lib', 'compile-ts-lib', 'compile-js-lib'))
+gulp.task('compile-es', gulp.parallel('compile-scss-es', 'compile-ts-es', 'compile-js-es'))
+gulp.task('compile', gulp.parallel('compile-lib', 'compile-es'))

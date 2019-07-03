@@ -7,7 +7,7 @@ const {getTarget, TARGET_ES} = require('../utils/target')
 module.exports = () => {
   const srcDir = getConfig('sourceDir')
   
-  const src = [`${srcDir}/**/*.js?(x)`, `!${srcDir}/**/test/**/*`, `!${srcDir}/**/doc/**/*`]
+  const src = [`${srcDir}/**/*.js?(x)`, `!**/test/**/*`, `!**/doc/**/*`]
 
   const dest = getTarget() === TARGET_ES ? getConfig('esDir') : getConfig('libDir')
 

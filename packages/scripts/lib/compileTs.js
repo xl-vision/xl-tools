@@ -16,7 +16,7 @@ const overwriteConfig = {
 module.exports = () => {
   const srcDir = getConfig('sourceDir')
   
-  const src = [`${srcDir}/**/*.ts?(x)`, `!${srcDir}/**/test/**/*`, `!${srcDir}/**/doc/**/*`]
+  const src = [`${srcDir}/**/*.ts?(x)`, `!**/test/**/*`, `!**/doc/**/*`]
 
   const dest = getTarget() === TARGET_ES ? getConfig('esDir') : getConfig('libDir')
 
@@ -32,5 +32,5 @@ module.exports = () => {
   const dts = tsResult.dts
   const js = tsResult.js.pipe(gulpBabel())
 
-  return merge2([dts, js]).pipe(dest)
+  return merge2([dts, js]).pipe(gulp.dest(dest))
 }

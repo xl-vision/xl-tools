@@ -1,26 +1,26 @@
 module.exports = (context, options = {}) => {
   const presets = [
-    require('@babel/preset-react')
+    require.resolve('@babel/preset-react')
   ]
   const plugins = [
-    require('@babel/plugin-transform-runtime')
+    require.resolve('@babel/plugin-transform-runtime')
   ]
 
   let modules = false
-  if(process.env.XL_TOOLS_TARGET === 'js' || process.env.XL_TOOLS_TARGET === 'site') {
+  if(process.env.XL_TOOLS_TARGET === 'lib' || process.env.XL_TOOLS_TARGET === 'site') {
     modules = 'commonjs'
   }
 
-  presets.push([require('@babel/preset-env'), {
+  presets.push([require.resolve('@babel/preset-env'), {
     modules
   }])
 
   if(process.env.XL_TOOLS_TARGET === 'site') {
-    plugins.push(require('@babel/plugin-syntax-dynamic-import'))
+    plugins.push(require.resolve('@babel/plugin-syntax-dynamic-import'))
   }
 
   if(process.env.XL_TOOLS_TYPESCRIPT) {
-    presets.push(require('@babel/preset-typescript'))
+    presets.push(require.resolve('@babel/preset-typescript'))
   }
 
   return {

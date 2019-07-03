@@ -1,11 +1,10 @@
 const getTarget = () => {
-  const target = (process.env.XL_TOOLS||{}).target
+  const target = process.env.XL_TOOLS_TARGET
   return target
 }
 
 const setTarget = (target) => {
-  process.env.XL_TOOLS = process.env.XL_TOOLS || {}
-  process.env.XL_TOOLS.target = target
+  process.env.XL_TOOLS_TARGET = target
 }
 
 const TARGET_SITE = 'site'

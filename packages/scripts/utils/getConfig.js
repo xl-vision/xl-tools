@@ -8,7 +8,7 @@ let config = {
 }
 
 try {
-  const configFile = require.resolve(getProjectPath('xl-tools.config.js'))
+  const configFile = require(getProjectPath('xl-tools.config.js'))
   if(typeof configFile === 'function') {
     config = Object.assign(config, configFile())
   } else {

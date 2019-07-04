@@ -1,13 +1,10 @@
 import chalk from 'chalk'
 import path from 'path'
 import inquirer from 'inquirer'
-import editor from 'mem-fs-editor'
-import memFs from 'mem-fs'
 import fs from 'fs-extra'
 import spawn from 'cross-spawn'
-
-const store = memFs.create()
-const mfs = editor.create(store)
+import writeTpl from '../utils/writeTpl'
+import ora from 'ora'
 
 const questions: inquirer.Questions<{
   desc: string
@@ -69,7 +66,7 @@ export default (dir: string) => {
   const name = path.basename(projectPath)
 
   // 判断文件夹是否存在
-  if (mfs.exists(projectPath)) {
+  if (fs.existsSync(projectPath)) {
     console.log()
     console.error(chalk.red(`The directory '${projectPath}' exists, please provide a name not to be used`))
     console.log()
@@ -95,18 +92,18 @@ export default (dir: string) => {
     ]
 
     if (answers.isLint) {
-      mfs.copyTpl('../../template/common/eslint.json', '.', data)
+      writeTpl(path.join(__dirname, '../../template/common/eslint.json'), process.cwd(), data)
       // devDependencies.push('eslint-config-standard', 'eslint-plugin-import', 'eslint-plugin-node', 'eslint-plugin-promise', 'eslint-plugin-standard')
     }
 
     if (answers.isStylelint) {
-      mfs.copyTpl('../../template/common/stylelint.config.js', '.', data)
+      writeTpl(path.join(__dirname, '../../template/common/stylelint.config.js'), process.cwd(), data)
       devDependencies.push('stylelint-config-standard', 'stylelint-config-rational-order')
     }
 
     if (answers.isTypescript) {
-      mfs.copyTpl('../../template/common/tsconfig.json', '.', data)
-      mfs.copyTpl('../../template/typescript', '.', data)
+      writeTpl(path.join(__dirname, '../../template/common/tsconfig.json'), process.cwd(), data)
+      writeTpl(path.join(__dirname, '../../template/typescript'), '.', data)
 
       devDependencies.push('@types/react', '@types/react-dom', '@types/react-router-dom')
 
@@ -115,7 +112,7 @@ export default (dir: string) => {
       }
     }
 
-    mfs.copyTpl('../../template/common/postcss.config.js', '.', data)
+    writeTpl(path.join(__dirname, '../../template/common/postcss.config.js'), process.cwd(), data)
 
     devDependencies.push('autoprefixer')
 
@@ -147,18 +144,26 @@ export default (dir: string) => {
       ]
     }
 
-    mfs.writeJSON('package.json', pkg, undefined, 2)
+    fs.writeJSONSync('package.json', pkg, {
+      spaces: 2
+    })
+
+    const spinner = ora('install dependencies').start()
 
     // 安装依赖
     spawn.sync('npm', ['install', '-S', ...dependencies])
     spawn.sync('npm', ['install', '-D', ...devDependencies])
 
+    spinner.stop()
+
     // 添加peerDependencies
-    const json = mfs.readJSON('package.json')
+    const json = fs.readJSONSync('package.json')
     const reactVersion = json.devDependencies.react
     json.peerDependencies = {
       react: reactVersion
     }
-    mfs.writeJSON('package.json', json, undefined, 2)
+    fs.writeJSONSync('package.json', json, {
+      spaces: 2
+    })
   })
 }

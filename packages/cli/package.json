@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/cli",
-  "version": "0.0.1-beta.7",
+  "version": "0.0.1-beta.13",
   "description": "the tools for build react library",
   "author": "Rhys Xia",
   "license": "MIT",
@@ -19,23 +19,26 @@
     "url": "https://github.com/xl-vision/xl-tools/issues"
   },
   "bin": {
-    "xl-cli": "./dist/bin/cli.js"
+    "xl-cli": "./dist/bin/index.js"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
     "cross-spawn": "^6.0.5",
+    "ejs": "^2.6.2",
     "fs-extra": "^8.1.0",
     "inquirer": "^6.4.1",
-    "mem-fs-editor": "^6.0.0",
+    "isbinaryfile": "^4.0.1",
     "ora": "^3.4.0",
     "semver": "^6.2.0"
   },
   "devDependencies": {
     "@types/cross-spawn": "^6.0.0",
+    "@types/ejs": "^2.6.3",
     "@types/fs-extra": "^8.0.0",
     "@types/inquirer": "^6.0.3",
     "@types/mem-fs-editor": "^5.1.1",

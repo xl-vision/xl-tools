@@ -7,10 +7,10 @@ function runWebpack (config, isServer) {
 
   const promise = new Promise((resolve, reject) => {
     if (isServer) {
-      const devServer = config.devServer || {}
-      const port = devServer.port || 3000
+      const devServerConfig = config.devServer || {}
+      const port = devServerConfig.port || 3000
       WebpackDevServer.addDevServerEntrypoints(config, {
-        ...devServer,
+        ...devServerConfig,
         port
       })
       const devServer = new WebpackDevServer(compiler, config.devServer)

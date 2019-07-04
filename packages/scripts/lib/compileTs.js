@@ -3,6 +3,7 @@ const gulpTs = require('gulp-typescript')
 const gulpBabel = require('gulp-babel')
 const merge2 = require('merge2')
 const getProjectPath = require('../utils/getProjectPath')
+const streamPromisify = require('../utils/streamPromisify')
 
 const reporter = gulpTs.reporter.defaultReporter()
 
@@ -12,9 +13,15 @@ const overwriteConfig = {
 }
 
 module.exports = ({
-  src,
-  dest
-}) => {
+                    src,
+                    dest,
+                    isEs
+                  }) => {
+  // 注入环境变量到babel-preset-library
+  process.env.XL_TOOLS_TARGET = isEs ? 'es' : 'lib'
+  // 注入typescript
+  process.env.XL_TOOLS_TYPESCRIPT = true
+
   const tsProject = gulpTs.createProject(getProjectPath('tsconfig.json'), overwriteConfig)
   const tsResult = gulp.src(src)
     .pipe(tsProject({
@@ -27,5 +34,6 @@ module.exports = ({
   const dts = tsResult.dts
   const js = tsResult.js.pipe(gulpBabel())
 
-  return merge2([dts, js]).pipe(gulp.dest(dest))
+  const stream = merge2([dts, js]).pipe(gulp.dest(dest))
+  return streamPromisify(stream)
 }

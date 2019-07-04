@@ -1,11 +1,11 @@
 const gulp = require('gulp')
 const gulpStylelint = require('gulp-stylelint')
+const streamPromisify = require('../utils/streamPromisify')
 
 module.exports = ({
-  src,
-  dest
+  src
 }) => {
-  return gulp.src(src)
+  const stream = gulp.src(src)
     .pipe(gulpStylelint({
       failAfterError: true,
       reporters: [{
@@ -13,4 +13,5 @@ module.exports = ({
         console: true
       }]
     }))
+  return streamPromisify(stream)
 }

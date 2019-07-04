@@ -1,7 +1,7 @@
 const getProjectPath = require('./getProjectPath')
 
 let config = {
-  sourceDir: 'src',
+  srcDir: 'src',
   siteDir: 'site',
   esDir: 'es',
   libDir: 'lib',

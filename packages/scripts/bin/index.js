@@ -1,24 +1,36 @@
 #!/usr/bin/env node
 
 const program = require('commander')
-const gulp = require('gulp')
+const chalk = require('chalk')
 const pkg = require('../package.json')
-require('../lib/gulpfile')
-const syncTask = require('./sync-task')
+const lint = require('../tasks/lint')
+const build = require('../tasks/build')
 
-syncTask(gulp)
+const scripts = [{
+  name: 'lint',
+  script: lint
+}, {
+  name: 'build',
+  script: build
+}]
 
 program
   .version(pkg.version)
-  .command('run <name>')
-  .action(function (name) {
-    const task = gulp.series(name)
-    task(err => {
-      if (err) {
-        console.error(err)
-        process.exit(1)
+
+for (let script of scripts) {
+  program
+    .command(script.name)
+    .action(async function () {
+      const start = Date.now()
+      console.log(chalk.green(`task '${script.name}' is started`))
+      try{
+        await script.script()
+        console.log(chalk.green(`task '${script.name}' is finished: ${Date.now() - start} ms`))
+      }catch (e) {
+        console.error(chalk.red(`task '${script.name}' is finished with error:`))
+        console.error(e)
       }
     })
-  })
+}
 
 program.parse(process.argv)

@@ -18,11 +18,11 @@
     "es"
   ],
   "scripts": {
-    "lint": "xl-tools-scripts lint",
-    "compile": "xl-tools-scripts compile",
-    "test": "xl-tools-scripts test",
-    "dev": "xl-tools-scripts dev",
-    "build": "xl-tools-scripts build"
+    "lint": "@xl-vision/scripts lint",
+    "compile": "@xl-vision/scripts compile",
+    "test": "@xl-vision/scriptstest",
+    "dev": "@xl-vision/scripts dev",
+    "build": "@xl-vision/scripts build"
   },
   "devDependencies": {
     "@types/react": "^16.8.3",

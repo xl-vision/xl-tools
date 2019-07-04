@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/xl-tools-scripts",
-  "version": "0.0.1-beta.1",
+  "version": "0.0.1-beta.2",
   "description": "the tools for build react libaray",
   "author": "Rhys Xia",
   "license": "MIT",
@@ -19,7 +19,7 @@
     "url": "https://github.com/xl-vision/xl-tools/issues"
   },
   "bin": {
-    "xl-tools-scripts": "./bin/index.js"
+    "@xl-vision/scripts": "./bin/index.js"
   },
   "dependencies": {
     "case-sensitive-paths-webpack-plugin": "^2.2.0",

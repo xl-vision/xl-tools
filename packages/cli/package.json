@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/cli",
-  "version": "0.0.1-beta.2",
+  "version": "0.0.1-beta.6",
   "description": "the tools for build react libaray",
   "author": "Rhys Xia",
   "license": "MIT",
@@ -19,17 +19,26 @@
     "url": "https://github.com/xl-vision/xl-tools/issues"
   },
   "bin": {
-    "@xl-vision/cli": "./bin/cli.js"
+    "xl-cli": "./dist/bin/cli.js"
+  },
+  "scripts": {
+    "tsc": "tsc"
   },
   "dependencies": {
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
     "fs-extra": "^8.1.0",
     "inquirer": "^6.4.1",
+    "isbinaryfile": "^4.0.1",
+    "mustache": "^3.0.1",
     "ora": "^3.4.0",
     "semver": "^6.2.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/inquirer": "^6.0.3",
+    "@types/mustache": "^0.8.32",
+    "typescript": "^3.5.2"
+  },
   "engines": {
     "node": ">=8.0.0"
   }

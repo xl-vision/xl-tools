@@ -19,7 +19,7 @@
     "url": "https://github.com/xl-vision/xl-tools/issues"
   },
   "bin": {
-    "@xl-vision/cli": "./bin/cli"
+    "@xl-vision/cli": "./bin/cli.js"
   },
   "dependencies": {
     "chalk": "^2.4.2",

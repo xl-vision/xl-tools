@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = (context, options = {}) => {
   const presets = [
     require.resolve('@babel/preset-react')
@@ -19,7 +21,7 @@ module.exports = (context, options = {}) => {
     plugins.push(require.resolve('@babel/plugin-syntax-dynamic-import'))
   }
 
-  if(process.env.XL_TOOLS_TYPESCRIPT) {
+  if(process.env.XL_TOOLS_SCRIPT_LANG === 'typescript') {
     presets.push(require.resolve('@babel/preset-typescript'))
   }
 

@@ -83,13 +83,14 @@ export default async (dir: string) => {
   ]
   const devDependencies = [
     '@xl-vision/xl-tools-scripts',
+    '@xl-vision/babel-preset-library',
     'react',
     'react-dom',
     'react-router-dom'
   ]
 
   if (answers.isLint) {
-    writeTpl(path.join(__dirname, '../../template/common/eslint.json'), process.cwd(), data)
+    writeTpl(path.join(__dirname, '../../template/common/.eslintrc.json'), process.cwd(), data)
     // devDependencies.push('eslint-config-standard', 'eslint-plugin-import', 'eslint-plugin-node', 'eslint-plugin-promise', 'eslint-plugin-standard')
   }
 
@@ -128,12 +129,12 @@ export default async (dir: string) => {
       'es'
     ],
     scripts: {
-      lint: '@xl-vision/scripts lint',
-      compile: '@xl-vision/scripts compile',
-      test: '@xl-vision/scripts test',
-      dist: '@xl-vision/scripts dist',
-      site: '@xl-vision/scripts site',
-      dev: '@xl-vision/scripts dev'
+      lint: 'xl-scripts lint',
+      compile: 'xl-scripts compile',
+      bundle: 'xl-scripts bundle',
+      test: 'xl-scripts test',
+      site: 'xl-scripts site',
+      dev: 'xl-scripts dev'
     },
     sideEffects: [
       'dist/*',

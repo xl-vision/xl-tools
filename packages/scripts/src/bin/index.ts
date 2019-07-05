@@ -1,21 +1,20 @@
 #!/usr/bin/env node
 
-const program = require('commander')
-const chalk = require('chalk')
-const pkg = require('../package.json')
-const lint = require('../tasks/lint')
-const build = require('../tasks/build')
+import program from 'commander'
+import chalk from 'chalk'
+import lint from '../tasks/lint'
+import compile from '../tasks/compile'
 
 const scripts = [{
   name: 'lint',
   script: lint
 }, {
-  name: 'build',
-  script: build
+  name: 'compile',
+  script: compile
 }]
 
 program
-  .version(pkg.version)
+  .version(require('../../package.json').version)
 
 for (let script of scripts) {
   program

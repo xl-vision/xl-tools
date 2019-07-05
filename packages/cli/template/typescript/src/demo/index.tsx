@@ -10,3 +10,5 @@ const Demo: React.FunctionComponent<DemoProps> = props => {
     <div className={'demo'}>{children}</div>
   )
 }
+
+export default Demo

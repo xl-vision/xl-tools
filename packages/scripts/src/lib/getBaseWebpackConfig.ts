@@ -1,18 +1,23 @@
-const webpack = require('webpack')
-const TerserPlugin = require('terser-webpack-plugin')
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
-const CleanUpStatsPlugin = require('../utils/CleanUpStatsPlugin')
+import webpack from 'webpack'
+import TerserPlugin from 'terser-webpack-plugin'
+import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
+import CleanUpStatsPlugin from '../utils/CleanUpStatsPlugin'
 
-module.exports = ({
-  isProduction,
-  isSourceMap,
-}) => {
-  const config = {
-    mode: isProduction ? 'production' : 'development',
-    bail: isProduction,
-    devtool: isSourceMap ? (isProduction ? 'source-map' : 'cheap-module-source-map') : false,
+export type Options  = {
+  production: boolean,
+  sourceMap: boolean
+}
+
+module.exports = (options: Options) => {
+
+  const {production, sourceMap} = options
+
+  const config: webpack.Configuration = {
+    mode: production ? 'production' : 'development',
+    bail: production,
+    devtool: sourceMap ? (production ? 'source-map' : 'cheap-module-source-map') : false,
     optimization: {
-      minimize: isProduction,
+      minimize: production,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
@@ -20,7 +25,6 @@ module.exports = ({
               ecma: 8
             },
             compress: {
-              ecma: 5,
               warnings: false,
               comparisons: false,
               inline: 2
@@ -36,7 +40,7 @@ module.exports = ({
           },
           parallel: true,
           cache: true,
-          sourceMap: isSourceMap
+          sourceMap
         })
       ]
     },
@@ -55,8 +59,8 @@ module.exports = ({
       ]
     },
     plugins: [
-      isProduction && new webpack.optimize.ModuleConcatenationPlugin(),
-      isProduction && new webpack.LoaderOptionsPlugin({
+      production && new webpack.optimize.ModuleConcatenationPlugin(),
+      production && new webpack.LoaderOptionsPlugin({
         minimize: true
       }),
       new CaseSensitivePathsPlugin(),
@@ -67,7 +71,7 @@ module.exports = ({
       // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
       // You can remove this if you don't use Moment.js:
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
-    ].filter(Boolean)
+    ].filter(Boolean) as any[]
   }
 
   return config

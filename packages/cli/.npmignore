@@ -16,4 +16,4 @@ package-lock.json
 *.sln
 *.iml
 
-src
+/src

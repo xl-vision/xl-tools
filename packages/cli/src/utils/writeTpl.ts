@@ -1,7 +1,7 @@
 import ejs from 'ejs'
 import fs from 'fs-extra'
 import path from 'path'
-import isbinaryfile from 'isbinaryfile'
+import {isBinaryFileSync} from 'isbinaryfile'
 
 function writeTpl<T extends {}>(from: string, to: string, data: T) {
   const files = getFiles(from)
@@ -13,7 +13,7 @@ function writeTpl<T extends {}>(from: string, to: string, data: T) {
     }
 
     fs.ensureFileSync(dest)
-    if (isbinaryfile.isBinaryFileSync(file)) {
+    if (isBinaryFileSync(file)) {
       fs.copyFileSync(file, dest)
     } else {
       const rendered = ejs.render(fs.readFileSync(file, {encoding: 'utf-8'}), data)

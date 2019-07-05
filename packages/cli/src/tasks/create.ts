@@ -5,10 +5,13 @@ import fs from 'fs-extra'
 import spawn from 'cross-spawn'
 import writeTpl from '../utils/writeTpl'
 import ora from 'ora'
+import shouldUseTaobao from "../utils/shouldUseTaobao";
+import registries from "../utils/registries";
+
+const taobaoDistURL = 'https://npm.taobao.org/dist'
 
 const questions: inquirer.Questions<{
   desc: string
-  style: 'scss',
   isTypescript: boolean
   isLint: boolean,
   isStylelint: boolean,
@@ -36,13 +39,6 @@ const questions: inquirer.Questions<{
   message: '请输入关键字，空格隔开',
   default: '',
 }, {
-  name: 'style',
-  type: 'list',
-  message: '请选择样式语言',
-  choices: ['scss'],
-  // choices: ['scss', 'sass', 'less', 'stylus', 'css'],
-  default: 'scss'
-}, {
   name: 'isTypescript',
   type: 'confirm',
   message: '是否使用typescript',
@@ -61,109 +57,119 @@ const questions: inquirer.Questions<{
   default: true
 }]
 
-export default (dir: string) => {
+export default async (dir: string) => {
   const projectPath = path.join(process.cwd(), dir)
   const name = path.basename(projectPath)
 
   // 判断文件夹是否存在
-  if (fs.existsSync(projectPath)) {
+  if (await fs.existsSync(projectPath)) {
     console.log()
     console.error(chalk.red(`The directory '${projectPath}' exists, please provide a name not to be used`))
     console.log()
     process.exit(1)
   }
 
-  fs.mkdirsSync(projectPath)
+  const answers = await inquirer.prompt(questions)
+
+
+  await fs.mkdirs(projectPath)
 
   process.chdir(projectPath)
 
-  inquirer.prompt(questions).then((answers) => {
+  const data = {name, ...answers}
 
-    const data = {name, ...answers}
+  const dependencies = [
+    '@babel/runtime'
+  ]
+  const devDependencies = [
+    '@xl-vision/xl-tools-scripts',
+    'react',
+    'react-dom',
+    'react-router-dom'
+  ]
 
-    const dependencies = [
-      '@babel/runtime'
-    ]
-    const devDependencies = [
-      '@xl-vision/xl-tools-scripts',
-      'react',
-      'react-dom',
-      'react-router-dom'
-    ]
+  if (answers.isLint) {
+    writeTpl(path.join(__dirname, '../../template/common/eslint.json'), process.cwd(), data)
+    // devDependencies.push('eslint-config-standard', 'eslint-plugin-import', 'eslint-plugin-node', 'eslint-plugin-promise', 'eslint-plugin-standard')
+  }
+
+  if (answers.isStylelint) {
+    writeTpl(path.join(__dirname, '../../template/common/stylelint.config.js'), process.cwd(), data)
+    devDependencies.push('stylelint-config-standard', 'stylelint-config-rational-order')
+  }
+
+  if (answers.isTypescript) {
+    writeTpl(path.join(__dirname, '../../template/common/tsconfig.json'), process.cwd(), data)
+    writeTpl(path.join(__dirname, '../../template/typescript'), '.', data)
+
+    devDependencies.push('@types/react', '@types/react-dom', '@types/react-router-dom')
 
     if (answers.isLint) {
-      writeTpl(path.join(__dirname, '../../template/common/eslint.json'), process.cwd(), data)
-      // devDependencies.push('eslint-config-standard', 'eslint-plugin-import', 'eslint-plugin-node', 'eslint-plugin-promise', 'eslint-plugin-standard')
+      devDependencies.push('@typescript-eslint/parser', '@typescript-eslint/eslint-plugin')
     }
+  }
 
-    if (answers.isStylelint) {
-      writeTpl(path.join(__dirname, '../../template/common/stylelint.config.js'), process.cwd(), data)
-      devDependencies.push('stylelint-config-standard', 'stylelint-config-rational-order')
-    }
+  writeTpl(path.join(__dirname, '../../template/common/postcss.config.js'), process.cwd(), data)
 
-    if (answers.isTypescript) {
-      writeTpl(path.join(__dirname, '../../template/common/tsconfig.json'), process.cwd(), data)
-      writeTpl(path.join(__dirname, '../../template/typescript'), '.', data)
+  devDependencies.push('autoprefixer')
 
-      devDependencies.push('@types/react', '@types/react-dom', '@types/react-router-dom')
+  const pkg = {
+    name,
+    description: answers.desc,
+    author: answers.author,
+    license: answers.license,
+    keyword: answers.keywords.trim().split(/\s+/),
+    main: 'js/index.js',
+    module: 'es/index.js',
+    files: [
+      'dist',
+      'js',
+      'es'
+    ],
+    scripts: {
+      lint: '@xl-vision/scripts lint',
+      compile: '@xl-vision/scripts compile',
+      test: '@xl-vision/scripts test',
+      dist: '@xl-vision/scripts dist',
+      site: '@xl-vision/scripts site',
+      dev: '@xl-vision/scripts dev'
+    },
+    sideEffects: [
+      'dist/*',
+      'es/**/style/*',
+      'js/**/style/*'
+    ]
+  }
 
-      if (answers.isLint) {
-        devDependencies.push('@typescript-eslint/parser', '@typescript-eslint/eslint-plugin')
-      }
-    }
+  await fs.writeJSON('package.json', pkg, {
+    spaces: 2
+  })
 
-    writeTpl(path.join(__dirname, '../../template/common/postcss.config.js'), process.cwd(), data)
 
-    devDependencies.push('autoprefixer')
+  const args = []
 
-    const pkg = {
-      name,
-      description: answers.desc,
-      author: answers.author,
-      license: answers.license,
-      keyword: answers.keywords.trim().split(' '),
-      main: 'js/index.js',
-      module: 'es/index.js',
-      files: [
-        'dist',
-        'js',
-        'es'
-      ],
-      scripts: {
-        lint: '@xl-vision/scripts lint',
-        compile: '@xl-vision/scripts compile',
-        test: '@xl-vision/scripts test',
-        dist: '@xl-vision/scripts dist',
-        site: '@xl-vision/scripts site',
-        dev: '@xl-vision/scripts dev'
-      },
-      sideEffects: [
-        'dist/*',
-        'es/**/style/*',
-        'js/**/style/*'
-      ]
-    }
+  const useTaobao = await shouldUseTaobao()
 
-    fs.writeJSONSync('package.json', pkg, {
-      spaces: 2
-    })
+  if (useTaobao) {
+    args.push(`--registry=${registries.taobao}`, `--disturl=${taobaoDistURL}`)
+  }
 
-    const spinner = ora('install dependencies').start()
+  const spinner = ora('install dependencies').start()
 
-    // 安装依赖
-    spawn.sync('npm', ['install', '-S', ...dependencies])
-    spawn.sync('npm', ['install', '-D', ...devDependencies])
+  // 安装依赖
+  spawn.sync('npm', ['install', '-S', ...args, ...dependencies], {stdio: "inherit"})
+  spawn.sync('npm', ['install', '-D', ...args, ...devDependencies], {stdio: "inherit"})
 
-    spinner.stop()
+  spinner.stop()
+  console.log(chalk.green('install dependencies success'))
 
-    // 添加peerDependencies
-    const json = fs.readJSONSync('package.json')
-    const reactVersion = json.devDependencies.react
-    json.peerDependencies = {
-      react: reactVersion
-    }
-    fs.writeJSONSync('package.json', json, {
-      spaces: 2
-    })
+  // 添加peerDependencies
+  const json = await fs.readJSON('package.json')
+  const reactVersion = json.devDependencies.react
+  json.peerDependencies = {
+    react: reactVersion
+  }
+  await fs.writeJSON('package.json', json, {
+    spaces: 2
   })
 }

@@ -1,15 +1,14 @@
-import program from 'commander'
 import fs from 'fs-extra'
-import getProjectPath from '../utils/getProjectPath';
-import eslint from '../lib/eslint';
-import stylelint from '../lib/stylelint';
+import getProjectPath from '../utils/getProjectPath'
+import eslint from '../lib/eslint'
+import stylelint from '../lib/stylelint'
 
 export default async () => {
   // 判断eslint.json文件是否存在
-  if(fs.existsSync(getProjectPath('eslint.json'))) {
+  if (fs.existsSync(getProjectPath('eslint.json'))) {
     await runEslint()
   }
-  if(fs.existsSync(getProjectPath('stylelint.config.js'))) {
+  if (fs.existsSync(getProjectPath('stylelint.config.js'))) {
     await runStylelint()
   }
 }

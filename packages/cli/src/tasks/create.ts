@@ -111,7 +111,6 @@ export default async (dir: string) => {
   }
 
   writeTpl(path.join(__dirname, '../../template/common/postcss.config.js'), process.cwd(), data)
-  writeTpl(path.join(__dirname, '../../template/common/babel.config.js'), process.cwd(), data)
 
   devDependencies.push('autoprefixer')
 

@@ -1,7 +1,7 @@
 import { Stream } from "stream";
 
 const streamToPromise = (stream: Stream) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     stream.on('error', reject)
     stream.on('finish', resolve)
   })

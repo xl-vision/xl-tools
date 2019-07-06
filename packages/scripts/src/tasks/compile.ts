@@ -3,25 +3,26 @@ import copy from "../lib/copy"
 import compileJs from "../lib/compileJs"
 import compileTs from "../lib/compileTs"
 
-export default async () => {
-  await compileAll(true)
-  await compileAll()
+export default () => {
+  return Promise.all([compileAll(true), compileAll()])
 }
 
-const compileAll = async (isEs = false) => {
+const compileAll = (isEs = false) => {
   const dest = isEs ? 'es' : 'lib'
   const srcDir = 'src'
   const scssSrc = [`${srcDir}/**/*.scss`, `!${srcDir}/**/{test,doc}/**`]
-  await compileScss(scssSrc, dest, {beautify: true})
-  await copy(scssSrc, dest)
+  const promise1 = compileScss(scssSrc, dest, {beautify: true})
+  const promise2 = copy(scssSrc, dest)
 
   const jsSrc = [`${srcDir}/**/*.js?(x)`, `!${srcDir}/**/{test,doc}/**`]
-  await compileJs(jsSrc, dest, {
+  const promise3 = compileJs(jsSrc, dest, {
     target: isEs ? 'es' : 'lib'
   })
 
   const tsSrc = [`${srcDir}/**/*.ts?(x)`, `!${srcDir}/**/{test,doc}/**`]
-  await compileTs(tsSrc, dest, {
+  const promise4 = compileTs(tsSrc, dest, {
     target: isEs ? 'es' : 'lib'
   })
+
+  return Promise.all([promise1, promise2, promise3, promise4])
 }

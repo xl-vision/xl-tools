@@ -2,22 +2,54 @@ import webpack from 'webpack'
 import TerserPlugin from 'terser-webpack-plugin'
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import CleanUpStatsPlugin from '../utils/CleanUpStatsPlugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import getBabelConfig from "./getBabelConfig";
 
-export type Options  = {
-  production: boolean,
-  sourceMap: boolean
+export type Options = {
+  isProduction: boolean,
+  isSourceMap: boolean
 }
 
-module.exports = (options: Options) => {
+export default (options: Options) => {
 
-  const {production, sourceMap} = options
+  const {isProduction, isSourceMap} = options
+
+  const getStyleLoaders = (cssOptions: any, preProcessor?: string) => {
+    const loaders = [
+      isProduction ? {
+        loader: MiniCssExtractPlugin.loader,
+        options: {}
+      } : require.resolve('style-loader'),
+      {
+        loader: require.resolve('css-loader'),
+        options: cssOptions
+      },
+      {
+        loader: require.resolve('postcss-loader'),
+        options: {
+          ident: 'postcss',
+          sourceMap: isProduction && isSourceMap
+        }
+      }
+    ].filter(Boolean)
+    if (preProcessor) {
+      loaders.push({
+        loader: require.resolve(preProcessor),
+        options: {
+          sourceMap: isProduction && isSourceMap
+        }
+      })
+    }
+    return loaders
+  }
 
   const config: webpack.Configuration = {
-    mode: production ? 'production' : 'development',
-    bail: production,
-    devtool: sourceMap ? (production ? 'source-map' : 'cheap-module-source-map') : false,
+    mode: isProduction ? 'production' : 'development',
+    bail: isProduction,
+    devtool: isSourceMap ? (isProduction ? 'source-map' : 'cheap-module-source-map') : false,
     optimization: {
-      minimize: production,
+      minimize: isProduction,
+      concatenateModules: isProduction,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
@@ -40,7 +72,7 @@ module.exports = (options: Options) => {
           },
           parallel: true,
           cache: true,
-          sourceMap
+          sourceMap: isSourceMap
         })
       ]
     },
@@ -50,17 +82,61 @@ module.exports = (options: Options) => {
     module: {
       rules: [
         // Disable require.ensure as it's not a standard language feature.
-        { parser: { requireEnsure: false } },
+        {parser: {requireEnsure: false}},
         {
-          test: /\.(js|jsx|ts|tsx)$/,
+          test: /\.(js|jsx)$/,
           loader: require.resolve('babel-loader'),
-          exclude: /node_modules/
-        }
+          exclude: /node_modules/,
+          options: {
+            babelrc: false,
+            configFile: false,
+            ...getBabelConfig({
+              target: 'site',
+              isTypescript: false
+            })
+          }
+        },
+        {
+          test: /\.(ts|tsx)$/,
+          loader: require.resolve('babel-loader'),
+          exclude: /node_modules/,
+          options: {
+            babelrc: false,
+            configFile: false,
+            ...getBabelConfig({
+              target: 'site',
+              isTypescript: true
+            })
+          }
+        },
+        {
+          test: /\.css$/,
+          use: getStyleLoaders({
+            importLoaders: 2,
+            sourceMap: isProduction && isSourceMap
+          }),
+          sideEffects: true
+        },
+        {
+          test: /\.scss/,
+          use: getStyleLoaders({
+            importLoaders: 2,
+            sourceMap: isProduction && isSourceMap
+          }, 'sass-loader'),
+          sideEffects: true
+        },
+        {
+          test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+          loader: require.resolve('url-loader'),
+          options: {
+            limit: 10000,
+            name: 'static/images/[name].[hash:8].[ext]'
+          }
+        },
       ]
     },
     plugins: [
-      production && new webpack.optimize.ModuleConcatenationPlugin(),
-      production && new webpack.LoaderOptionsPlugin({
+      isProduction && new webpack.LoaderOptionsPlugin({
         minimize: true
       }),
       new CaseSensitivePathsPlugin(),

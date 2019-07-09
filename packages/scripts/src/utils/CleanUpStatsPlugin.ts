@@ -1,5 +1,5 @@
 import {Plugin, Compiler} from 'webpack'
-// We should use `stats` props of webpack. But it not work in v4.
+// We should use `stats` props of Webpack. But it not work in v4.
 export default class CleanUpStatsPlugin {
   option: any
 

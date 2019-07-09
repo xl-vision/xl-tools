@@ -12,6 +12,7 @@ export const compileAll = (isEs = false) => {
   const srcDir = 'src'
   const scssSrc = [`${srcDir}/**/*.scss`, `!${srcDir}/**/{test,doc}/**`]
   const promise1 = compileScss(scssSrc, dest, {beautify: true})
+
   const promise2 = copy(scssSrc, dest)
 
   const jsSrc = [`${srcDir}/**/*.js?(x)`, `!${srcDir}/**/{test,doc}/**`]

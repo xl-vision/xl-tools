@@ -89,9 +89,17 @@ export default async (dir: string) => {
     'react-router-dom'
   ]
 
+  const scripts: any = {
+      compile: 'xl-scripts compile',
+      bundle: 'xl-scripts bundle',
+      site: 'xl-scripts site',
+      dev: 'xl-scripts dev'
+    }
+
   if (answers.isLint) {
     writeTpl(path.join(__dirname, '../../template/common/.eslintrc.json'), process.cwd(), data)
     // devDependencies.push('eslint-config-standard', 'eslint-plugin-import', 'eslint-plugin-node', 'eslint-plugin-promise', 'eslint-plugin-standard')
+    scripts.lint = 'xl-scripts lint'
   }
 
   if (answers.isStylelint) {
@@ -127,14 +135,7 @@ export default async (dir: string) => {
       'js',
       'es'
     ],
-    scripts: {
-      lint: 'xl-scripts lint',
-      compile: 'xl-scripts compile',
-      bundle: 'xl-scripts bundle',
-      test: 'xl-scripts test',
-      site: 'xl-scripts site',
-      dev: 'xl-scripts dev'
-    },
+    scripts,
     sideEffects: [
       'dist/*',
       'es/**/style/*',

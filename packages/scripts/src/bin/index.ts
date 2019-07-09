@@ -3,14 +3,21 @@
 import program from 'commander'
 import chalk from 'chalk'
 import lint from '../tasks/lint'
-import compile from '../tasks/compile'
+import compile2es from '../tasks/compile2es'
+import compile2lib from '../tasks/compile2lib'
 
 const scripts = [{
   name: 'lint',
   script: lint
 }, {
+  name: 'compile:es',
+  script: compile2es
+}, {
+  name: 'compile:lib',
+  script: compile2lib
+}, {
   name: 'compile',
-  script: compile
+  script: () => Promise.all([compile2es(), compile2lib()])
 }]
 
 program

@@ -2,27 +2,28 @@ import Webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
 import chalk from 'chalk'
 
-function runWebpack (config: Webpack.Configuration, devServerConfig?: WebpackDevServer.Configuration) {
+function runWebpack(config: Webpack.Configuration, devServerConfig?: WebpackDevServer.Configuration) {
   const promise = new Promise((resolve, reject) => {
+    const compiler = Webpack(config)
+
     if (devServerConfig) {
       const port = devServerConfig.port || 3000
       WebpackDevServer.addDevServerEntrypoints(config, {
         ...devServerConfig,
         port
       })
-      const compiler = Webpack(config)
       const devServer = new WebpackDevServer(compiler, devServerConfig)
-      devServer.listen(port, err  => {
+      devServer.listen(port, err => {
         if (err) {
           console.error('error', err)
           return reject(err)
         }
         console.info(chalk.cyan(`Starting the development server in port ${port}\n`))
+        resolve()
       })
       return
     }
 
-    const compiler = Webpack(config)
     compiler.run((err, stats) => {
       if (err) {
         console.error('error', err)

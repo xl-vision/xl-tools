@@ -13,13 +13,16 @@ const scripts = [{
   desc: 'Lint style'
 }, {
   name: 'compile:es',
-  script: compile2es
+  script: compile2es,
+  desc: 'Compile code to es style'
 }, {
   name: 'compile:lib',
-  script: compile2lib
+  script: compile2lib,
+  desc: 'Compile code to normal lib style'
 }, {
   name: 'compile',
-  script: () => Promise.all([compile2es(), compile2lib()])
+  script: () => Promise.all([compile2es(), compile2lib()]),
+  desc: 'run both commands \'compile:es\' and \'compile:lib\''
 }, {
   name: 'bundle',
   script: bundle,

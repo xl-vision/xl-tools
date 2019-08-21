@@ -7,14 +7,18 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import merge from 'webpack-merge'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import runWebpack from '../utils/runWebpack'
+import getBabelConfig from '../lib/getBabelConfig'
+import WebpackDevServer from 'webpack-dev-server'
 
 export type Options = {
+  isProduction: boolean,
   entry?: string
-  publicPath: string
+  publicPath?: string
 }
 
-export default (isProduction: boolean, options: Options) => {
+export default (options: Options) => {
   const {
+    isProduction,
     entry = getEntryFile('site', ['ts', 'tsx', 'js', 'jsx']),
     publicPath = '/'
   } = options
@@ -25,9 +29,9 @@ export default (isProduction: boolean, options: Options) => {
     const loaders = [
       isProduction
         ? {
-            loader: MiniCssExtractPlugin.loader,
-            options: {}
-          }
+          loader: MiniCssExtractPlugin.loader,
+          options: {}
+        }
         : require.resolve('style-loader'),
       {
         loader: require.resolve('css-loader'),
@@ -74,7 +78,10 @@ export default (isProduction: boolean, options: Options) => {
       publicPath: isProduction ? publicPath : '/'
     },
     resolve: {
-      extensions: ['.md', '.mdx', '.scss']
+      extensions: ['.md', '.mdx', '.scss'],
+      alias: {
+        site: getProjectPath('site')
+      }
     },
     optimization: {
       // 不设置，会导致引入组件缺失，如Row.Col undefined
@@ -84,9 +91,9 @@ export default (isProduction: boolean, options: Options) => {
           cssProcessorOptions: {
             map: isSourceMap
               ? {
-                  inline: false,
-                  annotation: true
-                }
+                inline: false,
+                annotation: true
+              }
               : false
           }
         })
@@ -99,6 +106,24 @@ export default (isProduction: boolean, options: Options) => {
     },
     module: {
       rules: [
+        {
+          test: /\.(md|mdx)$/,
+          use: [
+            {
+              loader: require.resolve('babel-loader'),
+              options: {
+                babelrc: false,
+                configFile: false,
+                ...getBabelConfig({
+                  target: 'site',
+                  isTypescript: true
+                })
+              }
+            },
+            '@mdx-js/loader',
+            require.resolve('../utils/mdLoader'),
+          ]
+        },
         {
           test: /\.css$/,
           use: getStyleLoaders({
@@ -125,12 +150,12 @@ export default (isProduction: boolean, options: Options) => {
             limit: 10000,
             name: 'static/images/[name].[hash:8].[ext]'
           }
-        }
+        },
       ]
     }
   }
 
-  const devServer = {
+  const devServer: WebpackDevServer.Configuration = {
     compress: true,
     clientLogLevel: 'warning',
     contentBase: false,
@@ -142,5 +167,5 @@ export default (isProduction: boolean, options: Options) => {
 
   const allConfig = merge(config, extraConfig)
 
-  const promise1 = runWebpack(allConfig, devServer)
+  return runWebpack(allConfig, devServer)
 }

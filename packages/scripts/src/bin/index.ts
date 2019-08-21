@@ -6,6 +6,7 @@ import compile2es from '../tasks/compile2es'
 import compile2lib from '../tasks/compile2lib'
 import bundle from '../tasks/bundle'
 import compileStyle from '../tasks/compileStyle'
+import site from '../tasks/site';
 
 const scripts = [
   {
@@ -55,6 +56,18 @@ const scripts = [
           'Specify style entry name, default searching index in src/style root directory'
       }
     ]
+  }, {
+    name: 'site:dev',
+    script: () => site({
+      isProduction: false
+    }),
+    desc: 'run site dev'
+  }, {
+    name: 'site:build',
+    script: () => site({
+      isProduction: true
+    }),
+    desc: 'run site build'
   }
 ]
 
@@ -66,12 +79,12 @@ for (let script of scripts) {
     exec = exec
       .option(
         `--${option.name} ${
-          option.required ? `<${option.name}>` : `[${option.name}]`
+        option.required ? `<${option.name}>` : `[${option.name}]`
         }`
       )
       .description(option.desc || '')
   }
-  exec.action(async function(options) {
+  exec.action(async function (options) {
     const start = Date.now()
     console.log(chalk.green(`task '${script.name}' is started`))
     try {

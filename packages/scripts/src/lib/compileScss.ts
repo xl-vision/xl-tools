@@ -3,7 +3,7 @@ import gulpSass from 'gulp-sass'
 import gulpPostcss from 'gulp-postcss'
 import gulpCleanCss from 'gulp-clean-css'
 import gulpRename from 'gulp-rename'
-import streamToPromise from '../utils/stream-to-promise';
+import streamToPromise from '../utils/stream2Promise';
 
 export type Options = {
   beautify?: boolean,

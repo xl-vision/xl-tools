@@ -1,11 +1,12 @@
 import getBaseWebpackConfig from '../lib/getBaseWebpackConfig'
 import Webpack from 'webpack'
 import getProjectPath from '../utils/getProjectPath'
-import {toCamel} from '../utils/stringUtils'
+import { toCamel } from '../utils/stringUtils'
 import getEntryFile from '../utils/getEntryFile'
 import merge from 'webpack-merge'
-import runWebpack from "../utils/runWebpack";
-import compileScss from "../lib/compileScss";
+import runWebpack from '../utils/runWebpack'
+import compileScss from '../lib/compileScss'
+import checkTsCondition from '../utils/checkTsCondition'
 
 export type Options = {
   libraryName?: string
@@ -23,14 +24,6 @@ export default (options: Options) => {
     ...others
   } = options
 
-  if (!entry) {
-    throw new Error('No entry file')
-  }
-
-  if (!style) {
-    throw new Error('No style entry file')
-  }
-
   const promise1 = build(false, {
     libraryName,
     entry,
@@ -47,16 +40,17 @@ export default (options: Options) => {
 }
 
 const build = (isProduction: boolean, options: BuildOptions) => {
-  const {
-    libraryName,
-    entry,
-    style
-  } = options
+  const { libraryName, entry, style } = options
+
+  const tsSrc = [`src/**/*.ts?(x)`, `!src/**/{test,doc}/**`]
+  const tsConfigFile = getProjectPath('tsconfig.json')
+
   const config = getBaseWebpackConfig({
     isProduction,
-    isSourceMap: true
+    isSourceMap: true,
+    useTsCheckerPlugin: checkTsCondition(tsSrc, tsConfigFile),
+    tsConfigFile
   })
-
 
   const extraConfig: Webpack.Configuration = {
     entry,
@@ -89,6 +83,7 @@ const build = (isProduction: boolean, options: BuildOptions) => {
   const promise1 = runWebpack(allConfig)
 
   const promise2 = compileScss(style, 'dist', {
+    beautify: !isProduction,
     rename: file => {
       file.basename = `index${isProduction ? '.min' : ''}.css`
       return file
@@ -96,5 +91,4 @@ const build = (isProduction: boolean, options: BuildOptions) => {
   })
 
   return Promise.all([promise2, promise1])
-
 }

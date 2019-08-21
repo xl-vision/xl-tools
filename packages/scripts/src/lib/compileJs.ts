@@ -1,6 +1,6 @@
 import gulp from 'gulp'
 import gulpBabel from 'gulp-babel'
-import streamToPromise from '../utils/stream-to-promise'
+import streamToPromise from '../utils/stream2Promise'
 import getBabelConfig, {Options as BabelConfigOptions} from './getBabelConfig'
 
 export type Options = {

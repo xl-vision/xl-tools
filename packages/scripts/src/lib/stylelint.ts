@@ -1,6 +1,6 @@
 import gulp from 'gulp'
 import gulpStylelint from 'gulp-stylelint'
-import streamToPromise from '../utils/stream-to-promise';
+import streamToPromise from '../utils/stream2Promise';
 
 export default (src: string | string[]) => {
   const stream = gulp.src(src)

@@ -2,51 +2,39 @@ import webpack from 'webpack'
 import TerserPlugin from 'terser-webpack-plugin'
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import CleanUpStatsPlugin from '../utils/CleanUpStatsPlugin'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import getBabelConfig from "./getBabelConfig";
+import getBabelConfig from './getBabelConfig'
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 
 export type Options = {
-  isProduction: boolean,
+  isProduction: boolean
   isSourceMap: boolean
+  useTsCheckerPlugin: boolean
+  tsConfigFile?: string
 }
 
 export default (options: Options) => {
+  const {
+    isProduction,
+    isSourceMap,
+    useTsCheckerPlugin,
+    tsConfigFile
+  } = options
 
-  const {isProduction, isSourceMap} = options
-
-  const getStyleLoaders = (cssOptions: any, preProcessor?: string) => {
-    const loaders = [
-      isProduction ? {
-        loader: MiniCssExtractPlugin.loader,
-        options: {}
-      } : require.resolve('style-loader'),
-      {
-        loader: require.resolve('css-loader'),
-        options: cssOptions
-      },
-      {
-        loader: require.resolve('postcss-loader'),
-        options: {
-          ident: 'postcss',
-          sourceMap: isProduction && isSourceMap
-        }
-      }
-    ].filter(Boolean)
-    if (preProcessor) {
-      loaders.push({
-        loader: require.resolve(preProcessor),
-        options: {
-          sourceMap: isProduction && isSourceMap
-        }
-      })
-    }
-    return loaders
+  if (useTsCheckerPlugin && !tsConfigFile) {
+    throw new Error("Please provide 'tsConfigFile'.")
   }
 
   const config: webpack.Configuration = {
     mode: isProduction ? 'production' : 'development',
     bail: isProduction,
-    devtool: isSourceMap ? (isProduction ? 'source-map' : 'cheap-module-source-map') : false,
+    devtool: isSourceMap
+      ? isProduction
+        ? 'source-map'
+        : 'cheap-module-source-map'
+      : false,
+    resolve: {
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
+    },
     optimization: {
       minimize: isProduction,
       concatenateModules: isProduction,
@@ -76,13 +64,10 @@ export default (options: Options) => {
         })
       ]
     },
-    resolve: {
-      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.scss', '.md', '.mdx'],
-    },
     module: {
       rules: [
         // Disable require.ensure as it's not a standard language feature.
-        {parser: {requireEnsure: false}},
+        { parser: { requireEnsure: false } },
         {
           test: /\.(js|jsx)$/,
           loader: require.resolve('babel-loader'),
@@ -108,37 +93,23 @@ export default (options: Options) => {
               isTypescript: true
             })
           }
-        },
-        {
-          test: /\.css$/,
-          use: getStyleLoaders({
-            importLoaders: 2,
-            sourceMap: isProduction && isSourceMap
-          }),
-          sideEffects: true
-        },
-        {
-          test: /\.scss/,
-          use: getStyleLoaders({
-            importLoaders: 2,
-            sourceMap: isProduction && isSourceMap
-          }, 'sass-loader'),
-          sideEffects: true
-        },
-        {
-          test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-          loader: require.resolve('url-loader'),
-          options: {
-            limit: 10000,
-            name: 'static/images/[name].[hash:8].[ext]'
-          }
-        },
+        }
       ]
     },
     plugins: [
-      isProduction && new webpack.LoaderOptionsPlugin({
-        minimize: true
-      }),
+      isProduction &&
+        new webpack.LoaderOptionsPlugin({
+          minimize: true
+        }),
+      !isProduction &&
+        useTsCheckerPlugin &&
+        new ForkTsCheckerWebpackPlugin({
+          async: !isProduction,
+          useTypescriptIncrementalApi: true,
+          checkSyntacticErrors: true,
+          tsconfig: tsConfigFile
+          // silent: true
+        }),
       new CaseSensitivePathsPlugin(),
       new CleanUpStatsPlugin(),
       // Moment.js is an extremely popular library that bundles large locale files

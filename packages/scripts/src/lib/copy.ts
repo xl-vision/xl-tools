@@ -1,5 +1,5 @@
 import gulp from 'gulp'
-import streamToPromise from '../utils/stream-to-promise';
+import streamToPromise from '../utils/stream2Promise';
 
 export default (from: string | string[], to: string) => {
 

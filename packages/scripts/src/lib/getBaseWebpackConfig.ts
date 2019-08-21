@@ -33,7 +33,12 @@ export default (options: Options) => {
         : 'cheap-module-source-map'
       : false,
     resolve: {
-      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+      alias: {
+        react: require.resolve('react'),
+        'react-dom': require.resolve('react-dom'),
+        'react-native': 'react-native-web',
+      }
     },
     optimization: {
       minimize: isProduction,
@@ -98,18 +103,18 @@ export default (options: Options) => {
     },
     plugins: [
       isProduction &&
-        new webpack.LoaderOptionsPlugin({
-          minimize: true
-        }),
+      new webpack.LoaderOptionsPlugin({
+        minimize: true
+      }),
       !isProduction &&
-        useTsCheckerPlugin &&
-        new ForkTsCheckerWebpackPlugin({
-          async: !isProduction,
-          useTypescriptIncrementalApi: true,
-          checkSyntacticErrors: true,
-          tsconfig: tsConfigFile
-          // silent: true
-        }),
+      useTsCheckerPlugin &&
+      new ForkTsCheckerWebpackPlugin({
+        async: !isProduction,
+        useTypescriptIncrementalApi: true,
+        checkSyntacticErrors: true,
+        tsconfig: tsConfigFile
+        // silent: true
+      }),
       new CaseSensitivePathsPlugin(),
       new CleanUpStatsPlugin(),
       // Moment.js is an extremely popular library that bundles large locale files

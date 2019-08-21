@@ -9,6 +9,9 @@ import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import runWebpack from '../utils/runWebpack'
 import getBabelConfig from '../lib/getBabelConfig'
 import WebpackDevServer from 'webpack-dev-server'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import path from 'path'
 
 export type Options = {
   isProduction: boolean,
@@ -69,6 +72,7 @@ export default (options: Options) => {
   const extraConfig: Webpack.Configuration = {
     entry,
     output: {
+      path: getProjectPath('docs'),
       filename: isProduction
         ? 'static/js/[name].[contenthash:8].js'
         : 'static/js/[name].js',
@@ -109,18 +113,6 @@ export default (options: Options) => {
         {
           test: /\.(md|mdx)$/,
           use: [
-            {
-              loader: require.resolve('babel-loader'),
-              options: {
-                babelrc: false,
-                configFile: false,
-                ...getBabelConfig({
-                  target: 'site',
-                  isTypescript: true
-                })
-              }
-            },
-            '@mdx-js/loader',
             require.resolve('../utils/mdLoader'),
           ]
         },
@@ -152,7 +144,41 @@ export default (options: Options) => {
           }
         },
       ]
-    }
+    },
+    plugins: [
+      new CopyWebpackPlugin([
+        {
+          from: path.join(getProjectPath('site'), 'public'),
+          to: isProduction ? path.join(getProjectPath('docs'), 'public') : 'public',
+          ignore: ['.*']
+        }
+      ]),
+      !isProduction && new Webpack.HotModuleReplacementPlugin(),
+      new HtmlWebpackPlugin({
+        inject: true,
+        template: path.join(getProjectPath('site'), 'index.html'),
+        ...(
+          isProduction ? {
+            minify: {
+              removeComments: true,
+              collapseWhitespace: true,
+              removeRedundantAttributes: true,
+              useShortDoctype: true,
+              removeEmptyAttributes: true,
+              removeStyleLinkTypeAttributes: true,
+              keepClosingSlash: true,
+              minifyJS: true,
+              minifyCSS: true,
+              minifyURLs: true
+            }
+          } : {}
+        ),
+      }),
+      isProduction && new MiniCssExtractPlugin({
+        filename: 'static/css/[name].[contenthash:8].css',
+        chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
+      }),
+    ].filter(Boolean) as any[]
   }
 
   const devServer: WebpackDevServer.Configuration = {
@@ -169,3 +195,4 @@ export default (options: Options) => {
 
   return runWebpack(allConfig, devServer)
 }
+

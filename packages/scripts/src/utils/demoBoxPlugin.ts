@@ -162,7 +162,7 @@ const attacher: Attacher = function () {
         value: code2
       })
       demo.type = 'jsx'
-      demo.value = `<DemoBox title={${title}} desc={${desc}} code={\`${code}\`} preview={<${fnName}/>}>${preview}</DemoBox>`
+      demo.value = `<DemoBox title={${title}} desc={${desc}} code={\`${code.replace(/`/g,'\\`')}\`} preview={<${fnName}/>}>${preview}</DemoBox>`
     }
     return node
   }

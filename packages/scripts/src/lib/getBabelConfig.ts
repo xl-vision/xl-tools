@@ -22,6 +22,7 @@ export default (options: Options) => {
 
   if (target === 'site') {
     plugins.push(require.resolve('@babel/plugin-syntax-dynamic-import'))
+    plugins.push(require.resolve('styled-jsx/babel'))
   }
 
   if (isTypescript) {

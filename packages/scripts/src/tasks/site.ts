@@ -19,6 +19,8 @@ export type Options = {
   publicPath?: string
 }
 
+const libraryName = require(getProjectPath('package.json')).name
+
 export default (options: Options) => {
   const {
     isProduction,
@@ -84,7 +86,8 @@ export default (options: Options) => {
     resolve: {
       extensions: ['.md', '.mdx', '.scss'],
       alias: {
-        site: getProjectPath('site')
+        site: getProjectPath('site'),
+        [libraryName]: entry
       }
     },
     optimization: {
@@ -113,6 +116,17 @@ export default (options: Options) => {
         {
           test: /\.(md|mdx)$/,
           use: [
+            {
+              loader: require.resolve('babel-loader'),
+              options: {
+                babelrc: false,
+                configFile: false,
+                ...getBabelConfig({
+                  target: 'site',
+                  isTypescript: false
+                })
+              }
+            },
             require.resolve('../utils/mdLoader'),
           ]
         },

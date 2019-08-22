@@ -1,4 +1,6 @@
 import { Attacher } from 'unified'
+import * as babel from '@babel/core'
+import getBabelConfig from '../lib/getBabelConfig';
 
 const regex = /^:::[\t\f ]*demo[\t\f ]*(?<title>.*?)$/
 const name = 'demobox'
@@ -103,8 +105,6 @@ const attacher: Attacher = function () {
 
     const code = body.slice(i + 1, j).join('\n')
 
-    console.log(this.tokenizeBlock(code, eat.now()))
-
     const preview = render(body.slice(i, j + 1).join('\n'))
 
     const exit = this.enterBlock()
@@ -134,7 +134,20 @@ const attacher: Attacher = function () {
       const code: string = demo.code
       const preview = demo.preview
       const fnName = `DEMO_${i}`
-      const fn = code.replace(/export +default/, `export const ${fnName} =`)
+      
+      const transformCode = babel.transformSync(`${code}`, {
+        babelrc: false,
+        configFile: false,
+        ...getBabelConfig({
+          target: 'site',
+          isTypescript: false
+        })
+      }).code
+
+      const code2 = `export const ${fnName} = function() {
+        ${transformCode}
+        return exports['default'](...arguments)
+      }`
 
       let j = 0
       for (; j < node.children.length; j++) {
@@ -146,7 +159,7 @@ const attacher: Attacher = function () {
 
       node.children.splice(j, 0, {
         type: 'export',
-        value: fn
+        value: code2
       })
       demo.type = 'jsx'
       demo.value = `<DemoBox title={${title}} desc={${desc}} code={\`${code}\`} preview={<${fnName}/>}>${preview}</DemoBox>`

@@ -7,7 +7,6 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import merge from 'webpack-merge'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import runWebpack from '../utils/runWebpack'
-import getBabelConfig from '../lib/getBabelConfig'
 import WebpackDevServer from 'webpack-dev-server'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
@@ -87,7 +86,7 @@ export default (options: Options) => {
       extensions: ['.md', '.mdx', '.scss'],
       alias: {
         site: getProjectPath('site'),
-        [libraryName]: entry
+        [libraryName]: getEntryFile('src', ['ts', 'tsx', 'js', 'jsx']),
       }
     },
     optimization: {
@@ -116,17 +115,6 @@ export default (options: Options) => {
         {
           test: /\.(md|mdx)$/,
           use: [
-            {
-              loader: require.resolve('babel-loader'),
-              options: {
-                babelrc: false,
-                configFile: false,
-                ...getBabelConfig({
-                  target: 'site',
-                  isTypescript: false
-                })
-              }
-            },
             require.resolve('../utils/mdLoader'),
           ]
         },

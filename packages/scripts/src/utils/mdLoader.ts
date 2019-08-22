@@ -2,6 +2,8 @@ import mdx from '@mdx-js/mdx'
 import Webpack from 'webpack'
 import sass from 'node-sass'
 import demoBoxPlugin from './demoBoxPlugin'
+import * as babel from '@babel/core'
+import getBabelConfig from '../lib/getBabelConfig';
 
 const DEFAULT_RENDERER = `
 import React from 'react'
@@ -28,7 +30,15 @@ const mdLoader: Webpack.loader.Loader = function (source) {
 
   parseMd2React(`${DEFAULT_RENDERER}\n${source}`, options).then(data => {
     const code = `${prefixContent.join('\n')}${data}`
-    cb && cb(null, code)
+    const transformCode = babel.transformSync(`${code}`, {
+      babelrc: false,
+      configFile: false,
+      ...getBabelConfig({
+        target: 'site',
+        isTypescript: false
+      })
+    }).code
+    cb && cb(null, transformCode)
   }).catch(err => {
     cb && cb(err)
   })

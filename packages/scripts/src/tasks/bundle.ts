@@ -22,18 +22,27 @@ export default (options: Options) => {
     ...others
   } = options
 
-  const promise1 = build(false, {
+  const promise1 = build(false, true, {
     libraryName,
     ...others
   })
-  const promise2 = build(true, {
+  const promise2 = build(true, false, {
     libraryName,
     ...others
   })
   return Promise.all([promise1, promise2])
 }
 
-const build = (isProduction: boolean, options: BuildOptions) => {
+const tsSrc = [`${SOURCE_DIR}/**/*.ts?(x)`, `!${SOURCE_DIR}/**/{test,doc}/**`]
+// tsconfig.json
+const tsConfigFile = getProjectPath('tsconfig.json')
+const hasTsCondition = checkTsCondition(tsSrc, tsConfigFile)
+
+const build = (
+  isProduction: boolean,
+  needCheck: boolean,
+  options: BuildOptions
+) => {
   const { libraryName } = options
 
   // 样式文件入口
@@ -42,16 +51,11 @@ const build = (isProduction: boolean, options: BuildOptions) => {
   // js文件入口
   const entry = getEntryFile(SOURCE_DIR, ['js', 'jsx', 'ts', 'tsx'])
 
-  // tsconfig.json
-  const tsConfigFile = getProjectPath('tsconfig.json')
-
-  const tsSrc = [`${SOURCE_DIR}/**/*.ts?(x)`, `!${SOURCE_DIR}/**/{test,doc}/**`]
-
   const config = getBaseWebpackConfig({
     isProduction,
     isSourceMap: true,
     // 判断是否需要启用ts checker
-    useTsCheckerPlugin: checkTsCondition(tsSrc, tsConfigFile),
+    useTsCheckerPlugin: needCheck && hasTsCondition,
     tsConfigFile
   })
 
@@ -88,7 +92,7 @@ const build = (isProduction: boolean, options: BuildOptions) => {
   const promise2 = compileScss(style, DIST_DIR, {
     beautify: !isProduction,
     rename: file => {
-      file.basename = `index${isProduction ? '.min' : ''}.css`
+      file.basename = `index${isProduction ? '.min' : ''}`
       return file
     }
   })

@@ -1,6 +1,5 @@
 import mdx from '@mdx-js/mdx'
 import Webpack from 'webpack'
-import sass from 'node-sass'
 import demoBoxPlugin from './demoBoxPlugin'
 import * as babel from '@babel/core'
 import getBabelConfig from '../lib/getBabelConfig'

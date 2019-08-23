@@ -15,8 +15,8 @@ import { DOCS_DIR, SITE_DIR, SOURCE_DIR } from './entry'
 
 export type Options = {
   isProduction: boolean
-  entry?: string
-  publicPath?: string
+  publicPath?: string,
+  port?: number
 }
 
 const libraryName = require(getProjectPath('package.json')).name
@@ -26,7 +26,7 @@ const inputDir = getProjectPath(SITE_DIR)
 const srcDir = getProjectPath(SOURCE_DIR)
 
 export default (options: Options) => {
-  const { isProduction, publicPath = '/' } = options
+  const { isProduction, publicPath = '/', port = 3000 } = options
 
   const isSourceMap = true
 
@@ -158,6 +158,8 @@ export default (options: Options) => {
       new HtmlWebpackPlugin({
         inject: true,
         template: path.join(inputDir, 'index.html'),
+        // 传递当前的publicPath给页面
+        publicPath,
         ...(isProduction
           ? {
               minify: {
@@ -190,7 +192,7 @@ export default (options: Options) => {
     hot: true,
     publicPath: '/',
     historyApiFallback: true,
-    port: 3000
+    port
   }
 
   const allConfig = merge(config, extraConfig)

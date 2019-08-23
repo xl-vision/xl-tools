@@ -5,7 +5,7 @@ import lint from '../tasks/lint'
 import compile2es from '../tasks/compile2es'
 import compile2lib from '../tasks/compile2lib'
 import bundle from '../tasks/bundle'
-import compileStyle from '../tasks/compileStyle'
+import compile2Css from '../tasks/compile2Css'
 import site from '../tasks/site';
 
 const scripts = [
@@ -16,7 +16,7 @@ const scripts = [
   },
   {
     name: 'compile:style',
-    script: compileStyle,
+    script: compile2Css,
     desc: 'compile style files'
   },
   {
@@ -42,32 +42,30 @@ const scripts = [
         name: 'libraryName',
         required: false,
         desc: 'Specify library name, default name in package.json'
-      },
-      {
-        name: 'entry',
-        required: false,
-        desc:
-          'Specify entry name, default searching index in src root directory'
-      },
-      {
-        name: 'style',
-        required: false,
-        desc:
-          'Specify style entry name, default searching index in src/style root directory'
       }
     ]
   }, {
     name: 'site:dev',
-    script: () => site({
+    script: (options: any) => site({
+      ...options,
       isProduction: false
     }),
-    desc: 'run site dev'
+    desc: 'run site dev',
+    options: [{
+      name: 'port',
+      desc: "Specify server port, default is 3000"
+    }]
   }, {
     name: 'site:build',
-    script: () => site({
-      isProduction: true
+    script: (options: any) => site({
+      ...options,
+      isProduction: true,
     }),
-    desc: 'run site build'
+    desc: 'run site build',
+    options: [{
+      name: 'publicPath',
+      desc: "Specify docs public path in production mode, default '/'"
+    }]
   }
 ]
 
@@ -86,10 +84,10 @@ for (let script of scripts) {
   }
   exec.action(async function (options) {
     const start = Date.now()
-    console.log(chalk.green(`task '${script.name}' is started`))
+    console.info(chalk.green(`task '${script.name}' is started`))
     try {
       await script.script(options)
-      console.log(
+      console.info(
         chalk.green(
           `task '${script.name}' is finished: ${Date.now() - start} ms`
         )

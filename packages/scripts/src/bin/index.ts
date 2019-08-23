@@ -8,7 +8,18 @@ import bundle from '../tasks/bundle'
 import compile2Css from '../tasks/compile2Css'
 import site from '../tasks/site';
 
-const scripts = [
+type Command = {
+  name: string,
+  script: Function,
+  desc: string,
+  options?: Array<{
+    name: string,
+    required?: boolean,
+    desc: string
+  }>
+}
+
+const scripts: Command[] = [
   {
     name: 'lint',
     script: lint,
@@ -37,6 +48,7 @@ const scripts = [
   {
     name: 'bundle',
     script: bundle,
+    desc: 'bundle source files',
     options: [
       {
         name: 'libraryName',
@@ -94,7 +106,8 @@ for (let script of scripts) {
       )
     } catch (e) {
       console.error(chalk.red(`task '${script.name}' is finished with error:`))
-      console.error(e)
+      console.error(e.toString())
+      process.exit(1)
     }
   })
 }

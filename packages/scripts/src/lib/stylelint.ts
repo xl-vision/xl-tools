@@ -7,7 +7,7 @@ export default (src: string | string[]) => {
     .pipe(gulpStylelint({
       failAfterError: true,
       reporters: [{
-        formatter: 'verbose',
+        formatter: 'string',
         console: true
       }]
     }))

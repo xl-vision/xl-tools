@@ -31,7 +31,7 @@ const scripts = [
   },
   {
     name: 'compile',
-    script: () => Promise.all([compile2es(), compile2lib(), compileStyle()]),
+    script: () => Promise.all([compile2es(), compile2lib(), compile2Css()]),
     desc: "run commands 'compile:es', 'compile:lib' and 'compile:style'"
   },
   {

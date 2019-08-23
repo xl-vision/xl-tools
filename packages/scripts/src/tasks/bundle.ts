@@ -1,3 +1,4 @@
+import { SOURCE_DIR, DIST_DIR } from './entry'
 import getBaseWebpackConfig from '../lib/getBaseWebpackConfig'
 import Webpack from 'webpack'
 import getProjectPath from '../utils/getProjectPath'
@@ -10,44 +11,46 @@ import checkTsCondition from '../utils/checkTsCondition'
 
 export type Options = {
   libraryName?: string
-  entry?: string
-  style?: string
 }
 
 type BuildOptions = Required<Options>
 
 export default (options: Options) => {
   const {
+    // 自定义库名称，默认为package.json中的name字段驼峰化
     libraryName = toCamel(require(getProjectPath('package.json')).name),
-    entry = getEntryFile('src', ['js', 'jsx', 'ts', 'tsx']),
-    style = getEntryFile('src/style', ['scss']),
     ...others
   } = options
 
   const promise1 = build(false, {
     libraryName,
-    entry,
-    style,
     ...others
   })
   const promise2 = build(true, {
     libraryName,
-    entry,
-    style,
     ...others
   })
   return Promise.all([promise1, promise2])
 }
 
 const build = (isProduction: boolean, options: BuildOptions) => {
-  const { libraryName, entry, style } = options
+  const { libraryName } = options
 
-  const tsSrc = [`src/**/*.ts?(x)`, `!src/**/{test,doc}/**`]
+  // 样式文件入口
+  const style = getEntryFile(`${SOURCE_DIR}/style`, ['scss'])
+
+  // js文件入口
+  const entry = getEntryFile(SOURCE_DIR, ['js', 'jsx', 'ts', 'tsx'])
+
+  // tsconfig.json
   const tsConfigFile = getProjectPath('tsconfig.json')
+
+  const tsSrc = [`${SOURCE_DIR}/**/*.ts?(x)`, `!${SOURCE_DIR}/**/{test,doc}/**`]
 
   const config = getBaseWebpackConfig({
     isProduction,
     isSourceMap: true,
+    // 判断是否需要启用ts checker
     useTsCheckerPlugin: checkTsCondition(tsSrc, tsConfigFile),
     tsConfigFile
   })
@@ -58,7 +61,7 @@ const build = (isProduction: boolean, options: BuildOptions) => {
       libraryTarget: 'umd',
       umdNamedDefine: true,
       library: libraryName,
-      path: getProjectPath('dist'),
+      path: getProjectPath(DIST_DIR),
       pathinfo: !isProduction,
       filename: `index${isProduction ? '.min' : ''}.js`
     },
@@ -82,7 +85,7 @@ const build = (isProduction: boolean, options: BuildOptions) => {
 
   const promise1 = runWebpack(allConfig)
 
-  const promise2 = compileScss(style, 'dist', {
+  const promise2 = compileScss(style, DIST_DIR, {
     beautify: !isProduction,
     rename: file => {
       file.basename = `index${isProduction ? '.min' : ''}.css`

@@ -145,9 +145,10 @@ const attacher: Attacher = function () {
       }).code
 
       const code2 = `export const ${fnName} = function() {
-        ${transformCode}
-        return exports['default'](...arguments)
-      }`
+  const exports = {}
+  ${transformCode}
+  return exports['default'](...arguments)
+}`
 
       let j = 0
       for (; j < node.children.length; j++) {
@@ -161,8 +162,11 @@ const attacher: Attacher = function () {
         type: 'export',
         value: code2
       })
+
+      const escapeCode = '`' + code.replace(/`/g,'\`').replace(/([\$\{\}`])/g, "${'$1'}") + '`'
+
       demo.type = 'jsx'
-      demo.value = `<DemoBox title={${title}} desc={${desc}} code={\`${code.replace(/`/g,'\\`')}\`} preview={<${fnName}/>}>${preview}</DemoBox>`
+      demo.value = `<DemoBox title={${title || `''`}} desc={${desc || `''`}} code={${escapeCode}} preview={<${fnName}/>}>${preview}</DemoBox>`
     }
     return node
   }

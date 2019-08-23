@@ -11,21 +11,22 @@ import WebpackDevServer from 'webpack-dev-server'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import path from 'path'
+import { DOCS_DIR, SITE_DIR, SOURCE_DIR } from './entry'
 
 export type Options = {
-  isProduction: boolean,
+  isProduction: boolean
   entry?: string
   publicPath?: string
 }
 
 const libraryName = require(getProjectPath('package.json')).name
 
+const outputDir = getProjectPath(DOCS_DIR)
+const inputDir = getProjectPath(SITE_DIR)
+const srcDir = getProjectPath(SOURCE_DIR)
+
 export default (options: Options) => {
-  const {
-    isProduction,
-    entry = getEntryFile('site', ['ts', 'tsx', 'js', 'jsx']),
-    publicPath = '/'
-  } = options
+  const { isProduction, publicPath = '/' } = options
 
   const isSourceMap = true
 
@@ -33,9 +34,9 @@ export default (options: Options) => {
     const loaders = [
       isProduction
         ? {
-          loader: MiniCssExtractPlugin.loader,
-          options: {}
-        }
+            loader: MiniCssExtractPlugin.loader,
+            options: {}
+          }
         : require.resolve('style-loader'),
       {
         loader: require.resolve('css-loader'),
@@ -60,7 +61,7 @@ export default (options: Options) => {
     return loaders
   }
 
-  const tsSrc = [`src/**/*.ts?(x)`, `!src/**/{test,doc}/**`]
+  const tsSrc = [`${SOURCE_DIR}/**/*.ts?(x)`, `!${SOURCE_DIR}/**/{test,doc}/**`]
   const tsConfigFile = getProjectPath('tsconfig.json')
 
   const config = getBaseWebpackConfig({
@@ -71,9 +72,9 @@ export default (options: Options) => {
   })
 
   const extraConfig: Webpack.Configuration = {
-    entry,
+    entry: getEntryFile(inputDir, ['ts', 'tsx', 'js', 'jsx']),
     output: {
-      path: getProjectPath('docs'),
+      path: outputDir,
       filename: isProduction
         ? 'static/js/[name].[contenthash:8].js'
         : 'static/js/[name].js',
@@ -85,8 +86,8 @@ export default (options: Options) => {
     resolve: {
       extensions: ['.md', '.mdx', '.scss'],
       alias: {
-        site: getProjectPath('site'),
-        [libraryName]: getEntryFile('src', ['ts', 'tsx', 'js', 'jsx']),
+        site: inputDir,
+        [libraryName]: getEntryFile(srcDir, ['ts', 'tsx', 'js', 'jsx'])
       }
     },
     optimization: {
@@ -97,9 +98,9 @@ export default (options: Options) => {
           cssProcessorOptions: {
             map: isSourceMap
               ? {
-                inline: false,
-                annotation: true
-              }
+                  inline: false,
+                  annotation: true
+                }
               : false
           }
         })
@@ -114,9 +115,7 @@ export default (options: Options) => {
       rules: [
         {
           test: /\.(md|mdx)$/,
-          use: [
-            require.resolve('../utils/mdLoader'),
-          ]
+          use: [require.resolve('../utils/mdLoader')]
         },
         {
           test: /\.css$/,
@@ -144,42 +143,43 @@ export default (options: Options) => {
             limit: 10000,
             name: 'static/images/[name].[hash:8].[ext]'
           }
-        },
+        }
       ]
     },
     plugins: [
       new CopyWebpackPlugin([
         {
-          from: path.join(getProjectPath('site'), 'public'),
-          to: isProduction ? path.join(getProjectPath('docs'), 'public') : 'public',
+          from: path.join(inputDir, 'public'),
+          to: isProduction ? path.join(outputDir, 'public') : 'public',
           ignore: ['.*']
         }
       ]),
       !isProduction && new Webpack.HotModuleReplacementPlugin(),
       new HtmlWebpackPlugin({
         inject: true,
-        template: path.join(getProjectPath('site'), 'index.html'),
-        ...(
-          isProduction ? {
-            minify: {
-              removeComments: true,
-              collapseWhitespace: true,
-              removeRedundantAttributes: true,
-              useShortDoctype: true,
-              removeEmptyAttributes: true,
-              removeStyleLinkTypeAttributes: true,
-              keepClosingSlash: true,
-              minifyJS: true,
-              minifyCSS: true,
-              minifyURLs: true
+        template: path.join(inputDir, 'index.html'),
+        ...(isProduction
+          ? {
+              minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true
+              }
             }
-          } : {}
-        ),
+          : {})
       }),
-      isProduction && new MiniCssExtractPlugin({
-        filename: 'static/css/[name].[contenthash:8].css',
-        chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
-      }),
+      isProduction &&
+        new MiniCssExtractPlugin({
+          filename: 'static/css/[name].[contenthash:8].css',
+          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
+        })
     ].filter(Boolean) as any[]
   }
 
@@ -195,6 +195,5 @@ export default (options: Options) => {
 
   const allConfig = merge(config, extraConfig)
 
-  return runWebpack(allConfig, devServer)
+  return runWebpack(allConfig, isProduction ? undefined : devServer)
 }
-

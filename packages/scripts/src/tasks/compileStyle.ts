@@ -1,10 +1,10 @@
 import compileScss from "../lib/compileScss"
 import copy from "../lib/copy"
+import { STYLE_DIR, SOURCE_DIR } from "./entry";
 
 export default () => {
-  const dest = 'style'
-  const srcDir = 'src'
-  const scssSrc = [`${srcDir}/**/*.scss`, `!${srcDir}/**/{test,doc}/**`]
+  const dest = STYLE_DIR
+  const scssSrc = [`${SOURCE_DIR}/**/*.scss`, `!${SOURCE_DIR}/**/{test,doc}/**`]
   const promise1 = compileScss(scssSrc, dest, {beautify: true})
 
   const promise2 = copy(scssSrc, dest)

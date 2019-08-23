@@ -1,0 +1,7 @@
+export const SOURCE_DIR = 'src'
+export const SITE_DIR = 'site'
+export const ES_DIR = 'es'
+export const LIB_DIR = 'lib'
+export const STYLE_DIR = 'style'
+export const DOCS_DIR = 'docs'
+export const DIST_DIR = 'dist'

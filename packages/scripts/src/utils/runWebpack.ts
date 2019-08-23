@@ -7,6 +7,7 @@ function runWebpack(config: Webpack.Configuration, devServerConfig?: WebpackDevS
     const compiler = Webpack(config)
 
     if (devServerConfig) {
+      console.info(chalk.cyan(`You are now in dev server mode.`))
       const port = devServerConfig.port || 3000
       WebpackDevServer.addDevServerEntrypoints(config, {
         ...devServerConfig,

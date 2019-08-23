@@ -1,10 +1,11 @@
 import fs from 'fs-extra'
-import getProjectPath from "./getProjectPath";
+import getProjectPath from './getProjectPath'
+import path from 'path'
 
-export default (filePath: string, exts: string[]) => {
-
+export default (dir: string, exts: string[]) => {
+  dir = path.isAbsolute(dir) ? dir : getProjectPath('dir')
   for (let ext of exts) {
-    const file = getProjectPath(`${filePath}/index.${ext}`)
+    const file = path.join(dir, `index.${ext}`)
     if (fs.existsSync(file)) {
       return file
     }

@@ -3,7 +3,8 @@ import Webpack from 'webpack'
 import sass from 'node-sass'
 import demoBoxPlugin from './demoBoxPlugin'
 import * as babel from '@babel/core'
-import getBabelConfig from '../lib/getBabelConfig';
+import getBabelConfig from '../lib/getBabelConfig'
+import highlight from 'rehype-highlight'
 
 const DEFAULT_RENDERER = `
 import React from 'react'
@@ -25,6 +26,9 @@ const mdLoader: Webpack.loader.Loader = function (source) {
     filepath: this.resourcePath,
     remarkPlugins: [
       demoBoxPlugin
+    ],
+    rehypePlugins: [
+      highlight
     ]
   }
 

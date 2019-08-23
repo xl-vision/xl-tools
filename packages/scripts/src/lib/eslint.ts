@@ -5,6 +5,7 @@ import streamToPromise from '../utils/stream2Promise';
 export default (src: string | string[]) => {
   const stream = gulp.src(src)
     .pipe(gulpEslint())
-    .pipe(gulpEslint.failOnError())
+    .pipe(gulpEslint.failAfterError())
+    .pipe(gulpEslint.formatEach())
   return streamToPromise(stream)
 }

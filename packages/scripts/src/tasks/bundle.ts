@@ -46,7 +46,7 @@ const build = (
   const { libraryName } = options
 
   // 样式文件入口
-  const style = getEntryFile(`${SOURCE_DIR}/style`, ['scss'])
+  const style = getEntryFile(SOURCE_DIR, ['scss'])
 
   // js文件入口
   const entry = getEntryFile(SOURCE_DIR, ['js', 'jsx', 'ts', 'tsx'])

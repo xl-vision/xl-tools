@@ -42,6 +42,7 @@
     "gulp-clean-css": "^4.2.0",
     "gulp-eslint": "^6.0.0",
     "gulp-postcss": "^8.0.0",
+    "gulp-remark": "^7.0.0",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
     "gulp-stylelint": "^9.0.0",

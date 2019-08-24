@@ -11,5 +11,5 @@ export default (dir: string, exts: string[]) => {
     }
   }
 
-  throw new Error('Can not find matched file.')
+  return ''
 }

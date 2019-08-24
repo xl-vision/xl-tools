@@ -4,34 +4,38 @@ import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import CleanUpStatsPlugin from '../utils/CleanUpStatsPlugin'
 import getBabelConfig from './getBabelConfig'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
+import getProjectPath from '../utils/getProjectPath';
+import fs from 'fs-extra';
 
 export type Options = {
-  isProduction: boolean
-  isSourceMap: boolean
-  useTsCheckerPlugin: boolean
+  dev: boolean
+  tsCheck: boolean
   tsConfigFile?: string
+  tsCheckAsync: boolean
 }
 
 export default (options: Options) => {
   const {
-    isProduction,
-    isSourceMap,
-    useTsCheckerPlugin,
+    dev,
+    tsCheck,
+    tsCheckAsync,
     tsConfigFile
   } = options
 
-  if (useTsCheckerPlugin && !tsConfigFile) {
-    throw new Error("Please provide 'tsConfigFile'.")
+  if (tsCheck) {
+    if (!tsConfigFile) {
+      throw new Error("Please provide 'tsconfigFile'.")
+    }
+    const tsConfigFilePath = getProjectPath(tsConfigFile)
+    if (!fs.existsSync(tsConfigFilePath)) {
+      throw new Error('Could not find tsconfig file: ' + tsConfigFile)
+    }
   }
 
   const config: webpack.Configuration = {
-    mode: isProduction ? 'production' : 'development',
-    bail: isProduction,
-    devtool: isSourceMap
-      ? isProduction
-        ? 'source-map'
-        : 'cheap-module-source-map'
-      : false,
+    mode: dev ? 'development' : 'production',
+    bail: !dev,
+    devtool: dev ? 'cheap-module-source-map' : 'source-map',
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
       alias: {
@@ -41,8 +45,8 @@ export default (options: Options) => {
       }
     },
     optimization: {
-      minimize: isProduction,
-      concatenateModules: isProduction,
+      minimize: !dev,
+      concatenateModules: !dev,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
@@ -65,7 +69,7 @@ export default (options: Options) => {
           },
           parallel: true,
           cache: true,
-          sourceMap: isSourceMap
+          sourceMap: true
         })
       ]
     },
@@ -102,14 +106,13 @@ export default (options: Options) => {
       ]
     },
     plugins: [
-      isProduction &&
+      !dev &&
       new webpack.LoaderOptionsPlugin({
         minimize: true
       }),
-      !isProduction &&
-      useTsCheckerPlugin &&
+      tsCheck &&
       new ForkTsCheckerWebpackPlugin({
-        async: !isProduction,
+        async: tsCheckAsync,
         useTypescriptIncrementalApi: true,
         checkSyntacticErrors: true,
         tsconfig: tsConfigFile

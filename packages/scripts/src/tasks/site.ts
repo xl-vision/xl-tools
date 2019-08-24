@@ -1,8 +1,6 @@
-import getEntryFile from '../utils/getEntryFile'
 import getBaseWebpackConfig from '../lib/getBaseWebpackConfig'
 import Webpack from 'webpack'
 import getProjectPath from '../utils/getProjectPath'
-import checkTsCondition from '../utils/checkTsCondition'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import merge from 'webpack-merge'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
@@ -11,42 +9,55 @@ import WebpackDevServer from 'webpack-dev-server'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import path from 'path'
-import { DOCS_DIR, SITE_DIR, SOURCE_DIR } from './entry'
 
 export type Options = {
-  isProduction: boolean
+  entry: string
+  dest: string,
+  dev: boolean
+  demoBoxPath: string
+  libraryEntry: string,
   publicPath?: string,
-  port?: number
+  port?: number,
+  tsConfigFile?: string,
 }
-
 const libraryName = require(getProjectPath('package.json')).name
-
-const outputDir = getProjectPath(DOCS_DIR)
-const inputDir = getProjectPath(SITE_DIR)
-const srcDir = getProjectPath(SOURCE_DIR)
-
 export default (options: Options) => {
-  const { isProduction, publicPath = '/', port = 3000 } = options
+  const {
+    entry,
+    dest,
+    dev,
+    publicPath,
+    port,
+    tsConfigFile,
+    demoBoxPath,
+    libraryEntry
+  } = options
 
   const isSourceMap = true
 
+  if (dev) {
+    if (!port) {
+      throw new Error("Please provide server port.")
+    }
+  } else {
+    if (!publicPath) {
+      throw new Error("Please provide public path for deploy.")
+    }
+  }
+
   const getStyleLoaders = (cssOptions: any, preProcessor?: string) => {
     const loaders = [
-      isProduction
-        ? {
-            loader: MiniCssExtractPlugin.loader,
-            options: {}
-          }
-        : require.resolve('style-loader'),
-      {
+      (dev ? require.resolve('style-loader') : {
+        loader: MiniCssExtractPlugin.loader,
+        options: {}
+      }), {
         loader: require.resolve('css-loader'),
         options: cssOptions
-      },
-      {
+      }, {
         loader: require.resolve('postcss-loader'),
         options: {
           ident: 'postcss',
-          sourceMap: isProduction && isSourceMap
+          sourceMap: isSourceMap
         }
       }
     ].filter(Boolean)
@@ -54,40 +65,35 @@ export default (options: Options) => {
       loaders.push({
         loader: require.resolve(preProcessor),
         options: {
-          sourceMap: isProduction && isSourceMap
+          sourceMap: isSourceMap
         }
       })
     }
     return loaders
   }
 
-  const tsSrc = [`${SOURCE_DIR}/**/*.ts?(x)`, `!${SOURCE_DIR}/**/{test,doc}/**`]
-  const tsConfigFile = getProjectPath('tsconfig.json')
-
   const config = getBaseWebpackConfig({
-    isProduction,
-    isSourceMap,
-    useTsCheckerPlugin: checkTsCondition(tsSrc, tsConfigFile),
+    dev,
+    tsCheck: true,
+    tsCheckAsync: dev,
     tsConfigFile
   })
 
   const extraConfig: Webpack.Configuration = {
-    entry: getEntryFile(inputDir, ['ts', 'tsx', 'js', 'jsx']),
+    entry: getProjectPath(entry),
     output: {
-      path: outputDir,
-      filename: isProduction
-        ? 'static/js/[name].[contenthash:8].js'
-        : 'static/js/[name].js',
-      chunkFilename: isProduction
-        ? 'static/js/[name].[contenthash:8].chunk.js'
-        : 'static/js/[name].chunk.js',
-      publicPath: isProduction ? publicPath : '/'
+      path: getProjectPath(dest),
+      filename: dev ? 'static/js/[name].js' : 'static/js/[name].[contenthash:8].js',
+      chunkFilename: dev ? 'static/js/[name].chunk.js' : 'static/js/[name].[contenthash:8].chunk.js',
+      publicPath: dev ? '/' : publicPath
     },
     resolve: {
       extensions: ['.md', '.mdx', '.scss'],
       alias: {
-        site: inputDir,
-        [libraryName]: getEntryFile(srcDir, ['ts', 'tsx', 'js', 'jsx'])
+        // 指定DemoBox的路径
+        'demo-box': getProjectPath(demoBoxPath),
+        // 项目
+        [libraryName]: getProjectPath(libraryEntry)
       }
     },
     optimization: {
@@ -98,9 +104,9 @@ export default (options: Options) => {
           cssProcessorOptions: {
             map: isSourceMap
               ? {
-                  inline: false,
-                  annotation: true
-                }
+                inline: false,
+                annotation: true
+              }
               : false
           }
         })
@@ -121,7 +127,7 @@ export default (options: Options) => {
           test: /\.css$/,
           use: getStyleLoaders({
             importLoaders: 2,
-            sourceMap: isProduction && isSourceMap
+            sourceMap: isSourceMap
           }),
           sideEffects: true
         },
@@ -130,7 +136,7 @@ export default (options: Options) => {
           use: getStyleLoaders(
             {
               importLoaders: 2,
-              sourceMap: isProduction && isSourceMap
+              sourceMap: isSourceMap
             },
             'sass-loader'
           ),
@@ -149,39 +155,39 @@ export default (options: Options) => {
     plugins: [
       new CopyWebpackPlugin([
         {
-          from: path.join(inputDir, 'public'),
-          to: isProduction ? path.join(outputDir, 'public') : 'public',
+          from: path.join(getProjectPath(entry), 'public'),
+          to: dev ? 'public' : path.join(dest, 'public'),
           ignore: ['.*']
         }
       ]),
-      !isProduction && new Webpack.HotModuleReplacementPlugin(),
+      dev && new Webpack.HotModuleReplacementPlugin(),
       new HtmlWebpackPlugin({
         inject: true,
-        template: path.join(inputDir, 'index.html'),
+        template: path.join(entry, 'index.html'),
         // 传递当前的publicPath给页面
         publicPath,
-        ...(isProduction
-          ? {
-              minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeRedundantAttributes: true,
-                useShortDoctype: true,
-                removeEmptyAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-                keepClosingSlash: true,
-                minifyJS: true,
-                minifyCSS: true,
-                minifyURLs: true
-              }
+        ...(
+          dev ? {} : {
+            minify: {
+              removeComments: true,
+              collapseWhitespace: true,
+              removeRedundantAttributes: true,
+              useShortDoctype: true,
+              removeEmptyAttributes: true,
+              removeStyleLinkTypeAttributes: true,
+              keepClosingSlash: true,
+              minifyJS: true,
+              minifyCSS: true,
+              minifyURLs: true
             }
-          : {})
+          }
+        )
       }),
-      isProduction &&
-        new MiniCssExtractPlugin({
-          filename: 'static/css/[name].[contenthash:8].css',
-          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
-        })
+      !dev &&
+      new MiniCssExtractPlugin({
+        filename: 'static/css/[name].[contenthash:8].css',
+        chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
+      })
     ].filter(Boolean) as any[]
   }
 
@@ -197,5 +203,5 @@ export default (options: Options) => {
 
   const allConfig = merge(config, extraConfig)
 
-  return runWebpack(allConfig, isProduction ? undefined : devServer)
+  return runWebpack(allConfig, dev ? devServer : undefined)
 }

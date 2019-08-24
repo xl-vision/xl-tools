@@ -42,7 +42,6 @@ const scripts: Command[] = [
       name: 'fix',
       desc: 'try to fix issues',
       bool: true,
-      defaultValue: false
     }, {
       name: 'dirs',
       desc: "base dir to search, split with ',' if multiple dir",
@@ -63,7 +62,6 @@ const scripts: Command[] = [
       name: 'fix',
       desc: 'try to fix issues',
       bool: true,
-      defaultValue: false
     }, {
       name: 'dirs',
       desc: "base dir to search, split with ',' if multiple dir",
@@ -94,12 +92,11 @@ const scripts: Command[] = [
       defaultValue: ['css', 'scss', 'sass'],
       handler: splitHandler
     }, {
-      name: 'beautify',
+      name: 'no-beautify',
       desc: "Whether if or not beautify compiled files",
       bool: true,
-      defaultValue: true
     }, {
-      name: 'copy',
+      name: 'no-copy',
       desc: "Whether if or not copy source files to destination",
       bool: true,
       defaultValue: true
@@ -126,7 +123,6 @@ const scripts: Command[] = [
       name: 'isEs',
       desc: "Whether if or not compile with ES6 format",
       bool: true,
-      defaultValue: false
     }, {
       name: 'tsConfigFile',
       desc: "The path of tsconfig file, you can not care this option if project does not use Typescript",
@@ -174,7 +170,6 @@ const scripts: Command[] = [
       name: 'dev',
       desc: "The mode for build site, run a server if in deveploment.",
       bool: true,
-      defaultValue: false,
     }, {
       name: 'demoBoxPath',
       desc: "The path of DemoBox component that is for display example.",

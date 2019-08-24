@@ -134,13 +134,9 @@ const scripts: Command[] = [
     script: bundle,
     desc: 'bundle source files',
     options: [{
-      name: 'entry',
-      desc: "the entry for js bundle, default try to search index file with suffix 'ts', 'tsx', 'js', 'jsx'",
-      defaultValue: getEntryFile(srcDir, ['ts', 'tsx', 'js', 'jsx'])
-    }, {
-      name: 'styleEntry',
-      desc: "the entry for style bundle, default try to search index file with suffix 'css', 'scss', 'sass'",
-      defaultValue: getEntryFile(srcDir, ['css', 'scss', 'sass'])
+      name: 'src',
+      desc: "the source directory",
+      defaultValue: srcDir
     }, {
       name: 'dest',
       desc: 'the target directory for bundled files',
@@ -159,9 +155,9 @@ const scripts: Command[] = [
     script: site,
     desc: 'run site command',
     options: [{
-      name: 'entry',
-      desc: "The entry for js bundle, default try to search index file with suffix 'ts', 'tsx', 'js', 'jsx'",
-      defaultValue: getEntryFile(siteDir, ['ts', 'tsx', 'js', 'jsx'])
+      name: 'src',
+      desc: "The site source directory.",
+      defaultValue: siteDir
     }, {
       name: 'dest',
       desc: "The destination derectory for site bundle",
@@ -175,7 +171,7 @@ const scripts: Command[] = [
       desc: "The path of DemoBox component that is for display example.",
       defaultValue: `${siteDir}/components/demo-box`
     }, {
-      name: 'libraryEntry',
+      name: 'librarySrc',
       desc: "The file path of library.",
       defaultValue: srcDir
     }, {

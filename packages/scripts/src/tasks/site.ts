@@ -11,11 +11,11 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import path from 'path'
 
 export type Options = {
-  entry: string
+  src: string
   dest: string,
   dev: boolean
   demoBoxPath: string
-  libraryEntry: string,
+  librarySrc: string,
   publicPath?: string,
   port?: number,
   tsConfigFile?: string,
@@ -23,14 +23,14 @@ export type Options = {
 const libraryName = require(getProjectPath('package.json')).name
 export default (options: Options) => {
   const {
-    entry,
+    src,
     dest,
     dev,
     publicPath,
     port,
     tsConfigFile,
     demoBoxPath,
-    libraryEntry
+    librarySrc,
   } = options
 
   const isSourceMap = true
@@ -80,7 +80,7 @@ export default (options: Options) => {
   })
 
   const extraConfig: Webpack.Configuration = {
-    entry: getProjectPath(entry),
+    entry: getProjectPath(src),
     output: {
       path: getProjectPath(dest),
       filename: dev ? 'static/js/[name].js' : 'static/js/[name].[contenthash:8].js',
@@ -93,7 +93,7 @@ export default (options: Options) => {
         // 指定DemoBox的路径
         'demo-box': getProjectPath(demoBoxPath),
         // 项目
-        [libraryName]: getProjectPath(libraryEntry)
+        [libraryName]: getProjectPath(librarySrc)
       }
     },
     optimization: {
@@ -155,15 +155,15 @@ export default (options: Options) => {
     plugins: [
       new CopyWebpackPlugin([
         {
-          from: path.join(getProjectPath(entry), 'public'),
-          to: dev ? 'public' : path.join(dest, 'public'),
+          from: path.join(getProjectPath(src), 'public'),
+          to: dev ? 'public' : path.join(getProjectPath(dest), 'public'),
           ignore: ['.*']
         }
       ]),
       dev && new Webpack.HotModuleReplacementPlugin(),
       new HtmlWebpackPlugin({
         inject: true,
-        template: path.join(entry, 'index.html'),
+        template: path.join(getProjectPath(src), 'index.html'),
         // 传递当前的publicPath给页面
         publicPath,
         ...(

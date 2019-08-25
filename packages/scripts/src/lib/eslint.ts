@@ -23,8 +23,8 @@ export default (src: string, options: Options = {}) => {
     .pipe(gulpEslint({
       fix
     }))
-    .pipe(gulpEslint.failAfterError())
     .pipe(gulpEslint.formatEach())
+    .pipe(gulpEslint.failAfterError())
 
   if (fix) {
     stream = stream.pipe(gulp.dest(dest!))

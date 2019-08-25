@@ -50,7 +50,7 @@ const scripts: Command[] = [
     }, {
       name: 'suffixes',
       desc: "Specify files' suffix to search, split with ',' if multiple suffix",
-      defaultValue: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
+      defaultValue: ['js', 'jsx', 'ts', 'tsx'],
       handler: splitHandler,
     }]
   },

@@ -93,7 +93,8 @@ export default (options: Options) => {
         // 指定DemoBox的路径
         'demo-box': getProjectPath(demoBoxPath),
         // 项目
-        [libraryName]: getProjectPath(librarySrc)
+        [libraryName]: getProjectPath(librarySrc),
+        site: getProjectPath(src)
       }
     },
     optimization: {

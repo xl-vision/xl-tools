@@ -45,7 +45,7 @@ const scripts: Command[] = [
     }, {
       name: 'dirs',
       desc: "base dir to search, split with ',' if multiple dir",
-      defaultValue: [siteDir, srcDir],
+      defaultValue: [srcDir, siteDir],
       handler: splitHandler,
     }, {
       name: 'suffixes',

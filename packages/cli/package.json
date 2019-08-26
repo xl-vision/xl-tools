@@ -1,0 +1,52 @@
+{
+  "name": "@xl-vision/cli",
+  "version": "0.0.1-beta.21",
+  "description": "the tools for build react library",
+  "author": "Rhys Xia",
+  "license": "MIT",
+  "homepage": "https://github.com/xl-vision/xl-tools#readme",
+  "keywords": [
+    "tool",
+    "script",
+    "react",
+    "libaray"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xl-vision/xl-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xl-vision/xl-tools/issues"
+  },
+  "bin": {
+    "xl-cli": "./dist/bin/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "commander": "^2.20.0",
+    "cross-spawn": "^6.0.5",
+    "ejs": "^2.6.2",
+    "fs-extra": "^8.1.0",
+    "inquirer": "^6.4.1",
+    "isbinaryfile": "^4.0.1",
+    "ora": "^3.4.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7",
+    "semver": "^6.2.0"
+  },
+  "devDependencies": {
+    "@types/cross-spawn": "^6.0.0",
+    "@types/ejs": "^2.6.3",
+    "@types/fs-extra": "^8.0.0",
+    "@types/inquirer": "^6.0.3",
+    "@types/request-promise-native": "^1.0.16",
+    "typescript": "^3.5.2"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}

@@ -1,0 +1,104 @@
+@import "../../assets/style/var";
+
+.md {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+
+  pre {
+    code {
+      font-size: 14px;
+      font-family: 'Lucida Console', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+      line-height: 2;
+    }
+  }
+
+  .demobox {
+    margin-bottom: 1rem;
+  }
+
+  &_code_inline {
+    $color: color-level($--color-primary, -$--color-level * 4);
+
+    display: inline-block;
+    height: 1rem;
+    margin: 0 0.2rem;
+    padding: 0.2rem 0.4rem;
+    color: color-yiq($color, $--text-color, $--text-color-light);
+    line-height: 1rem;
+    background-color: $color;
+    border-radius: $--border-radius-sm;
+  }
+
+  &_blockquote {
+    margin: 0;
+    padding: 0.25rem 0 0.25rem 2rem;
+    line-height: 2;
+    background-color: color-level($--color-gray-100, -$--color-level * 2);
+    border-left: 4px solid $--color-primary;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  // &_fence{
+
+  // }
+
+  &_a {
+    color: $--link-color;
+    text-decoration: none;
+    transition: color $--animation-duration ease-in-out, text-decoration $--animation-duration ease-in-out;
+
+    &:hover {
+      color: $--link-color-hover;
+      text-decoration: underline;
+    }
+  }
+
+  &_table-wrapper {
+    box-sizing: border-box;
+    overflow-x: auto;
+  }
+
+  &_table {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    border-collapse: collapse;
+    border-spacing: 0;
+
+    // tbody{
+    //   tr{
+    //     &:nth-child(odd){
+    //       background-color: #d8d8d8;
+    //     }
+    //   }
+    // }
+    td,
+    th {
+      padding: 1rem;
+      border-bottom: 1px solid $--border-color;
+    }
+
+    th {
+      color: color-level($--text-color, -$--color-level * 2);
+      font-weight: bold;
+      white-space: nowrap;
+      text-align: left;
+    }
+
+    td {
+      color: $--text-color;
+    }
+  }
+
+  &_bullet_list,
+  &_ordered_list {
+    li {
+      margin-bottom: 0.5rem;
+    }
+  }
+}

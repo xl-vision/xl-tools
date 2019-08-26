@@ -1,7 +1,6 @@
 import gulp from 'gulp'
 import gulpEslint from 'gulp-eslint'
 import streamToPromise from '../utils/stream2Promise';
-import through2 from 'through2'
 
 export type Options = {
   fix?: boolean
@@ -29,10 +28,6 @@ export default (src: string, options: Options = {}) => {
 
   if (fix) {
     stream = stream.pipe(gulp.dest(dest!))
-  } else {
-    stream = stream.pipe(through2.obj(function (chunk, enc, callback) {
-      callback()
-    }))
   }
 
   return streamToPromise(stream)

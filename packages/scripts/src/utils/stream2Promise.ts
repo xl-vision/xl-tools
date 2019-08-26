@@ -1,10 +1,8 @@
-import { Stream } from "stream";
+import { Stream } from "stream"
+import stp from 'stream-to-promise'
 
 const streamToPromise = (stream: Stream) => {
-  return new Promise<void>((resolve, reject) => {
-    stream.on('error', reject)
-    stream.on('end', resolve)
-  })
+  return stp(stream)
 }
 
 export default (...streams: Stream[])  => {

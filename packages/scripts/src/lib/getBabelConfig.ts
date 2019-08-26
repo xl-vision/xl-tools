@@ -24,7 +24,7 @@ export default (options: Options) => {
     plugins.push([
       require.resolve('styled-jsx/babel'),
       {
-        plugins: ['styled-jsx-plugin-sass']
+        plugins: [require.resolve('styled-jsx-plugin-sass')]
       }
     ])
   }

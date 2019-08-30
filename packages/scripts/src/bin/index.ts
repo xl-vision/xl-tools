@@ -6,10 +6,10 @@ import bundle from '../tasks/bundle'
 import compile2Css from '../tasks/compile2Css'
 import site from '../tasks/site'
 import stylelint from '../tasks/lintStyle'
-import lintEs from '../tasks/lintEs';
+import lintEs from '../tasks/lintEs'
+import getProjectPath from '../utils/getProjectPath'
+import { toCamel } from '../utils/stringUtils'
 import getEntryFile from '../utils/getEntryFile';
-import getProjectPath from '../utils/getProjectPath';
-import { toCamel } from '../utils/stringUtils';
 
 type Command = {
   name: string,
@@ -134,9 +134,13 @@ const scripts: Command[] = [
     script: bundle,
     desc: 'bundle source files',
     options: [{
-      name: 'src',
-      desc: "the source directory",
-      defaultValue: srcDir
+      name: 'entry',
+      desc: "the js entry file",
+      defaultValue: getEntryFile(srcDir, ['js', 'jsx', 'ts', 'tsx'])
+    }, {
+      name: 'styleEntry',
+      desc: "the style entry file",
+      defaultValue: getEntryFile(srcDir, ['css', 'scss', 'sass'])
     }, {
       name: 'dest',
       desc: 'the target directory for bundled files',

@@ -4,10 +4,10 @@ import getProjectPath from '../utils/getProjectPath'
 import merge from 'webpack-merge'
 import runWebpack from '../utils/runWebpack'
 import compileScss from '../lib/compileScss'
-import getEntryFile from '../utils/getEntryFile';
 
 export type Options = {
-  src: string,
+  entry: string,
+  styleEntry: string,
   dest: string
   libraryName: string,
   tsConfigFile?: string
@@ -27,7 +27,8 @@ const build = (
 ) => {
   const {
     libraryName,
-    src,
+    entry,
+    styleEntry,
     dev,
     dest,
     tsConfigFile
@@ -43,7 +44,7 @@ const build = (
   })
 
   const extraConfig: Webpack.Configuration = {
-    entry: getProjectPath(src),
+    entry: getProjectPath(entry),
     output: {
       libraryTarget: 'umd',
       umdNamedDefine: true,
@@ -72,7 +73,7 @@ const build = (
 
   const promise1 = runWebpack(allConfig)
 
-  const promise2 = compileScss(getEntryFile(src, ['css', 'scss', 'sass']), dest, {
+  const promise2 = compileScss(styleEntry, dest, {
     beautify: dev,
     rename: file => {
       file.basename = `index${dev ? '' : '.min'}`

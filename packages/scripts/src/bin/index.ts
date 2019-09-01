@@ -188,7 +188,7 @@ const scripts: Command[] = [
       defaultValue: 3000,
       handler: (value: string) => parseInt(value)
     },{
-      name: 'open',
+      name: 'no-open',
       desc: 'Whether if open in browser, only effect in dev mode.',
       bool: true
     }, {

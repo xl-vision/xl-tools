@@ -180,13 +180,17 @@ const scripts: Command[] = [
       defaultValue: srcDir
     }, {
       name: 'publicPath',
-      desc: 'the public path for deploy',
+      desc: 'The public path for deploy',
       defaultValue: '/'
     }, {
       name: 'port',
-      desc: 'the port for dev server',
+      desc: 'The port for dev server',
       defaultValue: 3000,
       handler: (value: string) => parseInt(value)
+    },{
+      name: 'open',
+      desc: 'Whether if open in browser, only effect in dev mode.',
+      bool: true
     }, {
       name: 'tsConfigFile',
       desc: "The path of tsconfig file, you can not care this option if project does not use Typescript",

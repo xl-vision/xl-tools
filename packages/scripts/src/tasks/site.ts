@@ -19,6 +19,7 @@ export type Options = {
   publicPath?: string,
   port?: number,
   tsConfigFile?: string,
+  open?: boolean
 }
 const libraryName = require(getProjectPath('package.json')).name
 export default (options: Options) => {
@@ -31,6 +32,7 @@ export default (options: Options) => {
     tsConfigFile,
     demoBoxPath,
     librarySrc,
+    open
   } = options
 
   const isSourceMap = true
@@ -199,7 +201,13 @@ export default (options: Options) => {
     hot: true,
     publicPath: '/',
     historyApiFallback: true,
-    port
+    port,
+    open,
+    watchOptions: {
+      ignored: [
+        /node_modules/
+      ]
+    }
   }
 
   const allConfig = merge(config, extraConfig)

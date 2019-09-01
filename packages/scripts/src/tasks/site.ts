@@ -14,7 +14,6 @@ export type Options = {
   src: string
   dest: string,
   dev: boolean
-  demoBoxPath: string
   librarySrc: string,
   publicPath?: string,
   port?: number,
@@ -30,7 +29,6 @@ export default (options: Options) => {
     publicPath,
     port,
     tsConfigFile,
-    demoBoxPath,
     librarySrc,
     open
   } = options
@@ -92,8 +90,6 @@ export default (options: Options) => {
     resolve: {
       extensions: ['.md', '.mdx', '.scss'],
       alias: {
-        // 指定DemoBox的路径
-        'demo-box': getProjectPath(demoBoxPath),
         // 项目
         [libraryName]: getProjectPath(librarySrc),
         site: getProjectPath(src)

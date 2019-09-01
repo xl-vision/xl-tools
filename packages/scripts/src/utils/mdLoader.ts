@@ -8,7 +8,6 @@ import highlight from 'rehype-highlight'
 const DEFAULT_RENDERER = `
 import React from 'react'
 import { mdx } from '@mdx-js/react'
-import DemoBox from 'demo-box'
 `
 
 const parseMd2React = async (source: string, options: any): Promise<string> => {

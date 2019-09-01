@@ -171,10 +171,6 @@ const scripts: Command[] = [
       desc: "The mode for build site, run a server if in deveploment.",
       bool: true,
     }, {
-      name: 'demoBoxPath',
-      desc: "The path of DemoBox component that is for display example.",
-      defaultValue: `${siteDir}/components/demo-box`
-    }, {
       name: 'librarySrc',
       desc: "The file path of library.",
       defaultValue: srcDir

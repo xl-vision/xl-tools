@@ -37,9 +37,9 @@ function runWebpack(config: Webpack.Configuration, devServerConfig?: WebpackDevS
               console.error('error', err)
               return reject(err)
             }
-            console.info(chalk.cyan(`Started server in address: http${isHttps ? 's' : ''}:${HOST === '0.0.0.0' ? 'localhost' : HOST}:${port}`))
+            console.info(chalk.cyan(`Started server in address: http${isHttps ? 's' : ''}://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${port}`))
             if (publicAddress) {
-              console.info(chalk.cyan(`You can also open with public address: http${isHttps ? 's' : ''}:${publicAddress}:${port}\n`))
+              console.info(chalk.cyan(`You can also open with public address: http${isHttps ? 's' : ''}://${publicAddress}:${port}\n`))
             }
             resolve()
           })

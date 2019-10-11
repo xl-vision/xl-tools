@@ -3,7 +3,7 @@ import Webpack from 'webpack'
 import demoBoxPlugin from './demoBoxPlugin'
 import * as babel from '@babel/core'
 import getBabelConfig from '../lib/getBabelConfig'
-import prism from 'rehype-prism'
+import prism from '@mapbox/rehype-prism'
 
 const DEFAULT_RENDERER = `
 import React from 'react'

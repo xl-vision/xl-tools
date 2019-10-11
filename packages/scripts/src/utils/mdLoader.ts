@@ -3,7 +3,7 @@ import Webpack from 'webpack'
 import demoBoxPlugin from './demoBoxPlugin'
 import * as babel from '@babel/core'
 import getBabelConfig from '../lib/getBabelConfig'
-import highlight from 'rehype-highlight'
+import prism from 'rehype-prism'
 
 const DEFAULT_RENDERER = `
 import React from 'react'
@@ -26,7 +26,7 @@ const mdLoader: Webpack.loader.Loader = function (source) {
       demoBoxPlugin
     ],
     rehypePlugins: [
-      highlight
+      prism
     ]
   }
 

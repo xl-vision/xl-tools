@@ -4,16 +4,14 @@ export type Options = {
   isEs?: boolean
 }
 export default (options: Options) => {
-  const { target, isTypescript, isEs = false } = options
+  const { target, isTypescript, isEs = true } = options
   const presets: any[] = [require.resolve('@babel/preset-react')]
   const plugins: any[] = [require.resolve('@babel/plugin-transform-runtime')]
-
-  const modules = (target === 'dist' || target === 'site' || isEs) ? false : 'commonjs'
 
   presets.push([
     require.resolve('@babel/preset-env'),
     {
-      modules
+      modules: isEs ? false : 'commonjs'
     }
   ])
 

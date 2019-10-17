@@ -2,7 +2,6 @@ import webpack from 'webpack'
 import TerserPlugin from 'terser-webpack-plugin'
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import CleanUpStatsPlugin from '../utils/CleanUpStatsPlugin'
-import getBabelConfig from './getBabelConfig'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import getProjectPath from '../utils/getProjectPath';
 import fs from 'fs-extra';

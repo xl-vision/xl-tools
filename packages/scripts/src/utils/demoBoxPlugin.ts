@@ -140,7 +140,9 @@ const attacher: Attacher = function () {
         configFile: false,
         ...getBabelConfig({
           target: 'site',
-          isTypescript: false
+          isTypescript: false,
+          // import转require
+          isEs: false
         })
       }).code
 

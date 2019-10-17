@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/xl-tools-scripts",
-  "version": "0.0.1-beta.37",
+  "version": "0.0.1-beta.39",
   "description": "the tools for build react libaray",
   "author": "Rhys Xia",
   "license": "MIT",
@@ -39,6 +39,7 @@
     "@mdx-js/mdx": "^1.4.0",
     "@mdx-js/react": "^1.4.0",
     "babel-loader": "^8.0.6",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chalk": "^2.4.2",
     "commander": "^3.0.1",

@@ -5,7 +5,7 @@ import streamToPromise from '../utils/stream2Promise'
 import getBabelConfig, { Options as BabelConfigOptions } from './getBabelConfig'
 
 export type Options = {
-  target: BabelConfigOptions['target']
+  isEs: boolean
   tsConfigFile: string
 }
 
@@ -17,7 +17,7 @@ const overwriteConfig = {
 }
 
 export default (from: string | string[], to: string, options: Options) => {
-  const { target, tsConfigFile } = options
+  const { isEs, tsConfigFile } = options
   const tsProject = gulpTypescript.createProject(tsConfigFile, overwriteConfig)
 
   const tsResult = gulp.src(from).pipe(
@@ -34,8 +34,9 @@ export default (from: string | string[], to: string, options: Options) => {
     .pipe(
       gulpBabel({
         ...getBabelConfig({
-          target,
-          isTypescript: true
+          target: 'lib',
+          isTypescript: true,
+          isEs
         })
       })
     )

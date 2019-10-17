@@ -1,17 +1,17 @@
 import gulp from 'gulp'
 import gulpBabel from 'gulp-babel'
 import streamToPromise from '../utils/stream2Promise'
-import getBabelConfig, {Options as BabelConfigOptions} from './getBabelConfig'
+import getBabelConfig from './getBabelConfig'
 
 export type Options = {
-  target: BabelConfigOptions['target']
+  isEs: boolean,
 }
 
 export default (from: string | string[], to: string, options: Options) => {
-  const {target} = options
+  const { isEs } = options
   const stream = gulp.src(from)
     .pipe(gulpBabel({
-      ...getBabelConfig({target, isTypescript: false})
+      ...getBabelConfig({ target: 'lib', isTypescript: false, isEs })
     }))
     .pipe(gulp.dest(to))
   return streamToPromise(stream)

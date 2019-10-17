@@ -77,32 +77,6 @@ export default (options: Options) => {
       rules: [
         // Disable require.ensure as it's not a standard language feature.
         { parser: { requireEnsure: false } },
-        {
-          test: /\.(js|jsx)$/,
-          loader: require.resolve('babel-loader'),
-          exclude: /node_modules/,
-          options: {
-            babelrc: false,
-            configFile: false,
-            ...getBabelConfig({
-              target: 'site',
-              isTypescript: false
-            })
-          }
-        },
-        {
-          test: /\.(ts|tsx)$/,
-          loader: require.resolve('babel-loader'),
-          exclude: /node_modules/,
-          options: {
-            babelrc: false,
-            configFile: false,
-            ...getBabelConfig({
-              target: 'site',
-              isTypescript: true
-            })
-          }
-        }
       ]
     },
     plugins: [

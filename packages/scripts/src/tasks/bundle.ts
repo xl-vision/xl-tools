@@ -4,6 +4,7 @@ import getProjectPath from '../utils/getProjectPath'
 import merge from 'webpack-merge'
 import runWebpack from '../utils/runWebpack'
 import compileScss from '../lib/compileScss'
+import getBabelConfig from '../lib/getBabelConfig'
 
 export type Options = {
   entry: string,
@@ -66,6 +67,36 @@ const build = (
         amd: 'react-dom',
         root: 'ReactDOM'
       }
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx)$/,
+          loader: require.resolve('babel-loader'),
+          exclude: /node_modules/,
+          options: {
+            babelrc: false,
+            configFile: false,
+            ...getBabelConfig({
+              target: 'dist',
+              isTypescript: false
+            })
+          }
+        },
+        {
+          test: /\.(ts|tsx)$/,
+          loader: require.resolve('babel-loader'),
+          exclude: /node_modules/,
+          options: {
+            babelrc: false,
+            configFile: false,
+            ...getBabelConfig({
+              target: 'dist',
+              isTypescript: true
+            })
+          }
+        }
+      ]
     }
   }
 

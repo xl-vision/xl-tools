@@ -9,6 +9,7 @@ import WebpackDevServer from 'webpack-dev-server'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import path from 'path'
+import getBabelConfig from '../lib/getBabelConfig'
 
 export type Options = {
   src: string
@@ -118,6 +119,32 @@ export default (options: Options) => {
     },
     module: {
       rules: [
+        {
+          test: /\.(js|jsx)$/,
+          loader: require.resolve('babel-loader'),
+          exclude: /node_modules/,
+          options: {
+            babelrc: false,
+            configFile: false,
+            ...getBabelConfig({
+              target: 'site',
+              isTypescript: false
+            })
+          }
+        },
+        {
+          test: /\.(ts|tsx)$/,
+          loader: require.resolve('babel-loader'),
+          exclude: /node_modules/,
+          options: {
+            babelrc: false,
+            configFile: false,
+            ...getBabelConfig({
+              target: 'site',
+              isTypescript: true
+            })
+          }
+        },
         {
           test: /\.(md|mdx)$/,
           use: [require.resolve('../utils/mdLoader')]

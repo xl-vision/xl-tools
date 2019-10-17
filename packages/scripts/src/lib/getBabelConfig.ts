@@ -1,16 +1,14 @@
 export type Options = {
-  target: 'lib' | 'es' | 'site'
+  target: 'lib' | 'dist' | 'site'
   isTypescript: boolean
+  isEs?: boolean
 }
 export default (options: Options) => {
-  const { target, isTypescript } = options
+  const { target, isTypescript, isEs = false } = options
   const presets: any[] = [require.resolve('@babel/preset-react')]
   const plugins: any[] = [require.resolve('@babel/plugin-transform-runtime')]
 
-  let modules: any = false
-  if (target === 'lib') {
-    modules = 'commonjs'
-  }
+  const modules = (target === 'dist' || target === 'site' || isEs) ? false : 'commonjs'
 
   presets.push([
     require.resolve('@babel/preset-env'),
@@ -27,6 +25,12 @@ export default (options: Options) => {
         plugins: [require.resolve('styled-jsx-plugin-sass')]
       }
     ])
+  }
+
+  if (target === 'site' || target === 'dist') {
+    plugins.push([require.resolve('babel-plugin-transform-react-remove-prop-types'), {
+      mode: 'remove'
+    }])
   }
 
   if (isTypescript) {

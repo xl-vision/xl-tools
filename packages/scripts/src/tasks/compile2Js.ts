@@ -23,7 +23,7 @@ export default async (options: Options) => {
   for (const suffix of suffixes) {
     const src = [`${dir}/**/*.${suffix}`, '!**/__*__/**']
     if (suffix === 'js' || suffix === 'jsx') {
-      await compileJs(src, dest, {isEs})
+      await compileJs(src, dest, { isEs: !!isEs })
     } else if (suffix === 'ts' || suffix === 'tsx') {
       if (!tsConfigFile) {
         throw new Error("Please provide option 'tsconfigFile'.")
@@ -33,7 +33,7 @@ export default async (options: Options) => {
         throw new Error('Could not find tsconfig file: ' + tsConfigFile)
       }
       await compileTs(src, dest, {
-        isEs,
+        isEs: !!isEs,
         tsConfigFile: tsConfigFilePath
       })
     }

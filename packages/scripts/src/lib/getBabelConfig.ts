@@ -8,7 +8,7 @@ export default (options: Options) => {
   const plugins: any[] = [require.resolve('@babel/plugin-transform-runtime')]
 
   let modules: any = false
-  if (target !== 'es') {
+  if (target === 'lib') {
     modules = 'commonjs'
   }
 

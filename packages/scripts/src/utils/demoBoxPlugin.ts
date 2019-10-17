@@ -139,7 +139,8 @@ const attacher: Attacher = function () {
         babelrc: false,
         configFile: false,
         ...getBabelConfig({
-          target: 'site',
+          // import转为require
+          target: 'lib',
           isTypescript: false
         })
       }).code

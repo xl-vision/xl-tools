@@ -27,7 +27,7 @@ export default (options: Options) => {
 
   if (target === 'site' || target === 'dist') {
     plugins.push([require.resolve('babel-plugin-transform-react-remove-prop-types'), {
-      mode: 'remove'
+      mode: 'wrap'
     }])
   }
 

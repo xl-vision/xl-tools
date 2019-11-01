@@ -97,8 +97,6 @@ export default (options: Options) => {
       }
     },
     optimization: {
-      // 不设置，会导致引入组件缺失，如Row.Col undefined
-      sideEffects: false,
       minimizer: [
         new OptimizeCSSAssetsPlugin({
           cssProcessorOptions: {

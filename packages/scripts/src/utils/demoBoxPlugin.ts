@@ -93,7 +93,7 @@ const attacher: Attacher = function () {
       }
     }
 
-    const desc = render(body.slice(0, i).filter(it => it.trim() !== '').join('\n'))
+    const desc = render(body.slice(0, i).join('\n'))
 
     let j = i + 1
     for (; j < body.length; j++) {
@@ -168,7 +168,7 @@ const attacher: Attacher = function () {
       const escapeCode = '`' + code.replace(/`/g,'\`').replace(/([\$\{\}`])/g, "${'$1'}") + '`'
 
       demo.type = 'jsx'
-      demo.value = `<DemoBox title={${title || `''`}} desc={${desc || `''`}} code={${escapeCode}} preview={<${fnName}/>}>${preview}</DemoBox>`
+      demo.value = `<DemoBox title={${title || `''`}} desc={<>${desc || `''`}</>} code={${escapeCode}} preview={<${fnName}/>}>${preview}</DemoBox>`
     }
     return node
   }

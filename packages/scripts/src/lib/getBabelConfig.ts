@@ -6,7 +6,7 @@ export type Options = {
 export default (options: Options) => {
   const { target, isTypescript, isEs = true } = options
   const presets: any[] = [require.resolve('@babel/preset-react')]
-  const plugins: any[] = [require.resolve('@babel/plugin-transform-runtime')]
+  const plugins: any[] = [require.resolve('@babel/plugin-transform-runtime'), require.resolve('babel-plugin-array-includes')]
 
   presets.push([
     require.resolve('@babel/preset-env'),

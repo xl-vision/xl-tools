@@ -168,7 +168,7 @@ const attacher: Attacher = function () {
       const escapeCode = '`' + code.replace(/`/g,'\`').replace(/([\$\{\}`])/g, "${'$1'}") + '`'
 
       demo.type = 'jsx'
-      demo.value = `<DemoBox title={${title || `''`}} desc={<>${desc || `''`}</>} code={${escapeCode}} preview={<${fnName}/>}>${preview}</DemoBox>`
+      demo.value = `<DemoBox title={${title || `''`}} desc={<>${desc}</>} code={${escapeCode}} preview={<${fnName}/>}>${preview}</DemoBox>`
     }
     return node
   }

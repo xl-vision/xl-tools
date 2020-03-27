@@ -21,7 +21,7 @@ type Command = {
     desc: string,
     bool?: boolean,
     defaultValue?: any,
-    handler?: ((arg1: any, arg2: any) => void) | RegExp
+    handler?: (value: string, previous: any) => any
   }>
 }
 

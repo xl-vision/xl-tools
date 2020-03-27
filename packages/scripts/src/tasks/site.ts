@@ -13,12 +13,12 @@ import getBabelConfig from '../lib/getBabelConfig'
 
 export type Options = {
   src: string
-  dest: string,
+  dest: string
   dev: boolean
-  librarySrc: string,
-  publicPath?: string,
-  port?: number,
-  tsConfigFile?: string,
+  librarySrc: string
+  publicPath?: string
+  port?: number
+  tsConfigFile?: string
   open?: boolean
 }
 const libraryName = require(getProjectPath('package.json')).name
@@ -38,23 +38,27 @@ export default (options: Options) => {
 
   if (dev) {
     if (!port) {
-      throw new Error("Please provide server port.")
+      throw new Error('Please provide server port.')
     }
   } else {
     if (!publicPath) {
-      throw new Error("Please provide public path for deploy.")
+      throw new Error('Please provide public path for deploy.')
     }
   }
 
   const getStyleLoaders = (cssOptions: any, preProcessor?: string) => {
     const loaders = [
-      (dev ? require.resolve('style-loader') : {
-        loader: MiniCssExtractPlugin.loader,
-        options: {}
-      }), {
+      dev
+        ? require.resolve('style-loader')
+        : {
+            loader: MiniCssExtractPlugin.loader,
+            options: {}
+          },
+      {
         loader: require.resolve('css-loader'),
         options: cssOptions
-      }, {
+      },
+      {
         loader: require.resolve('postcss-loader'),
         options: {
           ident: 'postcss',
@@ -84,8 +88,12 @@ export default (options: Options) => {
     entry: getProjectPath(src),
     output: {
       path: getProjectPath(dest),
-      filename: dev ? 'static/js/[name].js' : 'static/js/[name].[contenthash:8].js',
-      chunkFilename: dev ? 'static/js/[name].chunk.js' : 'static/js/[name].[contenthash:8].chunk.js',
+      filename: dev
+        ? 'static/js/[name].js'
+        : 'static/js/[name].[contenthash:8].js',
+      chunkFilename: dev
+        ? 'static/js/[name].chunk.js'
+        : 'static/js/[name].[contenthash:8].chunk.js',
       publicPath: dev ? '/' : publicPath
     },
     resolve: {
@@ -102,9 +110,9 @@ export default (options: Options) => {
           cssProcessorOptions: {
             map: isSourceMap
               ? {
-                inline: false,
-                annotation: true
-              }
+                  inline: false,
+                  annotation: true
+                }
               : false
           }
         })
@@ -190,28 +198,28 @@ export default (options: Options) => {
         template: path.join(getProjectPath(src), 'index.html'),
         // 传递当前的publicPath给页面
         publicPath,
-        ...(
-          dev ? {} : {
-            minify: {
-              removeComments: true,
-              collapseWhitespace: true,
-              removeRedundantAttributes: true,
-              useShortDoctype: true,
-              removeEmptyAttributes: true,
-              removeStyleLinkTypeAttributes: true,
-              keepClosingSlash: true,
-              minifyJS: true,
-              minifyCSS: true,
-              minifyURLs: true
-            }
-          }
-        )
+        ...(dev
+          ? {}
+          : {
+              minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true
+              }
+            })
       }),
       !dev &&
-      new MiniCssExtractPlugin({
-        filename: 'static/css/[name].[contenthash:8].css',
-        chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
-      })
+        new MiniCssExtractPlugin({
+          filename: 'static/css/[name].[contenthash:8].css',
+          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
+        })
     ].filter(Boolean) as any[]
   }
 
@@ -225,9 +233,7 @@ export default (options: Options) => {
     port,
     open,
     watchOptions: {
-      ignored: [
-        /node_modules/
-      ]
+      ignored: [/node_modules/]
     }
   }
 

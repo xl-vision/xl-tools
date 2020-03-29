@@ -3,7 +3,11 @@ import gulpSass from 'gulp-sass'
 import gulpPostcss from 'gulp-postcss'
 import gulpCleanCss from 'gulp-clean-css'
 import gulpRename from 'gulp-rename'
-import streamToPromise from '../utils/stream2Promise';
+import streamToPromise from '../utils/stream2Promise'
+import sass from 'dart-sass'
+
+// @ts-ignore
+gulpSass.compiler = sass
 
 export type Options = {
   beautify?: boolean,

@@ -67,11 +67,16 @@ export default (options: Options) => {
       }
     ].filter(Boolean)
     if (preProcessor) {
+      const options: any = {
+        sourceMap: isSourceMap
+      }
+      if (preProcessor === 'sass-loader') {
+        options.implementation = require('dart-sass')
+        options.fiber = require('fibers')
+      }
       loaders.push({
         loader: require.resolve(preProcessor),
-        options: {
-          sourceMap: isSourceMap
-        }
+        options
       })
     }
     return loaders

@@ -72,7 +72,9 @@ export default (options: Options) => {
       }
       if (preProcessor === 'sass-loader') {
         options.implementation = require('dart-sass')
-        options.fiber = require('fibers')
+        options.sassOptions = {
+          fiber: require('fibers')
+        }
       }
       loaders.push({
         loader: require.resolve(preProcessor),

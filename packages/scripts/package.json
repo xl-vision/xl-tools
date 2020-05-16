@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/xl-tools-scripts",
-  "version": "0.0.1-beta.49",
+  "version": "0.0.1-beta.50",
   "description": "the tools for build react libaray",
   "author": "Rhys Xia",
   "license": "MIT",
@@ -42,13 +42,13 @@
     "babel-plugin-array-includes": "^2.0.3",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "commander": "^5.0.0",
-    "copy-webpack-plugin": "^5.0.4",
+    "copy-webpack-plugin": "^6.0.0",
     "css-loader": "^3.2.0",
     "dart-sass": "^1.25.0",
     "detect-port-alt": "^1.1.6",
-    "eslint": "^6.3.0",
+    "eslint": "^7.0.0",
     "fibers": "^4.0.2",
     "fork-ts-checker-webpack-plugin": "^4.1.2",
     "fs-extra": "^9.0.0",
@@ -72,8 +72,8 @@
     "styled-jsx": "^3.2.5",
     "styled-jsx-plugin-sass": "^1.0.0",
     "stylelint": "^13.2.1",
-    "terser-webpack-plugin": "^2.3.5",
-    "typescript": "^3.5.3",
+    "terser-webpack-plugin": "^3.0.1",
+    "typescript": "^3.9.2",
     "url-loader": "^4.0.0",
     "webpack": "^4.42.1",
     "webpack-dev-server": "^3.8.0",
@@ -97,7 +97,7 @@
     "@types/webpack": "^4.41.8",
     "@types/webpack-dev-server": "^3.10.1",
     "@types/webpack-merge": "^4.1.5",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.2"
   },
   "engines": {
     "node": ">=8.0.0"

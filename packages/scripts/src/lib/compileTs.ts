@@ -2,7 +2,7 @@ import gulp from 'gulp'
 import gulpBabel from 'gulp-babel'
 import gulpTypescript from 'gulp-typescript'
 import streamToPromise from '../utils/stream2Promise'
-import getBabelConfig, { Options as BabelConfigOptions } from './getBabelConfig'
+import getBabelConfig from './getBabelConfig'
 
 export type Options = {
   isEs: boolean
@@ -16,14 +16,15 @@ const overwriteConfig = {
   module: 'ESNext'
 }
 
-export default (from: string | string[], to: string, options: Options) => {
+export default  (from: string | string[], to: string, options: Options) => {
   const { isEs, tsConfigFile } = options
   const tsProject = gulpTypescript.createProject(tsConfigFile, overwriteConfig)
 
   const tsResult = gulp.src(from).pipe(
     tsProject({
-      error(err: Error, ts: any) {
-        throw err
+      error(err: gulpTypescript.reporter.TypeScriptError, ts: any) {
+        reporter.error!(err, ts)
+        process.exit(1)
       },
       finish: reporter.finish
     })

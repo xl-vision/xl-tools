@@ -227,7 +227,7 @@ for (let script of scripts) {
       )
     } catch (e) {
       console.error(chalk.red(`task '${script.name}' is finished with error: `))
-      console.error(e.toString())
+      console.error(e.message)
       process.exit(1)
     }
   })

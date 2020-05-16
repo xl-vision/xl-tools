@@ -195,7 +195,7 @@ export default (options: Options) => {
       new CopyWebpackPlugin(
         {
           patterns: [{
-            from: path.join(getProjectPath(src), 'public', "**/*"),
+            from: path.join(getProjectPath(src), 'public', "**/*").replace(/\\/g, '/'),
             to: dev ? 'public' : path.join(getProjectPath(dest), 'public'),
             toType: 'dir'
           }]

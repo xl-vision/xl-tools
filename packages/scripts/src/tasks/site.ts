@@ -51,9 +51,9 @@ export default (options: Options) => {
       dev
         ? require.resolve('style-loader')
         : {
-            loader: MiniCssExtractPlugin.loader,
-            options: {}
-          },
+          loader: MiniCssExtractPlugin.loader,
+          options: {}
+        },
       {
         loader: require.resolve('css-loader'),
         options: cssOptions
@@ -117,9 +117,9 @@ export default (options: Options) => {
           cssProcessorOptions: {
             map: isSourceMap
               ? {
-                  inline: false,
-                  annotation: true
-                }
+                inline: false,
+                annotation: true
+              }
               : false
           }
         })
@@ -192,13 +192,15 @@ export default (options: Options) => {
       ]
     },
     plugins: [
-      new CopyWebpackPlugin([
+      new CopyWebpackPlugin(
         {
-          from: path.join(getProjectPath(src), 'public'),
-          to: dev ? 'public' : path.join(getProjectPath(dest), 'public'),
-          ignore: ['.*']
+          patterns: [{
+            from: path.join(getProjectPath(src), 'public', "**/*"),
+            to: dev ? 'public' : path.join(getProjectPath(dest), 'public'),
+            toType: 'dir'
+          }]
         }
-      ]),
+      ),
       dev && new Webpack.HotModuleReplacementPlugin(),
       new HtmlWebpackPlugin({
         inject: true,
@@ -208,25 +210,25 @@ export default (options: Options) => {
         ...(dev
           ? {}
           : {
-              minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeRedundantAttributes: true,
-                useShortDoctype: true,
-                removeEmptyAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-                keepClosingSlash: true,
-                minifyJS: true,
-                minifyCSS: true,
-                minifyURLs: true
-              }
-            })
+            minify: {
+              removeComments: true,
+              collapseWhitespace: true,
+              removeRedundantAttributes: true,
+              useShortDoctype: true,
+              removeEmptyAttributes: true,
+              removeStyleLinkTypeAttributes: true,
+              keepClosingSlash: true,
+              minifyJS: true,
+              minifyCSS: true,
+              minifyURLs: true
+            }
+          })
       }),
       !dev &&
-        new MiniCssExtractPlugin({
-          filename: 'static/css/[name].[contenthash:8].css',
-          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
-        })
+      new MiniCssExtractPlugin({
+        filename: 'static/css/[name].[contenthash:8].css',
+        chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
+      })
     ].filter(Boolean) as any[]
   }
 

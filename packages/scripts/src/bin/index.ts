@@ -25,11 +25,11 @@ type Command = {
   }>
 }
 
-const componentDir = 'src'
+const componentDir = 'src/components'
 
 const siteDir = 'site'
 
-const styleDir = 'themes'
+const styleDir = 'src/styles'
 
 const splitHandler = (value: string) => {
   return value.split(',')

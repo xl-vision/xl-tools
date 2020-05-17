@@ -25,9 +25,11 @@ type Command = {
   }>
 }
 
-const srcDir = 'src'
+const componentDir = 'src'
 
 const siteDir = 'site'
+
+const styleDir = 'themes'
 
 const splitHandler = (value: string) => {
   return value.split(',')
@@ -45,7 +47,7 @@ const scripts: Command[] = [
     }, {
       name: 'dirs',
       desc: "base dir to search, split with ',' if multiple dir",
-      defaultValue: [srcDir, siteDir],
+      defaultValue: [componentDir, siteDir],
       handler: splitHandler,
     }, {
       name: 'suffixes',
@@ -65,7 +67,7 @@ const scripts: Command[] = [
     }, {
       name: 'dirs',
       desc: "base dir to search, split with ',' if multiple dir",
-      defaultValue: [srcDir, siteDir],
+      defaultValue: [styleDir, siteDir],
       handler: splitHandler,
     }, {
       name: 'suffixes',
@@ -81,7 +83,7 @@ const scripts: Command[] = [
     options: [{
       name: 'dir',
       desc: 'Base directory to search',
-      defaultValue: srcDir
+      defaultValue: styleDir
     }, {
       name: 'dest',
       desc: 'Destination to compile',
@@ -109,7 +111,7 @@ const scripts: Command[] = [
     options: [{
       name: 'dir',
       desc: 'Base directory to search',
-      defaultValue: srcDir
+      defaultValue: componentDir
     }, {
       name: 'dest',
       desc: 'Destination to compile',
@@ -136,11 +138,11 @@ const scripts: Command[] = [
     options: [{
       name: 'entry',
       desc: "the js entry file",
-      defaultValue: getEntryFile(srcDir, ['js', 'jsx', 'ts', 'tsx'])
+      defaultValue: getEntryFile(componentDir, ['js', 'jsx', 'ts', 'tsx'])
     }, {
       name: 'styleEntry',
       desc: "the style entry file",
-      defaultValue: getEntryFile(srcDir, ['css', 'scss', 'sass'])
+      defaultValue: getEntryFile(styleDir, ['css', 'scss', 'sass'])
     }, {
       name: 'dest',
       desc: 'the target directory for bundled files',
@@ -173,7 +175,7 @@ const scripts: Command[] = [
     }, {
       name: 'librarySrc',
       desc: "The file path of library.",
-      defaultValue: srcDir
+      defaultValue: componentDir
     }, {
       name: 'publicPath',
       desc: 'The public path for deploy',

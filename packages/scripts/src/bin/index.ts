@@ -192,7 +192,7 @@ const scripts: Command[] = [
     }, {
       name: 'tsConfigFile',
       desc: "The path of tsconfig file, you can not care this option if project does not use Typescript",
-      defaultValue: 'tsconfig.json'
+      defaultValue: 'tsconfig.site.json'
     }]
   }
 ]

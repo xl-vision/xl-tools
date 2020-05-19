@@ -1,10 +1,8 @@
 export type Options = {
-  isTypescript?: boolean
   isEs?: boolean
-  removePropTypes?: boolean
 }
 export default (options: Options) => {
-  const { isTypescript, removePropTypes, isEs = true } = options
+  const { isEs = true } = options
   const presets: any[] = [
     [
       require.resolve('@babel/preset-env'),
@@ -15,23 +13,19 @@ export default (options: Options) => {
     require.resolve('@babel/preset-react'),
   ]
 
-  const plugins: any[] = [
-    require.resolve('@babel/plugin-transform-runtime'),
-    require.resolve('babel-plugin-array-includes'),
-  ]
+  const plugins: any[] = [require.resolve('babel-plugin-array-includes')]
 
-  if (isTypescript) {
-    presets.push(require.resolve('@babel/preset-typescript'))
-  }
+  // if (!bundle) {
+  //   plugins.push(require.resolve('@babel/plugin-transform-runtime'))
+  // }
 
-  if (removePropTypes) {
-    plugins.push([
-      require.resolve('babel-plugin-transform-react-remove-prop-types'),
-      {
-        mode: 'remove',
-      },
-    ])
-  }
+  // if (isTypescript) {
+  //   presets.push(require.resolve('@babel/preset-typescript'))
+  // }
+
+  // if (dynamicImport) {
+  //   plugins.push([require.resolve('@babel/plugin-syntax-dynamic-import')])
+  // }
 
   return {
     presets,

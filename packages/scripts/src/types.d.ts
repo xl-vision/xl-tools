@@ -7,6 +7,7 @@ declare module '@babel/core'
 declare module '@mapbox/rehype-prism'
 declare module 'stream-to-promise'
 declare module 'dart-sass'
+declare module '@rollup/plugin-babel'
 // 最新的dts还没有更新
 declare module 'copy-webpack-plugin'
 declare module 'detect-port-alt' {

@@ -33,7 +33,7 @@ export default (options: Options) => {
 
   // 判断tsconfig是否存在
   if (!fs.existsSync(tsConfigFilePath)) {
-    const error = `The tsconfig file '${tsConfigFile}'is not exist, please make sure you have created it.`
+    const error = `The tsconfig file '${tsConfigFile}' does not exist, please make sure you have created it.`
     console.error(chalk.red(error))
     throw new Error(error)
   }
@@ -66,11 +66,8 @@ export default (options: Options) => {
     tsResult.js
       .pipe(
         babel({
-          ...getBabelConfig({
-            target: 'lib',
-            isTypescript: true,
-            isEs,
-          }),
+          // 此时已经是js，不需要启用isTypescript
+          ...getBabelConfig({ isEs }),
         })
       )
       .pipe(gulp.dest(to))

@@ -1,21 +1,20 @@
 import gulp from 'gulp'
-import postcss from 'gulp-postcss'
 import sass from 'gulp-sass'
-import cleanCss from 'gulp-clean-css'
-import rename from 'gulp-rename'
 import soucemaps from 'gulp-sourcemaps'
 import dartSass from 'dart-sass'
 import stream2Promise from '../utils/stream2Promise'
+import handlerCss from '../lib/handleCss'
 
 // @ts-ignore
 sass.compiler = dartSass
 
 export type Options = {
   beautify?: boolean
-  from: string | string[]
+  from: string | Array<string>
   to: string
-  rename?: string | rename.Options | ((path: rename.ParsedPath) => any)
+  rename?: string
   sourceMap?: boolean
+  postcssConfig?: string
 }
 
 export default (options: Options) => {
@@ -24,7 +23,8 @@ export default (options: Options) => {
     to,
     beautify = true,
     sourceMap = false,
-    rename: renameOption = (path) => path,
+    rename,
+    postcssConfig,
   } = options
 
   let stream: NodeJS.ReadWriteStream = gulp.src(from)
@@ -32,16 +32,12 @@ export default (options: Options) => {
   if (sourceMap) {
     stream = stream.pipe(soucemaps.init())
   }
-  stream = stream
-    .pipe(sass())
-    .pipe(postcss())
-    .pipe(
-      cleanCss({
-        level: 2,
-        format: beautify ? 'beautify' : 'none',
-      })
-    )
-    .pipe(rename(renameOption as any))
+  stream = stream.pipe(sass())
+  stream = handlerCss(stream, {
+    beautify,
+    rename,
+    postcssConfig,
+  })
   if (sourceMap) {
     stream = stream.pipe(soucemaps.write())
   }

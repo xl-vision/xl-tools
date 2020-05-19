@@ -1,17 +1,16 @@
 import gulp from 'gulp'
-import postcss from 'gulp-postcss'
 import less from 'gulp-less'
-import cleanCss from 'gulp-clean-css'
-import rename from 'gulp-rename'
 import soucemaps from 'gulp-sourcemaps'
 import stream2Promise from '../utils/stream2Promise'
+import handlerCss from '../lib/handleCss'
 
 export type Options = {
   beautify?: boolean
-  from: string | string[]
+  from: string | Array<string>
   to: string
-  rename?: string | rename.Options | ((path: rename.ParsedPath) => any)
+  rename?: string
   sourceMap?: boolean
+  postcssConfig?: string
 }
 
 export default (options: Options) => {
@@ -20,7 +19,8 @@ export default (options: Options) => {
     to,
     beautify = true,
     sourceMap = false,
-    rename: renameOption = (path) => path,
+    postcssConfig,
+    rename,
   } = options
 
   let stream: NodeJS.ReadWriteStream = gulp.src(from)
@@ -28,16 +28,13 @@ export default (options: Options) => {
   if (sourceMap) {
     stream = stream.pipe(soucemaps.init())
   }
-  stream = stream
-    .pipe(less())
-    .pipe(postcss())
-    .pipe(
-      cleanCss({
-        level: 2,
-        format: beautify ? 'beautify' : 'none',
-      })
-    )
-    .pipe(rename(renameOption as any))
+  stream = stream.pipe(less())
+  stream = handlerCss(stream, {
+    beautify,
+    rename,
+    postcssConfig,
+  })
+
   if (sourceMap) {
     stream = stream.pipe(soucemaps.write())
   }

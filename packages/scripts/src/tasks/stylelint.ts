@@ -4,7 +4,7 @@ import streamToPromise from '../utils/stream2Promise'
 import chalk from 'chalk'
 
 export type Options = {
-  from: string
+  from: string | Array<string>
   to?: string
   configFile?: string
   fix?: boolean

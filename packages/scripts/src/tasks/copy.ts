@@ -2,7 +2,7 @@ import gulp from 'gulp'
 import stream2Promise from '../utils/stream2Promise'
 
 export type Options = {
-  from: string | string[]
+  from: string | Array<string>
   to: string
 }
 

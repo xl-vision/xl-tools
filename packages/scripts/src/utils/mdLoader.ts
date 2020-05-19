@@ -18,7 +18,7 @@ const parseMd2React = async (source: string, options: any): Promise<string> => {
 const mdLoader: Webpack.loader.Loader = function (source) {
   const cb = this.async()
 
-  const prefixContent: string[] = []
+  const prefixContent: Array<string> = []
 
   const options = {
     filepath: this.resourcePath,

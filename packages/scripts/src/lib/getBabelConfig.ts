@@ -1,42 +1,40 @@
 export type Options = {
-  target: 'lib' | 'dist' | 'site'
-  isTypescript: boolean
+  isTypescript?: boolean
   isEs?: boolean
+  removePropTypes?: boolean
 }
 export default (options: Options) => {
-  const { target, isTypescript, isEs = true } = options
-  const presets: any[] = [require.resolve('@babel/preset-react')]
-  const plugins: any[] = [require.resolve('@babel/plugin-transform-runtime'), require.resolve('babel-plugin-array-includes')]
-
-  presets.push([
-    require.resolve('@babel/preset-env'),
-    {
-      modules: isEs ? false : 'commonjs'
-    }
-  ])
-
-  if (target === 'site') {
-    plugins.push(require.resolve('@babel/plugin-syntax-dynamic-import'))
-    plugins.push([
-      require.resolve('styled-jsx/babel'),
+  const { isTypescript, removePropTypes, isEs = true } = options
+  const presets: any[] = [
+    [
+      require.resolve('@babel/preset-env'),
       {
-        plugins: [require.resolve('styled-jsx-plugin-sass')]
-      }
-    ])
-  }
+        modules: isEs ? false : 'commonjs',
+      },
+    ],
+    require.resolve('@babel/preset-react'),
+  ]
 
-  if (target === 'site' || target === 'dist') {
-    plugins.push([require.resolve('babel-plugin-transform-react-remove-prop-types'), {
-      mode: 'wrap'
-    }])
-  }
+  const plugins: any[] = [
+    require.resolve('@babel/plugin-transform-runtime'),
+    require.resolve('babel-plugin-array-includes'),
+  ]
 
   if (isTypescript) {
     presets.push(require.resolve('@babel/preset-typescript'))
   }
 
+  if (removePropTypes) {
+    plugins.push([
+      require.resolve('babel-plugin-transform-react-remove-prop-types'),
+      {
+        mode: 'remove',
+      },
+    ])
+  }
+
   return {
     presets,
-    plugins
+    plugins,
   }
 }

@@ -8,8 +8,7 @@ import getBabelConfig from '../lib/getBabelConfig'
 
 export type Options = {
   entry: string,
-  styleEntry: string,
-  dest: string
+  to: string
   libraryName: string,
   tsConfigFile?: string
 }

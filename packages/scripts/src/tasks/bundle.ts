@@ -1,3 +1,4 @@
+import { soucemaps } from 'gulp-sourcemaps'
 import rollup from 'rollup'
 import babel from '@rollup/plugin-babel'
 import common from '@rollup/plugin-commonjs'
@@ -50,6 +51,7 @@ export default async (options: Options) => {
       }),
       common({
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+        sourceMap,
       }),
       json({
         namedExports: false,
@@ -68,6 +70,8 @@ export default async (options: Options) => {
       babel({
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
         babelHelpers: 'bundled',
+        exclude: 'node_modules/**',
+        sourceMaps: sourceMap ? 'inline' : false,
         plugins,
         presets,
       }),
@@ -75,6 +79,7 @@ export default async (options: Options) => {
   }
 
   const outputOptions1: rollup.OutputOptions = {
+    sourcemap: sourceMap ? 'inline' : false,
     format: 'umd',
     dir: dest,
     file: `${libraryName}.js`,
@@ -85,6 +90,7 @@ export default async (options: Options) => {
     ],
   }
   const outputOptions2: rollup.OutputOptions = {
+    sourcemap: sourceMap ? 'inline' : false,
     format: 'umd',
     dir: dest,
     file: `${libraryName}.min.js`,

@@ -12,7 +12,7 @@ export type Options = {
 export default (stream: NodeJS.ReadWriteStream, options: Options) => {
   const {
     beautify = true,
-    rename: renameOption = (path) => path,
+    rename: renameOption = (path: string) => path,
     postcssConfig,
   } = options
 

@@ -16,11 +16,11 @@ declare module 'detect-port-alt' {
 }
 
 declare module '@mdx-js/react' {
-  import { ComponentType, StyleHTMLAttributes } from 'react'
+  import { ComponentType, ReactNode, Component } from 'react'
 
   type MDXProps = {
-    children: React.ReactNode
-    components?: { [key: string]: React.ComponentType }
+    children: ReactNode
+    components?: { [key: string]: ComponentType }
   }
-  export class MDXProvider extends React.Component<MDXProps> {}
+  export class MDXProvider extends Component<MDXProps> {}
 }

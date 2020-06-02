@@ -222,6 +222,15 @@ export default (options: Options) => {
           exclude: /node_modules/,
           use: [
             {
+              loader: require.resolve('babel-loader'),
+              options: {
+                babelrc: false,
+                configFile: false,
+                plugins: plugins,
+                presets: presets,
+              },
+            },
+            {
               loader: require.resolve('../utils/mdLoader'),
               options: {
                 demoContainer,

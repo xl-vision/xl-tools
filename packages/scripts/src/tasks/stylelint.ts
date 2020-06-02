@@ -1,39 +1,54 @@
 import gulp from 'gulp'
-import gulpStylelint from 'gulp-stylelint'
+import stylelint from 'gulp-stylelint'
 import streamToPromise from '../utils/stream2Promise'
-import chalk from 'chalk'
+import { error } from '../utils/logger'
+import filter from 'gulp-filter'
+import getProjectPath from '../utils/getProjectPath'
+import fs from 'fs-extra'
 
 export type Options = {
   from: string | Array<string>
   to?: string
-  configFile?: string
+  stylelintConfig?: string
   fix?: boolean
 }
 
 export default (options: Options) => {
-  const { from, to, configFile, fix = false } = options
+  const { from, to, stylelintConfig, fix = false } = options
 
   if (fix) {
     if (!to) {
-      const error = `Please provide option 'to' to store files fixed.`
-      console.error(chalk.red(error))
-      throw new Error(error)
+      return error(`Please provide option 'to' to store files fixed.`)
     }
   }
 
-  let stream = gulp.src(from).pipe(
-    gulpStylelint({
-      config: configFile,
-      fix,
-      failAfterError: true,
-      reporters: [
-        {
-          formatter: 'string',
-          console: true,
-        },
-      ],
-    })
-  )
+  let stylelintOptions: any = {
+    failAfterError: true,
+    reporters: [
+      {
+        formatter: 'string',
+        console: true,
+      },
+    ],
+    fix,
+  }
+
+  if (stylelintConfig) {
+    const stylelintConfigPath = getProjectPath(stylelintConfig)
+    if (!fs.statSync(stylelintConfigPath).isFile()) {
+      return error(
+        `The stylelint config file '${stylelintConfig}' dose not exist, please make sure you have created it.`
+      )
+    }
+    stylelintOptions.config = stylelintConfigPath
+  }
+
+  let stream = gulp
+    .src(from)
+    .pipe(
+      filter(['**/*.css', '**/*.scss', '**/*.sass', '**/*.styl', '**/*.less'])
+    )
+    .pipe(stylelint(stylelintOptions))
 
   if (fix) {
     stream = stream.pipe(gulp.dest(to!))

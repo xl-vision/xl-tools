@@ -1,6 +1,7 @@
 import cleanCss from 'gulp-clean-css'
 import rename from 'gulp-rename'
-import createPostcss from './createGulpPostcss'
+import postcss from 'gulp-postcss'
+import getPostcssConfig from '../config/getPostcssConfig'
 
 export type Options = {
   beautify?: boolean
@@ -16,7 +17,7 @@ export default (stream: NodeJS.ReadWriteStream, options: Options) => {
   } = options
 
   stream = stream
-    .pipe(createPostcss(postcssConfig))
+    .pipe(postcss(getPostcssConfig(postcssConfig)))
     .pipe(
       cleanCss({
         level: 2,

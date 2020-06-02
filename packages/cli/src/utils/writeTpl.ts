@@ -22,7 +22,7 @@ function writeTpl<T extends {}>(from: string, to: string, data: T) {
   }
 }
 
-function getFiles(filePath: string): string[] {
+function getFiles(filePath: string): Array<string> {
   if (!fs.lstatSync(filePath).isDirectory()) {
     return [filePath]
   }

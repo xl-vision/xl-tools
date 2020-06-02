@@ -1,34 +1,43 @@
 import gulp from 'gulp'
 import eslint from 'gulp-eslint'
 import streamToPromise from 'stream-to-promise'
-import chalk from 'chalk'
+import { error } from '../utils/logger'
+import filter from 'gulp-filter'
+import fs from 'fs-extra'
+import getProjectPath from '../utils/getProjectPath'
 
 export type Options = {
   from: string | Array<string>
   to?: string
-  configFile?: string
+  eslintConfig?: string
   fix?: boolean
 }
 
 export default (options: Options) => {
-  const { from, configFile, fix = false, to } = options
+  const { from, eslintConfig, fix = false, to } = options
 
   if (fix) {
     if (!to) {
-      const error = `Please provide option 'to' to store files fixed.`
-      console.error(chalk.red(error))
-      throw new Error(error)
+      return error(`Please provide option 'to' to store files fixed.`)
     }
+  }
+
+  let eslintOptions: any = { fix }
+
+  if (eslintConfig) {
+    const eslintConfigPath = getProjectPath(eslintConfig)
+    if (!fs.statSync(eslintConfigPath).isFile()) {
+      return error(
+        `The eslint config file '${eslintConfigPath}' dose not exist, please make sure you have created it.`
+      )
+    }
+    eslintOptions.configFile = eslintConfigPath
   }
 
   let stream = gulp
     .src(from)
-    .pipe(
-      eslint({
-        configFile,
-        fix,
-      })
-    )
+    .pipe(filter(['**/*.js?(x)', '**/*.ts?(x)']))
+    .pipe(eslint(eslintOptions))
     .pipe(eslint.formatEach())
     .pipe(eslint.failAfterError())
 

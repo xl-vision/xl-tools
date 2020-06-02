@@ -1,19 +1,22 @@
 export type Options = {
-  isEs?: boolean
+  es?: boolean
 }
 export default (options: Options) => {
-  const { isEs = true } = options
+  const { es = true } = options
   const presets: any[] = [
     [
       require.resolve('@babel/preset-env'),
       {
-        modules: isEs ? false : 'commonjs',
+        modules: es ? false : 'commonjs',
       },
     ],
     require.resolve('@babel/preset-react'),
   ]
 
-  const plugins: any[] = [require.resolve('babel-plugin-array-includes')]
+  const plugins: any[] = [
+    require.resolve('babel-plugin-array-includes'),
+    require.resolve('@babel/plugin-transform-runtime'),
+  ]
 
   // if (!bundle) {
   //   plugins.push(require.resolve('@babel/plugin-transform-runtime'))

@@ -1,15 +1,25 @@
 import fs from 'fs-extra'
 import getProjectPath from './getProjectPath'
 import path from 'path'
+import { error } from './logger'
 
-export default (dir: string, exts: Array<string>) => {
-  dir = path.isAbsolute(dir) ? dir : getProjectPath(dir)
+export default (filePath: string, exts: Array<string>) => {
+  const fulllFilePath = path.isAbsolute(filePath)
+    ? filePath
+    : getProjectPath(filePath)
+
+  if (fs.statSync(fulllFilePath).isFile()) {
+    return fulllFilePath
+  }
+
   for (let ext of exts) {
-    const file = path.join(dir, `index.${ext}`)
-    if (fs.existsSync(file)) {
+    const file = path.join(fulllFilePath, `index.${ext}`)
+    if (fs.statSync(file).isFile()) {
       return file
     }
   }
 
-  return ''
+  return error(
+    `The entry file '${filePath}' does not exist, please make sure you provide it correctly.`
+  )
 }

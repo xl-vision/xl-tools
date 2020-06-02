@@ -1,48 +1,46 @@
-import { soucemaps } from 'gulp-sourcemaps'
 import rollup from 'rollup'
 import babel from '@rollup/plugin-babel'
 import common from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import resolve from '@rollup/plugin-node-resolve'
 import replace from '@rollup/plugin-replace'
-import getBabelConfig from '../lib/getBabelConfig'
+import getBabelConfig from '../config/getBabelConfig'
 import { terser } from 'rollup-plugin-terser'
 import typescript from 'rollup-plugin-typescript2'
-import getTsconfigPath from '../lib/getTsconfigPath'
+import getTsconfigPath from '../utils/getTsconfigPath'
+import getEntryFile from '../utils/getEntryFile'
+import getProjectPath from '../utils/getProjectPath'
 
 export type Options = {
   entry: string
   dest: string
   libraryName: string
-  tsConfigFile?: string
-  sourceMap?: boolean
+  tsConfig: string
+  sourceMap: boolean
 }
 
 export default async (options: Options) => {
-  const {
-    entry,
-    dest,
-    libraryName,
-    sourceMap = true,
-    tsConfigFile = 'tsconfig.json',
-  } = options
+  const { entry, dest, libraryName, sourceMap, tsConfig } = options
+
+  const destPath = getProjectPath(dest)
+  const entryPath = getEntryFile(entry, ['ts', 'tsx', 'js', 'jsx'])
 
   const isTypescript =
-    entry.lastIndexOf('.ts') > 0 || entry.lastIndexOf('.tsx') > 0
+    entryPath.lastIndexOf('.ts') > 0 || entryPath.lastIndexOf('.tsx') > 0
 
-  let tsconfig = ''
+  let tsconfigPath = ''
   if (isTypescript) {
-    tsconfig = getTsconfigPath(tsConfigFile)
+    tsconfigPath = getTsconfigPath(tsConfig)
   }
 
-  const { plugins, presets } = getBabelConfig({ isEs: true })
+  const { plugins, presets } = getBabelConfig({ es: true })
 
-  if (isTypescript) {
-    presets.push(require.resolve('@babel/preset-typescript'))
-  }
+  // if (isTypescript) {
+  //   presets.push(require.resolve('@babel/preset-typescript'))
+  // }
 
   const inputOptions: rollup.InputOptions = {
-    input: entry,
+    input: entryPath,
     external: ['react', 'react-dom', 'react-native'],
     plugins: [
       resolve({
@@ -58,7 +56,7 @@ export default async (options: Options) => {
       }),
       isTypescript &&
         typescript({
-          tsconfig,
+          tsconfig: tsconfigPath,
           check: true,
           tsconfigOverride: {
             compilerOptions: {
@@ -81,7 +79,7 @@ export default async (options: Options) => {
   const outputOptions1: rollup.OutputOptions = {
     sourcemap: sourceMap ? 'inline' : false,
     format: 'umd',
-    dir: dest,
+    dir: destPath,
     file: `${libraryName}.js`,
     plugins: [
       replace({
@@ -92,7 +90,7 @@ export default async (options: Options) => {
   const outputOptions2: rollup.OutputOptions = {
     sourcemap: sourceMap ? 'inline' : false,
     format: 'umd',
-    dir: dest,
+    dir: destPath,
     file: `${libraryName}.min.js`,
     plugins: [
       babel({

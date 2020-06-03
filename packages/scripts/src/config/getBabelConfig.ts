@@ -23,7 +23,7 @@ export default (options: Options) => {
 
   if (runtime) {
     try {
-      require.resolve('@babel/runtime')
+      require.resolve('@babel/runtime/package.json')
       plugins.push(require.resolve('@babel/plugin-transform-runtime'))
     } catch (err) {
       warn(`The library '@babel/runtime' is not installed, please use 'npm install @babel/runtime --save' to install it.`)

@@ -46,7 +46,7 @@ function runWebpack(
           console.info(
             chalk.cyan(
               `Started server in address: http${isHttps ? 's' : ''}://${
-                HOST === '0.0.0.0' ? 'localhost' : HOST
+              HOST === '0.0.0.0' ? 'localhost' : HOST
               }:${port}`
             )
           )
@@ -54,7 +54,7 @@ function runWebpack(
             console.info(
               chalk.cyan(
                 `You can also open with public address: http${
-                  isHttps ? 's' : ''
+                isHttps ? 's' : ''
                 }://${publicAddress}:${port}\n`
               )
             )
@@ -72,7 +72,7 @@ function runWebpack(
       }
       const info = stats.toJson()
       if (stats.hasErrors()) {
-        console.error('error', info.errors)
+        console.error(info.errors.join('\n'))
         return reject(info.errors)
       }
 

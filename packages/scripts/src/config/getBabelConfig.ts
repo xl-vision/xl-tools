@@ -1,8 +1,12 @@
+import { warn } from "../utils/logger"
+
 export type Options = {
   es?: boolean
+  runtime?: boolean
 }
 export default (options: Options) => {
-  const { es = true } = options
+  const { es, runtime = true } = options
+
   const presets: any[] = [
     [
       require.resolve('@babel/preset-env'),
@@ -15,8 +19,16 @@ export default (options: Options) => {
 
   const plugins: any[] = [
     require.resolve('babel-plugin-array-includes'),
-    require.resolve('@babel/plugin-transform-runtime'),
   ]
+
+  if (runtime) {
+    try {
+      require.resolve('@babel/runtime')
+      plugins.push(require.resolve('@babel/plugin-transform-runtime'))
+    } catch (err) {
+      warn(`The library '@babel/runtime' is not installed, please use 'npm install @babel/runtime --save' to install it.`)
+    }
+  }
 
   // if (!bundle) {
   //   plugins.push(require.resolve('@babel/plugin-transform-runtime'))

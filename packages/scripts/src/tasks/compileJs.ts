@@ -2,7 +2,6 @@ import gulp from 'gulp'
 import babel from 'gulp-babel'
 import getBabelConfig from '../config/getBabelConfig'
 import stream2Promise from '../utils/stream2Promise'
-import filter from 'gulp-filter'
 
 export type Options = {
   from: string | Array<string>
@@ -15,7 +14,6 @@ export default (options: Options) => {
 
   const stream = gulp
     .src(from)
-    .pipe(filter(['**/*.js?(x)']))
     .pipe(babel(getBabelConfig({ es })))
     .pipe(gulp.dest(to))
 

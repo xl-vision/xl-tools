@@ -8,7 +8,7 @@ export default (postcssConfig?: string) => {
   }
 
   const postcssConfigFile = getProjectPath(postcssConfig)
-  if (!fs.statSync(postcssConfigFile).isFile()) {
+  if (!fs.existsSync(postcssConfigFile) || !fs.statSync(postcssConfigFile).isFile()) {
     return error(
       `The postcss config file '${postcssConfigFile}' does not exist, please make sure you have created it.`
     )

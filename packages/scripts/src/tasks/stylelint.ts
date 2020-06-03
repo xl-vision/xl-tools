@@ -2,7 +2,6 @@ import gulp from 'gulp'
 import stylelint from 'gulp-stylelint'
 import streamToPromise from '../utils/stream2Promise'
 import { error } from '../utils/logger'
-import filter from 'gulp-filter'
 import getProjectPath from '../utils/getProjectPath'
 import fs from 'fs-extra'
 
@@ -35,7 +34,7 @@ export default (options: Options) => {
 
   if (stylelintConfig) {
     const stylelintConfigPath = getProjectPath(stylelintConfig)
-    if (!fs.statSync(stylelintConfigPath).isFile()) {
+    if (!fs.existsSync(stylelintConfigPath) || !fs.statSync(stylelintConfigPath).isFile()) {
       return error(
         `The stylelint config file '${stylelintConfig}' dose not exist, please make sure you have created it.`
       )
@@ -45,9 +44,6 @@ export default (options: Options) => {
 
   let stream = gulp
     .src(from)
-    .pipe(
-      filter(['**/*.css', '**/*.scss', '**/*.sass', '**/*.styl', '**/*.less'])
-    )
     .pipe(stylelint(stylelintOptions))
 
   if (fix) {

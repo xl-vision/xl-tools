@@ -31,6 +31,7 @@ export type Options = {
   tsConfig?: string
   postcssConfig?: string
   sourceMap?: boolean
+  demoBox?: string
 }
 export default (options: Options) => {
   const {
@@ -46,6 +47,7 @@ export default (options: Options) => {
     tsConfig,
     postcssConfig,
     sourceMap,
+    demoBox
   } = options
 
   const postcssConfigObject = getPostcssConfig(postcssConfig)
@@ -85,9 +87,9 @@ export default (options: Options) => {
       dev
         ? require.resolve('style-loader')
         : {
-            loader: MiniCssExtractPlugin.loader,
-            options: {},
-          },
+          loader: MiniCssExtractPlugin.loader,
+          options: {},
+        },
       {
         loader: require.resolve('css-loader'),
         options: cssOptions,
@@ -118,7 +120,6 @@ export default (options: Options) => {
     }
     return loaders
   }
-
   const config: webpack.Configuration = {
     entry: entryPath,
     output: {
@@ -135,14 +136,14 @@ export default (options: Options) => {
     bail: !dev,
     devtool: isSourceMap && (dev ? 'cheap-module-source-map' : 'source-map'),
     resolve: {
-      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.md', '.mdx'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.md', '.mdx', '.css', '.scss', '.sass', '.less', '.styl'],
       alias: {
         react: require.resolve('react'),
         'react-dom': require.resolve('react-dom'),
         'react-native': 'react-native-web',
         // 项目
         [libraryName]: libraryEntryPath,
-        '@': getProjectPath('.'),
+        '@': getProjectPath(''),
       },
     },
     optimization: {
@@ -153,9 +154,9 @@ export default (options: Options) => {
           cssProcessorOptions: {
             map: isSourceMap
               ? {
-                  inline: false,
-                  annotation: true,
-                }
+                inline: false,
+                annotation: true,
+              }
               : false,
           },
         }),
@@ -220,6 +221,7 @@ export default (options: Options) => {
         {
           test: /\.(md|mdx)$/,
           exclude: /node_modules/,
+          sideEffects: true,
           use: [
             {
               loader: require.resolve('babel-loader'),
@@ -231,10 +233,15 @@ export default (options: Options) => {
               },
             },
             {
-              loader: require.resolve('../utils/mdLoader'),
+              loader: require.resolve('../mdLoader'),
               options: {
                 demoContainer,
+                demoBox,
                 postcssConfig: postcssConfigObject,
+                cssConfig: {
+                  importLoaders: 2,
+                  sourceMap: isSourceMap,
+                }
               },
             },
           ],
@@ -292,17 +299,17 @@ export default (options: Options) => {
     },
     plugins: [
       !dev &&
-        new webpack.LoaderOptionsPlugin({
-          minimize: true,
-        }),
+      new webpack.LoaderOptionsPlugin({
+        minimize: true,
+      }),
       isTypescript &&
-        new ForkTsCheckerWebpackPlugin({
-          async: dev,
-          useTypescriptIncrementalApi: true,
-          checkSyntacticErrors: true,
-          tsconfig: tsconfigPath,
-          // silent: true
-        }),
+      new ForkTsCheckerWebpackPlugin({
+        async: dev,
+        useTypescriptIncrementalApi: true,
+        checkSyntacticErrors: true,
+        tsconfig: tsconfigPath,
+        // silent: true
+      }),
       new CaseSensitivePathsPlugin(),
       new CleanUpStatsPlugin(),
       // Moment.js is an extremely popular library that bundles large locale files
@@ -331,25 +338,25 @@ export default (options: Options) => {
         ...(dev
           ? {}
           : {
-              minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeRedundantAttributes: true,
-                useShortDoctype: true,
-                removeEmptyAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-                keepClosingSlash: true,
-                minifyJS: true,
-                minifyCSS: true,
-                minifyURLs: true,
-              },
-            }),
+            minify: {
+              removeComments: true,
+              collapseWhitespace: true,
+              removeRedundantAttributes: true,
+              useShortDoctype: true,
+              removeEmptyAttributes: true,
+              removeStyleLinkTypeAttributes: true,
+              keepClosingSlash: true,
+              minifyJS: true,
+              minifyCSS: true,
+              minifyURLs: true,
+            },
+          }),
       }),
       !dev &&
-        new MiniCssExtractPlugin({
-          filename: 'static/css/[name].[contenthash:8].css',
-          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
-        }),
+      new MiniCssExtractPlugin({
+        filename: 'static/css/[name].[contenthash:8].css',
+        chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
+      }),
     ].filter(Boolean) as any[],
   }
 

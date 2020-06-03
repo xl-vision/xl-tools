@@ -1,5 +1,5 @@
-import { prism } from '@mapbox/rehype-prism'
-import { mdx } from '@mdx-js/mdx'
+import prism from '@mapbox/rehype-prism'
+import mdx from '@mdx-js/mdx'
 import webpack from 'webpack'
 import createDemoBoxPlugin from './demoBoxPlugin'
 

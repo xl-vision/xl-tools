@@ -12,7 +12,7 @@ export default (tsConfig?: string) => {
   const tsConfigFilePath = getProjectPath(tsConfig)
 
   // 判断tsconfig是否存在
-  if (!fs.statSync(tsConfigFilePath).isFile()) {
+  if (!fs.existsSync(tsConfigFilePath) || !fs.statSync(tsConfigFilePath).isFile()) {
     return error(
       `The tsconfig file '${tsConfig}' does not exist, please make sure you have created it.`
     )

@@ -6,6 +6,7 @@ import loaderUtils from 'loader-utils'
 import getBabelConfig from '../config/getBabelConfig'
 import { warn } from '../utils/logger'
 import path from 'path'
+import getProjectPath from '../utils/getProjectPath'
 
 const NAME = 'demobox'
 
@@ -29,23 +30,23 @@ const tsBabelOptions = JSON.stringify({
 })
 
 const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
-  const isDev = process.env
-
-  const { demoContainer, postcssConfig } = loaderUtils.getOptions(ctx)
+  const isProduction = ctx.minimize || process.env.NODE_ENV === 'production'
+  const { demoContainer, postcssConfig, cssConfig, demoBox } = loaderUtils.getOptions(ctx)
   const sourceMap = ctx.sourceMap
 
   const postcssOptions = JSON.stringify({ ...postcssConfig, sourceMap })
+  const cssOptions = JSON.stringify(cssConfig)
 
-  const styleLoader = isDev ? 'style-loader' : 'mini-css-extract-plugin/loader'
+  const styleLoader = isProduction ? 'mini-css-extract-plugin/dist/loader' : 'style-loader'
 
   const loaders: any = {
-    jsx: `babel-loader?${babelOptions}!`,
-    tsx: `babel-loader?${tsBabelOptions}!`,
-    css: `${styleLoader}!css-loader!postcss-loader?${postcssOptions}`,
-    scss: `${styleLoader}!css-loader!postcss-loader?${postcssOptions}!sass-loader`,
-    sass: `${styleLoader}!css-loader!postcss-loader?${postcssOptions}!sass-loader`,
-    styl: `${styleLoader}!css-loader!postcss-loader?${postcssOptions}!stylus-loader`,
-    less: `${styleLoader}!css-loader!postcss-loader?${postcssOptions}!less-loader`,
+    jsx: `!babel-loader?${babelOptions}`,
+    tsx: `!babel-loader?${tsBabelOptions}`,
+    css: `!${styleLoader}!css-loader?${cssOptions}!postcss-loader?${postcssOptions}`,
+    scss: `!${styleLoader}!css-loader?${cssOptions}!postcss-loader?${postcssOptions}!sass-loader`,
+    sass: `!${styleLoader}!css-loader?${cssOptions}!postcss-loader?${postcssOptions}!sass-loader`,
+    stylus: `!${styleLoader}!css-loader?${cssOptions}!postcss-loader?${postcssOptions}!stylus-loader`,
+    less: `!${styleLoader}!css-loader?${cssOptions}!postcss-loader?${postcssOptions}!less-loader`,
   }
 
   const attacher: Attacher = function () {
@@ -83,11 +84,11 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
         return
       }
 
-      const codeBlock = getCodeBlock(value, demoContainer)
+      const codeBlock = getCodeBlock(value, demoContainer)!
 
       const exit = this.enterBlock()
 
-      const add = eat(codeBlock?.matchContent)
+      const add = eat(codeBlock.matchContent)
 
       const node = {
         type: NAME,
@@ -107,6 +108,15 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
 
     return function (node: any) {
       const demoboxs = getDemoBox(node)
+
+      if (demoBox && demoboxs.length > 0) {
+        const demoBoxPath = (path.isAbsolute(demoBox) ? demoBox : getProjectPath(demoBox)).replace(/\\/g, '\\\\')
+        node.children.splice(0, 0, {
+          type: 'import',
+          value: `import DemoBox from '${demoBoxPath}'`,
+        })
+      }
+
       for (let i = 0; i < demoboxs.length; i++) {
         const demo = demoboxs[i]
         const title = demo.title as string
@@ -114,17 +124,6 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
         const blocks: Array<Block> = demo.blocks as Array<Block>
         const mergedBlocks = demo.mergedBlocks as Array<Block>
         const startLine = demo.startLine as Number
-        const endLine = demo.endLine as Number
-
-        const requestPath = ``
-
-        let j = 0
-        for (; j < node.children.length; j++) {
-          const child = node.children[j]
-          if (child.type !== 'import' && child.type !== 'export') {
-            break
-          }
-        }
 
         for (const block of mergedBlocks) {
           let importCode = ''
@@ -142,25 +141,17 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
           )
 
           if (block.lang === 'jsx' || block.lang === 'tsx') {
-            importCode = `import Demo${i} from  '${requirePath}'`
+            importCode = `import Demo${i} from ${requirePath}`
           } else {
-            importCode = `import '${requirePath}'`
+            importCode = `import ${requirePath}`
           }
-          node.children.splice(j, 0, {
+          node.children.splice(0, 0, {
             type: 'import',
             value: importCode,
           })
         }
 
-        const transformBlocksObj = blocks.map((it) => ({
-          lang: it.lang,
-          content:
-            '`' +
-            it.content.replace(/`/g, '`').replace(/([\$\{\}`])/g, "${'$1'}") +
-            '`',
-        }))
-
-        const transformBlocks = JSON.stringify(transformBlocksObj)
+        const parsedBlocks = parseBlocks(blocks, render)
 
         const transformTitle = render(title)
         const transformDesc = render(desc)
@@ -168,18 +159,17 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
         demo.type = 'jsx'
         demo.value = `
 <DemoBox
-  title={<>${transformTitle}<>}
+  title={<>${transformTitle}</>}
   desc={<>${transformDesc}</>}
-  blocks={${transformBlocks}}
+  blocks={${parsedBlocks}}
 >
-  {
-    <Demo${i}/>
-  }
+  <Demo${i}/>
 </DemoBox>`
       }
       return node
     }
   }
+  return attacher
 }
 
 export default createDemoBoxPlugin
@@ -197,4 +187,19 @@ const getDemoBox = (node: Node) => {
     }
   }
   return arr
+}
+
+const parseBlocks = (blocks: Array<Block>, render: any) => {
+  let result = '['
+
+  for (const block of blocks) {
+    const lang = block.lang;
+    const content = block.content.replace(/"/g, "\\\"").replace(/\n/g, "\\n");
+    const preview = render(`\`\`\`${lang}\n${block.content}\n\`\`\``);
+    result += `{"lang": "${lang}", "content": "${content}", "preview": <>${preview}</>},`;
+  }
+
+  result += ']'
+
+  return result
 }

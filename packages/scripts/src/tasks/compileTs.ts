@@ -3,7 +3,6 @@ import babel from 'gulp-babel'
 import typescript from 'gulp-typescript'
 import getBabelConfig from '../config/getBabelConfig'
 import getTsconfigPath from '../utils/getTsconfigPath'
-import filter from 'gulp-filter'
 
 const defaultReporter = typescript.reporter.defaultReporter()
 
@@ -31,7 +30,6 @@ export default (options: Options) => {
 
     const tsResult = gulp
       .src(from)
-      .pipe(filter(['**/*.ts?(x)']))
       .pipe(
         tsProject({
           error(err, ts) {

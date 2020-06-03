@@ -1,4 +1,4 @@
-import rollup from 'rollup'
+import * as rollup from 'rollup'
 import babel from '@rollup/plugin-babel'
 import common from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
@@ -10,6 +10,8 @@ import typescript from 'rollup-plugin-typescript2'
 import getTsconfigPath from '../utils/getTsconfigPath'
 import getEntryFile from '../utils/getEntryFile'
 import getProjectPath from '../utils/getProjectPath'
+import path from 'path'
+import { toCamel } from '../utils/stringUtils'
 
 export type Options = {
   entry: string
@@ -33,80 +35,80 @@ export default async (options: Options) => {
     tsconfigPath = getTsconfigPath(tsConfig)
   }
 
-  const { plugins, presets } = getBabelConfig({ es: true })
+  const { plugins, presets } = getBabelConfig({ es: true, runtime: false })
 
   // if (isTypescript) {
   //   presets.push(require.resolve('@babel/preset-typescript'))
   // }
-
-  const inputOptions: rollup.InputOptions = {
-    input: entryPath,
-    external: ['react', 'react-dom', 'react-native'],
-    plugins: [
-      resolve({
-        preferBuiltins: true,
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
-      }),
-      common({
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
-        sourceMap,
-      }),
-      json({
-        namedExports: false,
-      }),
-      isTypescript &&
-        typescript({
+  const getInputOptions = (isDev: boolean) => {
+    const inputOptions: rollup.InputOptions = {
+      input: entryPath,
+      external: ['react', 'react-dom', 'react-native'],
+      plugins: [
+        isTypescript && typescript({
           tsconfig: tsconfigPath,
           check: true,
           tsconfigOverride: {
             compilerOptions: {
               sourceMap,
               declarationMap: false,
+              module: 'ESNext'
             },
           },
         }),
-      babel({
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        babelHelpers: 'bundled',
-        exclude: 'node_modules/**',
-        sourceMaps: sourceMap ? 'inline' : false,
-        plugins,
-        presets,
-      }),
-    ].filter(Boolean),
+        babel({
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+          babelHelpers: 'bundled',
+          exclude: 'node_modules/**',
+          sourceMaps: sourceMap ? 'inline' : false,
+          plugins: plugins.concat(isDev ? [] : [require.resolve('babel-plugin-transform-react-remove-prop-types')]),
+          presets,
+        }),
+        resolve({
+          preferBuiltins: true,
+          extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+        }),
+        common({
+          extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+          sourceMap,
+        }),
+        json({
+          namedExports: false,
+        }),
+        replace({
+          'process.env.NODE_ENV': isDev ? "'development'" : "'production'",
+        }),
+      ].filter(Boolean),
+    }
+
+    return inputOptions
   }
 
-  const outputOptions1: rollup.OutputOptions = {
-    sourcemap: sourceMap ? 'inline' : false,
-    format: 'umd',
-    dir: destPath,
-    file: `${libraryName}.js`,
-    plugins: [
-      replace({
-        'process.env.NODE_ENV': `development`,
-      }),
-    ],
-  }
-  const outputOptions2: rollup.OutputOptions = {
-    sourcemap: sourceMap ? 'inline' : false,
-    format: 'umd',
-    dir: destPath,
-    file: `${libraryName}.min.js`,
-    plugins: [
-      babel({
-        plugins: [
-          require.resolve('babel-plugin-transform-react-remove-prop-types'),
-        ],
-      }),
-      replace({
-        'process.env.NODE_ENV': `production`,
-      }),
-      terser(),
-    ],
+  const name = toCamel(libraryName)
+
+  const getOutputOption = (isDev: boolean) => {
+    const outputOptions: rollup.OutputOptions = {
+      sourcemap: sourceMap,
+      format: 'umd',
+      globals: {
+        react: "React",
+        'react-dom': "ReactDOM",
+        'react-native': "ReactNative",
+      },
+      name,
+      file: path.join(destPath, `${libraryName}${isDev ? '' : '.min'}.js`),
+      plugins: [
+        !isDev && terser(),
+      ].filter(Boolean) as any,
+    }
+
+    return outputOptions
   }
 
-  const bundle = await rollup.rollup(inputOptions)
 
-  await bundle.write(outputOptions1)
-  await bundle.write(outputOptions2)
+  const devBundle = await rollup.rollup(getInputOptions(true))
+  await devBundle.write(getOutputOption(true))
+
+  const prodBundle = await rollup.rollup(getInputOptions(false))
+  await prodBundle.write(getOutputOption(false))
 }

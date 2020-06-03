@@ -2,7 +2,6 @@ import gulp from 'gulp'
 import eslint from 'gulp-eslint'
 import streamToPromise from 'stream-to-promise'
 import { error } from '../utils/logger'
-import filter from 'gulp-filter'
 import fs from 'fs-extra'
 import getProjectPath from '../utils/getProjectPath'
 
@@ -26,7 +25,7 @@ export default (options: Options) => {
 
   if (eslintConfig) {
     const eslintConfigPath = getProjectPath(eslintConfig)
-    if (!fs.statSync(eslintConfigPath).isFile()) {
+    if (!fs.existsSync(eslintConfigPath) || !fs.statSync(eslintConfigPath).isFile()) {
       return error(
         `The eslint config file '${eslintConfigPath}' dose not exist, please make sure you have created it.`
       )
@@ -36,7 +35,6 @@ export default (options: Options) => {
 
   let stream = gulp
     .src(from)
-    .pipe(filter(['**/*.js?(x)', '**/*.ts?(x)']))
     .pipe(eslint(eslintOptions))
     .pipe(eslint.formatEach())
     .pipe(eslint.failAfterError())

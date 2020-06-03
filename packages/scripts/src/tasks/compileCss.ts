@@ -2,7 +2,6 @@ import gulp from 'gulp'
 import soucemaps from 'gulp-sourcemaps'
 import stream2Promise from '../utils/stream2Promise'
 import handlerCss from '../utils/handleCss'
-import filter from 'gulp-filter'
 
 export type Options = {
   from: string | Array<string>
@@ -16,7 +15,7 @@ export type Options = {
 export default (options: Options) => {
   const { from, to, beautify, sourceMap, rename, postcssConfig } = options
 
-  let stream: NodeJS.ReadWriteStream = gulp.src(from).pipe(filter(['**/*.css']))
+  let stream: NodeJS.ReadWriteStream = gulp.src(from)
 
   if (sourceMap) {
     stream = stream.pipe(soucemaps.init())
@@ -27,7 +26,7 @@ export default (options: Options) => {
     postcssConfig,
   })
   if (sourceMap) {
-    stream = stream.pipe(soucemaps.write())
+    stream = stream.pipe(soucemaps.write('.'))
   }
 
   stream = stream.pipe(gulp.dest(to))

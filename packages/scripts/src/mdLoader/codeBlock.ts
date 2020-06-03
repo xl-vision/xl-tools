@@ -15,9 +15,12 @@ export const getCodeBlock = (
 
   let lines = content.split('\n')
 
+  const prevLines = []
+
   while (lines.length > 0 && !lines[0].startsWith(':::')) {
-    lines = lines.slice(1)
+    prevLines.push(lines[0])
     startLine++
+    lines = lines.slice(1)
   }
   if (lines.length === 0) {
     return
@@ -29,7 +32,7 @@ export const getCodeBlock = (
 
   const title = m.groups!.title
 
-  const container = []
+  const matchLines = []
 
   let depth = 0
   for (const line of lines) {
@@ -39,7 +42,7 @@ export const getCodeBlock = (
       depth--
     }
 
-    container.push(line)
+    matchLines.push(line)
 
     if (depth !== 1) {
       break
@@ -50,11 +53,11 @@ export const getCodeBlock = (
     return
   }
 
-  endLine = startLine + container.length - 1
+  endLine = startLine + matchLines.length - 1
 
-  lines = lines.slice(container.length)
+  const nextLines = lines.slice(matchLines.length)
 
-  const body = container.slice(1, container.length - 1)
+  const body = matchLines.slice(1, matchLines.length - 1)
 
   let i = 0
   for (; i < body.length; i++) {
@@ -75,8 +78,9 @@ export const getCodeBlock = (
     startLine,
     endLine,
     mergedBlocks: mergeBlocks(blocks),
-    matchContent: container.join('\n'),
-    nextContent: lines.join('\n'),
+    prevContent: prevLines.join('\n'),
+    matchContent: matchLines.join('\n'),
+    nextContent: nextLines.join('\n'),
   }
 }
 

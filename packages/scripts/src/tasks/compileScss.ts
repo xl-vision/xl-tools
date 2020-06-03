@@ -4,7 +4,6 @@ import soucemaps from 'gulp-sourcemaps'
 import dartSass from 'dart-sass'
 import stream2Promise from '../utils/stream2Promise'
 import handlerCss from '../utils/handleCss'
-import filter from 'gulp-filter'
 
 // @ts-ignore
 sass.compiler = dartSass
@@ -23,7 +22,6 @@ export default (options: Options) => {
 
   let stream: NodeJS.ReadWriteStream = gulp
     .src(from)
-    .pipe(filter(['**/*.scss', '**/*.sass']))
 
   if (sourceMap) {
     stream = stream.pipe(soucemaps.init())
@@ -35,7 +33,7 @@ export default (options: Options) => {
     postcssConfig,
   })
   if (sourceMap) {
-    stream = stream.pipe(soucemaps.write())
+    stream = stream.pipe(soucemaps.write('.'))
   }
 
   stream = stream.pipe(gulp.dest(to))

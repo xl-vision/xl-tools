@@ -1,18 +1,9 @@
 import { rewriteScript, rewriteStyle } from './rewrite'
-import { warn } from './../utils/logger'
-import { getCodeBlock, Block } from './codeBlock'
+import { getCodeBlock } from './codeBlock'
 import webpack from 'webpack'
 import loaderUtils from 'loader-utils'
 import getHash from '../utils/getHash'
 import { error } from '../utils/logger'
-
-type Info = ReturnType<typeof getCodeBlock>
-
-type BlocksMap = {
-  [resourcepath: string]: Array<Info>
-}
-
-const blocksMap: BlocksMap = {}
 
 const selectorLoader: webpack.loader.Loader = function (source) {
   const callback = this.async()!
@@ -20,31 +11,32 @@ const selectorLoader: webpack.loader.Loader = function (source) {
   const resourcePath = this.resourcePath
   const hash = getHash(this.resourcePath)
 
-  const { lang, n, demoContainer } = loaderUtils.getOptions(this)
+  let { lang, n, demoContainer } = loaderUtils.getOptions(this)
 
-  let blocksArray = (blocksMap[resourcePath] =
-    blocksMap[resourcePath] ||
-    getAllMergedBlocks(source as string, demoContainer))
+  n = parseInt(n)
 
-  if (n >= blocksArray.length) {
-    const msg = `file ${resourcePath}: The code blocks length(${blocksArray.length}) does not macth n(${n}).`
+  const info = getNBlocks(n, source as string, demoContainer)
+
+  if (!info) {
+    const msg = `file ${resourcePath}: The ${n+1}th code block does not exist.`
     error(msg)
     return callback(new Error(msg))
   }
-  const info = blocksArray[n]!
-  const block = info.mergedBlocks[lang]
-  if (!block) {
-    warn(
-      `file ${resourcePath}(${info.startLine},0): The language '${lang}' is not supported, please check it again.`
-    )
+  const blocks = info.mergedBlocks.filter(it => it.lang === lang)
+  if (blocks.length === 0) {
+    const msg = `file ${resourcePath}(${info.startLine},0): The language '${lang}' is not supported, please check it again.`
+    error(msg)
+    return callback(new Error(msg))
   }
+
+  const block = blocks[0]
 
   let result = ''
 
   if (lang === 'tsx' || lang === 'jsx') {
-    result = rewriteScript(block.content, hash)
+    result = rewriteScript(block.content, `data-v-${hash}-${n}`)
   } else {
-    result = rewriteStyle(block.content, hash)
+    result = rewriteStyle(block.content, `data-v-${hash}-${n}`)
   }
 
   callback(null, result)
@@ -52,18 +44,18 @@ const selectorLoader: webpack.loader.Loader = function (source) {
 
 export default selectorLoader
 
-const getAllMergedBlocks = (content: string, demoContainer: string) => {
-  const blocksArray: Array<Info> = []
+const getNBlocks = (n: number, content: string, demoContainer: string) => {
   while (true) {
     const info = getCodeBlock(content, demoContainer)
 
     if (!info) {
-      break
+      return
     }
 
+    if (n === 0) {
+      return info
+    }
     content = info.nextContent
-    blocksArray.push(info)
+    n--
   }
-
-  return blocksArray
 }

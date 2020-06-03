@@ -11,6 +11,7 @@ import compileScss from '../tasks/compileScss'
 import compileStylus from '../tasks/compileStylus'
 import compileJs from '../tasks/compileJs'
 import docs from '../tasks/docs'
+import compileTs from '../tasks/compileTs'
 
 type Command = {
   name: string
@@ -52,7 +53,7 @@ const scripts: Command[] = [
         name: 'from',
         desc: "file path to search, split with ',' if multiple paths",
         handler: splitHandler,
-        defaultValue: [srcDir, siteDir],
+        defaultValue: [`${srcDir}/**/*.(ts?(x)|js?(x))`, `${siteDir}/**/*.(ts?(x)|js?(x))`],
       },
       {
         name: 'to',
@@ -78,7 +79,7 @@ const scripts: Command[] = [
         name: 'from',
         desc: "file path to search, split with ',' if multiple paths",
         handler: splitHandler,
-        defaultValue: [srcDir, siteDir],
+        defaultValue: [`${srcDir}/**/*.@(css|scss|sass|less|styl)`, `${siteDir}/**/*.@(css|scss|sass|less|styl)`],
       },
       {
         name: 'to',
@@ -104,12 +105,16 @@ const scripts: Command[] = [
         name: 'from',
         desc: "The file path to search, split with ',' if multiple paths.",
         handler: splitHandler,
-        defaultValue: [srcDir],
+        defaultValue: [`${srcDir}/**/*.css`],
       },
       {
         name: 'to',
         desc: 'The file path to store files fixed.',
         defaultValue: compiledDir,
+      },
+      {
+        name: 'rename',
+        desc: 'Rename the generated file.'
       },
       {
         name: 'no-beautify',
@@ -136,12 +141,16 @@ const scripts: Command[] = [
         name: 'from',
         desc: "The file path to search, split with ',' if multiple paths.",
         handler: splitHandler,
-        defaultValue: [srcDir],
+        defaultValue: [`${srcDir}/**/*.less`],
       },
       {
         name: 'to',
         desc: 'The file path to store files fixed.',
         defaultValue: compiledDir,
+      },
+      {
+        name: 'rename',
+        desc: 'Rename the generated file.'
       },
       {
         name: 'no-beautify',
@@ -168,12 +177,52 @@ const scripts: Command[] = [
         name: 'from',
         desc: "The file path to search, split with ',' if multiple paths.",
         handler: splitHandler,
-        defaultValue: [srcDir],
+        defaultValue: [`${srcDir}/**/*.scss`],
       },
       {
         name: 'to',
         desc: 'The file path to store files fixed.',
         defaultValue: compiledDir,
+      },
+      {
+        name: 'rename',
+        desc: 'Rename the generated file.'
+      },
+      {
+        name: 'no-beautify',
+        desc: 'Whether if or not beautify compiled files.',
+        isBool: true,
+      },
+      {
+        name: 'sourceMap',
+        desc: 'Whether if or not generate sourceMap files.',
+        isBool: true,
+      },
+      {
+        name: 'postcssConfig',
+        desc: 'The postcss config file path.',
+      },
+    ],
+  },
+  {
+    name: 'compile:sass',
+    script: compileScss,
+    desc: 'Compile scss files.',
+    options: [
+      {
+        name: 'from',
+        desc: "The file path to search, split with ',' if multiple paths.",
+        handler: splitHandler,
+        defaultValue: [`${srcDir}/**/*.sass`],
+      },
+      {
+        name: 'to',
+        desc: 'The file path to store files fixed.',
+        defaultValue: compiledDir,
+      },
+      {
+        name: 'rename',
+        desc: 'Rename the generated file.'
       },
       {
         name: 'no-beautify',
@@ -200,12 +249,16 @@ const scripts: Command[] = [
         name: 'from',
         desc: "The file path to search, split with ',' if multiple paths.",
         handler: splitHandler,
-        defaultValue: [srcDir],
+        defaultValue: [`${srcDir}/**/*.styl`],
       },
       {
         name: 'to',
         desc: 'The file path to store files fixed.',
         defaultValue: compiledDir,
+      },
+      {
+        name: 'rename',
+        desc: 'Rename the generated file.'
       },
       {
         name: 'no-beautify',
@@ -232,7 +285,7 @@ const scripts: Command[] = [
         name: 'from',
         desc: "The file path to search, split with ',' if multiple paths.",
         handler: splitHandler,
-        defaultValue: [srcDir],
+        defaultValue: [`${srcDir}/**/*.js?(x)`],
       },
       {
         name: 'to',
@@ -248,14 +301,14 @@ const scripts: Command[] = [
   },
   {
     name: 'compile:ts',
-    script: compileJs,
-    desc: 'Compile js files.',
+    script: compileTs,
+    desc: 'Compile ts files.',
     options: [
       {
         name: 'from',
         desc: "The file path to search, split with ',' if multiple paths.",
         handler: splitHandler,
-        defaultValue: [srcDir],
+        defaultValue: [`${srcDir}/**/*.ts?(x)`],
       },
       {
         name: 'to',
@@ -293,7 +346,7 @@ const scripts: Command[] = [
       {
         name: 'libraryName',
         desc:
-          'Specify library name, default is the camel string transformed name in package.json.',
+          'Specify library name, default is the underlined string transformed name in package.json.',
         defaultValue: libraryName,
       },
       {
@@ -340,6 +393,10 @@ const scripts: Command[] = [
         defaultValue: 'demo',
       },
       {
+        name: 'demoBox',
+        desc: 'The demo box.',
+      },
+      {
         name: 'dev',
         desc: 'The mode for build site, run a server if in deveploment.',
         isBool: true,
@@ -372,7 +429,7 @@ const scripts: Command[] = [
         desc: 'The postcss config file path.',
       },
       {
-        name: 'sourceMap',
+        name: 'no-sourceMap',
         desc: 'Whether if or not generate sourceMap files.',
         isBool: true,
       },

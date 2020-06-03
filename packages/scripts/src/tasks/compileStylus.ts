@@ -3,7 +3,6 @@ import stylus from 'gulp-stylus'
 import soucemaps from 'gulp-sourcemaps'
 import stream2Promise from '../utils/stream2Promise'
 import handlerCss from '../utils/handleCss'
-import filter from 'gulp-filter'
 
 export type Options = {
   beautify: boolean
@@ -19,7 +18,6 @@ export default (options: Options) => {
 
   let stream: NodeJS.ReadWriteStream = gulp
     .src(from)
-    .pipe(filter(['**/*.styl']))
 
   if (sourceMap) {
     stream = stream.pipe(soucemaps.init())
@@ -31,7 +29,7 @@ export default (options: Options) => {
     postcssConfig,
   })
   if (sourceMap) {
-    stream = stream.pipe(soucemaps.write())
+    stream = stream.pipe(soucemaps.write('.'))
   }
 
   stream = stream.pipe(gulp.dest(to))

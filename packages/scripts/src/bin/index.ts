@@ -12,6 +12,7 @@ import compileStylus from '../tasks/compileStylus'
 import compileJs from '../tasks/compileJs'
 import docs from '../tasks/docs'
 import compileTs from '../tasks/compileTs'
+import copy from '../tasks/copy'
 
 type Command = {
   name: string
@@ -45,28 +46,47 @@ const splitHandler = (value: string) => {
 
 const scripts: Command[] = [
   {
+    name: 'copy',
+    script: copy,
+    desc: 'copy',
+    options: [
+      {
+        name: 'from',
+        desc: "The file path to search, split with ',' if multiple paths.",
+        handler: splitHandler,
+      },
+      {
+        name: 'to',
+        desc: 'The file path to store files copyed.',
+      },
+    ],
+  },
+  {
     name: 'lint:es',
     script: eslint,
     desc: 'eslint',
     options: [
       {
         name: 'from',
-        desc: "file path to search, split with ',' if multiple paths",
+        desc: "The file path to search, split with ',' if multiple paths.",
         handler: splitHandler,
-        defaultValue: [`${srcDir}/**/*.(ts?(x)|js?(x))`, `${siteDir}/**/*.(ts?(x)|js?(x))`],
+        defaultValue: [
+          `${srcDir}/**/*.(ts?(x)|js?(x))`,
+          `${siteDir}/**/*.(ts?(x)|js?(x))`,
+        ],
       },
       {
         name: 'to',
-        desc: 'file path to store files fixed',
+        desc: 'The file path to store files fixed.',
       },
       {
         name: 'fix',
-        desc: 'try to fix issues',
+        desc: 'Try to fix issues.',
         isBool: true,
       },
       {
         name: 'eslintConfig',
-        desc: 'the eslint config file path',
+        desc: 'The eslint config file path.',
       },
     ],
   },
@@ -77,22 +97,25 @@ const scripts: Command[] = [
     options: [
       {
         name: 'from',
-        desc: "file path to search, split with ',' if multiple paths",
+        desc: "The file path to search, split with ',' if multiple paths.",
         handler: splitHandler,
-        defaultValue: [`${srcDir}/**/*.@(css|scss|sass|less|styl)`, `${siteDir}/**/*.@(css|scss|sass|less|styl)`],
+        defaultValue: [
+          `${srcDir}/**/*.@(css|scss|sass|less|styl)`,
+          `${siteDir}/**/*.@(css|scss|sass|less|styl)`,
+        ],
       },
       {
         name: 'to',
-        desc: 'file path to store files fixed',
+        desc: 'The file path to store files fixed.',
       },
       {
         name: 'fix',
-        desc: 'try to fix issues',
+        desc: 'Try to fix issues.',
         isBool: true,
       },
       {
         name: 'stylelintConfig',
-        desc: 'the stylelint config file path',
+        desc: 'The stylelint config file path.',
       },
     ],
   },
@@ -114,7 +137,7 @@ const scripts: Command[] = [
       },
       {
         name: 'rename',
-        desc: 'Rename the generated file.'
+        desc: 'Rename the generated file.',
       },
       {
         name: 'no-beautify',
@@ -150,7 +173,7 @@ const scripts: Command[] = [
       },
       {
         name: 'rename',
-        desc: 'Rename the generated file.'
+        desc: 'Rename the generated file.',
       },
       {
         name: 'no-beautify',
@@ -186,7 +209,7 @@ const scripts: Command[] = [
       },
       {
         name: 'rename',
-        desc: 'Rename the generated file.'
+        desc: 'Rename the generated file.',
       },
       {
         name: 'no-beautify',
@@ -222,7 +245,7 @@ const scripts: Command[] = [
       },
       {
         name: 'rename',
-        desc: 'Rename the generated file.'
+        desc: 'Rename the generated file.',
       },
       {
         name: 'no-beautify',
@@ -258,7 +281,7 @@ const scripts: Command[] = [
       },
       {
         name: 'rename',
-        desc: 'Rename the generated file.'
+        desc: 'Rename the generated file.',
       },
       {
         name: 'no-beautify',

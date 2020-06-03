@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/scripts",
-  "version": "0.0.1-beta.63",
+  "version": "0.0.1-beta.64",
   "description": "the tools for build react libaray",
   "author": "Rhys Xia",
   "license": "MIT",
@@ -19,7 +19,7 @@
     "url": "https://github.com/xl-vision/xl-tools/issues"
   },
   "bin": {
-    "@xl-vision/scripts": "./dist/bin/index.js"
+    "xl-scripts": "./dist/bin/index.js"
   },
   "main": "./dist/index.js",
   "scripts": {

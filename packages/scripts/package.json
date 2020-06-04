@@ -22,6 +22,9 @@
     "xl-scripts": "./dist/bin/index.js"
   },
   "main": "./dist/index.js",
+  "files": [
+    "tasks"
+  ],
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build"

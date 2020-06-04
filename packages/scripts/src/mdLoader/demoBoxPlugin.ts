@@ -35,7 +35,8 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
   const sourceMap = ctx.sourceMap
 
   const postcssOptions = JSON.stringify({ ...postcssConfig, sourceMap })
-  const cssOptions = JSON.stringify(cssConfig)
+  const cssOptions = JSON.stringify({ ...cssConfig, importLoaders: 1 })
+  const css2Options = JSON.stringify({ ...cssConfig, importLoaders: 2 })
 
   const styleLoader = isProduction ? 'mini-css-extract-plugin/dist/loader' : 'style-loader'
 
@@ -43,10 +44,10 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
     jsx: `!babel-loader?${babelOptions}`,
     tsx: `!babel-loader?${tsBabelOptions}`,
     css: `!${styleLoader}!css-loader?${cssOptions}!postcss-loader?${postcssOptions}`,
-    scss: `!${styleLoader}!css-loader?${cssOptions}!postcss-loader?${postcssOptions}!sass-loader`,
-    sass: `!${styleLoader}!css-loader?${cssOptions}!postcss-loader?${postcssOptions}!sass-loader`,
-    stylus: `!${styleLoader}!css-loader?${cssOptions}!postcss-loader?${postcssOptions}!stylus-loader`,
-    less: `!${styleLoader}!css-loader?${cssOptions}!postcss-loader?${postcssOptions}!less-loader`,
+    scss: `!${styleLoader}!css-loader?${css2Options}!postcss-loader?${postcssOptions}!sass-loader`,
+    sass: `!${styleLoader}!css-loader?${css2Options}!postcss-loader?${postcssOptions}!sass-loader`,
+    stylus: `!${styleLoader}!css-loader?${css2Options}!postcss-loader?${postcssOptions}!stylus-loader`,
+    less: `!${styleLoader}!css-loader?${css2Options}!postcss-loader?${postcssOptions}!less-loader`,
   }
 
   const attacher: Attacher = function () {

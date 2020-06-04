@@ -64,6 +64,7 @@ export default async (options: Options) => {
           plugins: plugins.concat(isDev ? [] : [require.resolve('babel-plugin-transform-react-remove-prop-types')]),
           presets,
         }),
+        json(),
         resolve({
           preferBuiltins: true,
           extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
@@ -71,9 +72,6 @@ export default async (options: Options) => {
         common({
           extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
           sourceMap,
-        }),
-        json({
-          namedExports: false,
         }),
         replace({
           'process.env.NODE_ENV': isDev ? "'development'" : "'production'",

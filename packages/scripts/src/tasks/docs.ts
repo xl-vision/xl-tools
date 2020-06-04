@@ -120,6 +120,21 @@ export default (options: Options) => {
     }
     return loaders
   }
+
+  const getStyleRules = (test: RegExp, moduleTest: RegExp, cssOptions: any, preProcessor?: string) => {
+    const rule1: webpack.Rule = {
+      test: moduleTest,
+      use: getStyleLoaders({ ...cssOptions, modules: true }, preProcessor),
+    }
+    const rule2: webpack.Rule = {
+      test,
+      exclude: moduleTest,
+      use: getStyleLoaders({ ...cssOptions, modules: false }, preProcessor),
+      sideEffects: true,
+    }
+    return [rule1, rule2]
+  }
+
   const config: webpack.Configuration = {
     entry: entryPath,
     output: {
@@ -239,62 +254,41 @@ export default (options: Options) => {
                 demoBox,
                 postcssConfig: postcssConfigObject,
                 cssConfig: {
-                  importLoaders: 2,
                   sourceMap: isSourceMap,
+                  esModule: true,
                 }
               },
             },
           ],
         },
         {
-          test: /\.css$/,
-          use: getStyleLoaders({
-            importLoaders: 2,
-            sourceMap: isSourceMap,
-          }),
-          sideEffects: true,
-        },
-        {
-          test: /\.(scss|sass)$/,
-          use: getStyleLoaders(
-            {
-              importLoaders: 2,
-              sourceMap: isSourceMap,
-            },
-            'sass-loader'
-          ),
-          sideEffects: true,
-        },
-        {
-          test: /\.less$/,
-          use: getStyleLoaders(
-            {
-              importLoaders: 2,
-              sourceMap: isSourceMap,
-            },
-            'less-loader'
-          ),
-          sideEffects: true,
-        },
-        {
-          test: /\.styl$/,
-          use: getStyleLoaders(
-            {
-              importLoaders: 2,
-              sourceMap: isSourceMap,
-            },
-            'stylus-loader'
-          ),
-          sideEffects: true,
-        },
-        {
           test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
           loader: require.resolve('url-loader'),
           options: {
             limit: 10000,
-            name: 'static/images/[name].[hash:8].[ext]',
+            name: 'static/img/[name].[hash:8].[ext]',
           },
         },
+        ...getStyleRules(/\.css$/, /\.module\.css$/, {
+          importLoaders: 1,
+          sourceMap: isSourceMap,
+          esModule: true
+        }),
+        ...getStyleRules(/\.(scss|sass)$/, /\.module\.(scss|sass)$/, {
+          importLoaders: 2,
+          sourceMap: isSourceMap,
+          esModule: true,
+        }, 'sass-loader'),
+        ...getStyleRules(/\.less$/, /\.module\.less$/, {
+          importLoaders: 2,
+          sourceMap: isSourceMap,
+          esModule: true,
+        }, 'less-loader'),
+        ...getStyleRules(/\.styl$/, /\.module\.styl$/, {
+          importLoaders: 2,
+          sourceMap: isSourceMap,
+          esModule: true,
+        }, 'stylus-loader'),
       ],
     },
     plugins: [

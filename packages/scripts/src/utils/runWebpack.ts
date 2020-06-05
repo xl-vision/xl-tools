@@ -72,8 +72,9 @@ function runWebpack(
       }
       const info = stats.toJson()
       if (stats.hasErrors()) {
-        console.error(info.errors.join('\n'))
-        return reject(info.errors)
+        const msg = info.errors.join('\n')
+        console.error(msg)
+        return reject(new Error(msg))
       }
 
       const buildInfo = stats.toString(

@@ -39,7 +39,7 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
     const postcssOptions = JSON.stringify({ ...postcssConfig, sourceMap, moduleId })
 
     const babelConfig = {
-      plugins: plugins.concat([require.resolve('./babel/scoped'), { moduleId }]),
+      plugins: plugins.concat([[require.resolve('./babel/scoped'), { moduleId }]]),
       presets,
       babelrc: false,
       configFile: false,

@@ -67,14 +67,14 @@ const postcssLoader: webpack.loader.Loader = function (content, map) {
 
   const plugin = scoped(moduleId)
 
-  options.plugins = (options.plugins || []).push(plugin)
+  options.plugins = (options.plugins || []).concat(plugin)
   // souceMap不能遗失
   options.sourceMap = sourceMap
 
   // 设置到ctx中，使得postcss-loader可以读取到配置
-  this.query = options
+  // this.query = options
 
-  return pcl(content, map)
+  return pcl.call({ ...this, query: options }, content, map)
 }
 
 export default postcssLoader

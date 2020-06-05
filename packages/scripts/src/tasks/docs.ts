@@ -124,7 +124,12 @@ export default (options: Options) => {
   const getStyleRules = (test: RegExp, moduleTest: RegExp, cssOptions: any, preProcessor?: string) => {
     const rule1: webpack.Rule = {
       test: moduleTest,
-      use: getStyleLoaders({ ...cssOptions, modules: true }, preProcessor),
+      use: getStyleLoaders({
+        ...cssOptions,
+        modules: true,
+        // 支持驼峰导入
+        localsConvention: 'camelCase'
+      }, preProcessor),
     }
     const rule2: webpack.Rule = {
       test,

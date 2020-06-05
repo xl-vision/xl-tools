@@ -41,7 +41,7 @@ const distDir = 'dist'
 const libraryName = require(getProjectPath('package.json')).name
 
 const splitHandler = (value: string) => {
-  return value.split(',')
+  return value.replace(/^('|")/g, '').replace(/('|")$/g, '').split(',')
 }
 
 const scripts: Command[] = [

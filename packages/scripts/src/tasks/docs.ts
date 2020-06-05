@@ -252,7 +252,8 @@ export default (options: Options) => {
               options: {
                 demoContainer,
                 demoBox,
-                postcssConfig: postcssConfigObject,
+                // 只可以传递文件路径
+                postcssConfigFile: postcssConfig && getProjectPath(postcssConfig),
                 cssConfig: {
                   sourceMap: isSourceMap,
                   esModule: true,

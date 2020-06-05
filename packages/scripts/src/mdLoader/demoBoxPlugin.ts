@@ -7,48 +7,72 @@ import getBabelConfig from '../config/getBabelConfig'
 import { warn } from '../utils/logger'
 import path from 'path'
 import getProjectPath from '../utils/getProjectPath'
+import getModuleId from './getModuleId'
 
 const NAME = 'demobox'
 
-const SELECTOR = path.join(__dirname, 'selector.js')
+const SELECTOR = require.resolve('./selector')
+
+// 这里需要使用修改后的postcss-loader,因为原本的postcss-loader不支持属性传入plugin
+const POSTCSS_LOADER = require.resolve('./postcssLoader')
 
 const { plugins, presets } = getBabelConfig({ es: true })
 
 plugins.push(require.resolve('@babel/plugin-syntax-dynamic-import'))
 
-const babelOptions = JSON.stringify({
-  plugins,
-  presets,
-  babelrc: false,
-  configFile: false,
-})
-const tsBabelOptions = JSON.stringify({
-  plugins,
-  presets: presets.concat(require.resolve('@babel/preset-typescript')),
-  babelrc: false,
-  configFile: false,
-})
-
 const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
   const isProduction = ctx.minimize || process.env.NODE_ENV === 'production'
-  const { demoContainer, postcssConfig, cssConfig, demoBox } = loaderUtils.getOptions(ctx)
   const sourceMap = ctx.sourceMap
 
-  const postcssOptions = JSON.stringify({ ...postcssConfig, sourceMap })
+  const { demoContainer, postcssConfig, cssConfig, demoBox } = loaderUtils.getOptions(ctx)
+
+
   const cssOptions = JSON.stringify({ ...cssConfig, importLoaders: 1 })
   const css2Options = JSON.stringify({ ...cssConfig, importLoaders: 2 })
 
   const styleLoader = isProduction ? 'mini-css-extract-plugin/dist/loader' : 'style-loader'
 
-  const loaders: any = {
-    jsx: `!babel-loader?${babelOptions}`,
-    tsx: `!babel-loader?${tsBabelOptions}`,
-    css: `!${styleLoader}!css-loader?${cssOptions}!postcss-loader?${postcssOptions}`,
-    scss: `!${styleLoader}!css-loader?${css2Options}!postcss-loader?${postcssOptions}!sass-loader`,
-    sass: `!${styleLoader}!css-loader?${css2Options}!postcss-loader?${postcssOptions}!sass-loader`,
-    stylus: `!${styleLoader}!css-loader?${css2Options}!postcss-loader?${postcssOptions}!stylus-loader`,
-    less: `!${styleLoader}!css-loader?${css2Options}!postcss-loader?${postcssOptions}!less-loader`,
+  const getRequestPath = (lang: string, n: number) => {
+
+    const moduleId = getModuleId(ctx.resourcePath, n)
+
+    const postcssOptions = JSON.stringify({ ...postcssConfig, sourceMap, moduleId })
+
+    const babelConfig = {
+      plugins: plugins.concat([require.resolve('./babel/scoped'), { moduleId }]),
+      presets,
+      babelrc: false,
+      configFile: false,
+    }
+
+    const babelOptions = JSON.stringify(babelConfig)
+    const tsBabelOptions = JSON.stringify({
+      ...babelConfig,
+      presets: babelConfig.presets.concat(require.resolve('@babel/preset-typescript')),
+    })
+
+    const loaders: any = {
+      jsx: `!babel-loader?${babelOptions}`,
+      tsx: `!babel-loader?${tsBabelOptions}`,
+      css: `!${styleLoader}!css-loader?${cssOptions}!${POSTCSS_LOADER}?${postcssOptions}`,
+      scss: `!${styleLoader}!css-loader?${css2Options}!${POSTCSS_LOADER}?${postcssOptions}!sass-loader`,
+      sass: `!${styleLoader}!css-loader?${css2Options}!${POSTCSS_LOADER}?${postcssOptions}!sass-loader`,
+      stylus: `!${styleLoader}!css-loader?${css2Options}!${POSTCSS_LOADER}?${postcssOptions}!stylus-loader`,
+      less: `!${styleLoader}!css-loader?${css2Options}!${POSTCSS_LOADER}?${postcssOptions}!less-loader`,
+    }
+    let loader = loaders[lang]
+
+    if (!loader) {
+      return
+    }
+
+    loader += `!${SELECTOR}?lang=${lang}&n=${n}&demoContainer=${demoContainer}!${ctx.resourcePath}`
+
+    const requestPath = loaderUtils.stringifyRequest(ctx, loader)
+
+    return requestPath
   }
+
 
   const attacher: Attacher = function () {
     const Parser = this.Parser
@@ -129,22 +153,18 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
         for (const block of mergedBlocks) {
           let importCode = ''
           const lang = block.lang
-          const loader = loaders[lang]
-          if (!loader) {
+          const requestPath = getRequestPath(lang, i)
+          if (!requestPath) {
             warn(
               `file ${ctx.resourcePath}(${startLine},0): The language '${lang}' is not supported, please check it again.`
             )
             continue
           }
-          const requirePath = loaderUtils.stringifyRequest(
-            ctx,
-            `${loader}!${SELECTOR}?lang=${lang}&n=${i}&demoContainer=${demoContainer}!${ctx.resourcePath}`
-          )
 
           if (block.lang === 'jsx' || block.lang === 'tsx') {
-            importCode = `import Demo${i} from ${requirePath}`
+            importCode = `import Demo${i} from ${requestPath}`
           } else {
-            importCode = `import ${requirePath}`
+            importCode = `import ${requestPath}`
           }
           node.children.splice(0, 0, {
             type: 'import',

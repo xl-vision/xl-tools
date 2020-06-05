@@ -1,15 +1,12 @@
-import { rewriteScript, rewriteStyle } from './rewrite'
 import { getCodeBlock } from './codeBlock'
 import webpack from 'webpack'
 import loaderUtils from 'loader-utils'
-import getHash from '../utils/getHash'
 import { error } from '../utils/logger'
 
 const selectorLoader: webpack.loader.Loader = function (source) {
   const callback = this.async()!
 
   const resourcePath = this.resourcePath
-  const hash = getHash(this.resourcePath)
 
   let { lang, n, demoContainer } = loaderUtils.getOptions(this)
 
@@ -18,7 +15,7 @@ const selectorLoader: webpack.loader.Loader = function (source) {
   const info = getNBlocks(n, source as string, demoContainer)
 
   if (!info) {
-    const msg = `file ${resourcePath}: The ${n+1}th code block does not exist.`
+    const msg = `file ${resourcePath}: The ${n + 1}th code block does not exist.`
     error(msg)
     return callback(new Error(msg))
   }
@@ -31,15 +28,7 @@ const selectorLoader: webpack.loader.Loader = function (source) {
 
   const block = blocks[0]
 
-  let result = ''
-
-  if (lang === 'tsx' || lang === 'jsx') {
-    result = rewriteScript(block.content, `data-v-${hash}-${n}`)
-  } else {
-    result = rewriteStyle(block.content, `data-v-${hash}-${n}`)
-  }
-
-  callback(null, result)
+  callback(null, block.content)
 }
 
 export default selectorLoader

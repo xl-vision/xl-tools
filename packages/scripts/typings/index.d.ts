@@ -14,13 +14,3 @@ declare module 'detect-port-alt' {
   const fn: (port: number, host: string) => Promise<number>
   export default fn
 }
-
-declare module '@mdx-js/react' {
-  import { ComponentType, ReactNode, Component } from 'react'
-
-  type MDXProps = {
-    children: ReactNode
-    components?: { [key: string]: ComponentType }
-  }
-  export class MDXProvider extends Component<MDXProps> {}
-}

@@ -1,4 +1,6 @@
-export type Block = { lang: string; content: string }
+export type Lang = 'ts' | 'tsx' | 'js' | 'jsx' | 'css' | 'scss' | 'sass' | 'less' | 'stylus'
+
+export type Block = { lang: Lang; content: string }
 
 let regex: RegExp
 
@@ -86,7 +88,7 @@ export const getCodeBlock = (
 
 const getBlocks = (lines: Array<string>) => {
   let started = -1
-  let lang = ''
+  let lang: any = ''
   const blocks: Array<Block> = []
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]

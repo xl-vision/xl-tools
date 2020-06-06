@@ -58,8 +58,8 @@ const scripts: Command[] = [
         desc: "The file path to search, split with ',' if multiple paths.",
         handler: splitHandler,
         defaultValue: [
-          `${srcDir}/**/*.(ts?(x)|js?(x))`,
-          `${siteDir}/**/*.(ts?(x)|js?(x))`,
+          `${srcDir}/**/*.@(ts?(x)|js?(x))`,
+          `${siteDir}/**/*.@(ts?(x)|js?(x))`,
         ],
       },
       {

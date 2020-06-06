@@ -1,11 +1,11 @@
-import { warn } from './../utils/logger'
+import { warn, error } from './../utils/logger'
 import { cosmiconfigSync } from 'cosmiconfig'
 import getProjectPath from '../utils/getProjectPath'
 
-export type Command = {
+export interface Command {
   name: string
-  script: (options: any) => Promise<any>
   desc: string
+  script: (options: any) => Promise<any>
   options?: Array<{
     name: string
     required?: boolean
@@ -20,15 +20,15 @@ export type Options = {
   [name: string]: any
 }
 
-export type Script = {
-  name: string
-  options?: Options
-}
-
-export type Config = {
+export type RootTask = {
   name: string
   desc?: string
-  scripts: Script | Array<Script>
+  tasks: Task | Array<Task>
+}
+
+export type Task = {
+  name: string
+  options?: Options
 }
 
 export default (baseCommands: Array<Command>) => {
@@ -48,67 +48,97 @@ export default (baseCommands: Array<Command>) => {
     }
   }
 
-  const config = (Array.isArray(conf) ? conf : [conf]) as Array<Config>
+  const tasks = (Array.isArray(conf) ? conf : [conf]) as Array<RootTask>
 
-  const commands = baseCommands.filter((it) => true)
+  const resultMap = new Map<string, Command>()
+  const initmap = new Map<string, RootTask>()
 
-  for (const command of config) {
-    const name = command.name
-    const desc = command.desc || ''
-    const scripts = Array.isArray(command.scripts)
-      ? command.scripts
-      : [command.scripts]
+  const circleMap = new Map<string, Task>()
 
-    const fns: Array<() => Promise<void>> = []
+  for (const command of baseCommands) {
+    resultMap.set(command.name, command)
+  }
 
-    for (const script of scripts) {
-      const sName = script.name
-      const sOptions = script.options
+  for (const task of tasks) {
+    initmap.set(task.name, task)
+  }
 
-      const targetScripts = baseCommands.filter((it) => it.name === sName)
+  const buildCommand = (name: string) => {
+    if (circleMap.has(name)) {
+      return error(`The task '${name}' has circular dependence.`)
+    }
 
-      if (targetScripts.length === 0) {
-        warn(
-          `The target script '${sName}' in configuration file is not built-in script, please make sure you are configure it correctly.`
-        )
-        continue
-      }
+    const command = resultMap.get(name)
 
-      const targetScript = targetScripts[0]
+    if (command) {
+      return command
+    }
 
-      const targetDefaultOptions: Options = {}
+    const task = initmap.get(name)
 
-      for (const option of targetScript.options || []) {
-        if (option.isBool) {
-          if (option.name.startsWith('no-')) {
-            targetDefaultOptions[option.name.substring(3)] = true
+    if (!task) {
+      return error(`The task '${name}' does not exist.`)
+    }
+
+    // 循环依赖标记
+    circleMap.set(name, task)
+
+    const dependenceTasks = Array.isArray(task.tasks)
+      ? task.tasks
+      : [task.tasks]
+
+    const fns: Array<() => Promise<any>> = []
+
+    for (const dependenceTask of dependenceTasks) {
+      const options: Options = dependenceTask.options || {}
+
+      const defaultOptions: Options = {}
+
+      const dependenceCommand = buildCommand(dependenceTask.name) as Command
+
+      for (const commandOption of dependenceCommand.options || []) {
+        if (commandOption.isBool) {
+          if (commandOption.name.startsWith('no-')) {
+            defaultOptions[commandOption.name.substring(3)] = true
           } else {
-            targetDefaultOptions[option.name] = false
+            defaultOptions[commandOption.name] = false
           }
         } else {
-          targetDefaultOptions[option.name] = option.defaultValue
-
+          defaultOptions[commandOption.name] = commandOption.defaultValue
           // 如果输入值是字符串，尝试用handler处理
-          const sOption = sOptions ? sOptions[option.name] : undefined
-          if (typeof sOption === 'string' && option.handler) {
-            sOptions![option.name] = option.handler(sOption)
+          const option = options[commandOption.name]
+          if (typeof option === 'string' && commandOption.handler) {
+            options[commandOption.name] = commandOption.handler(option)
           }
         }
       }
-      const options = { ...targetDefaultOptions, ...sOptions }
 
-      const fn = () => targetScript.script(options)
+      const mergeOptions = { ...defaultOptions, ...options }
+
+      const fn = () => dependenceCommand.script(mergeOptions)
+
       fns.push(fn)
     }
 
-    const script = () => Promise.all(fns.map((it) => it()))
+    const taskFn = () => Promise.all(fns.map((it) => it()))
 
-    commands.push({
-      name,
-      desc,
-      script,
-    })
+    const newCommand: Command = {
+      name: task.name,
+      desc: task.desc || '',
+      script: taskFn,
+    }
+
+    resultMap.set(name, newCommand)
+
+    // 取消循环依赖标记
+    circleMap.delete(name)
+
+    return newCommand
   }
 
-  return commands
+  for (const taskName of initmap.keys()) {
+    buildCommand(taskName)
+  }
+
+  return resultMap.values()
 }

@@ -1,6 +1,6 @@
 {
   "name": "@xl-vision/scripts",
-  "version": "0.0.1-beta.74",
+  "version": "0.0.1-beta.75",
   "description": "the tools for build react libaray",
   "author": "Rhys Xia",
   "license": "MIT",
@@ -56,6 +56,7 @@
     "chalk": "^4.0.0",
     "commander": "^5.0.0",
     "copy-webpack-plugin": "^6.0.0",
+    "cosmiconfig": "^6.0.0",
     "css-loader": "^3.2.0",
     "dart-sass": "^1.25.0",
     "detect-port-alt": "^1.1.6",

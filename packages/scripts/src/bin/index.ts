@@ -13,20 +13,7 @@ import compileJs from '../tasks/compileJs'
 import docs from '../tasks/docs'
 import compileTs from '../tasks/compileTs'
 import copy from '../tasks/copy'
-
-type Command = {
-  name: string
-  script: (options: any) => Promise<any>
-  desc: string
-  options?: Array<{
-    name: string
-    required?: boolean
-    desc: string
-    isBool?: boolean
-    defaultValue?: any
-    handler?: (value: string, previous: any) => any
-  }>
-}
+import getScriptConfig, { Command } from '../config/getScriptConfig'
 
 const srcDir = 'src'
 
@@ -41,7 +28,7 @@ const distDir = 'dist'
 const libraryName = require(getProjectPath('package.json')).name
 
 const splitHandler = (value: string) => {
-  return value.replace(/^('|")/g, '').replace(/('|")$/g, '').split(',')
+  return value.split(',')
 }
 
 const scripts: Command[] = [
@@ -460,9 +447,11 @@ const scripts: Command[] = [
   },
 ]
 
+const allScripts = getScriptConfig(scripts)
+
 program.version(require('../../package.json').version)
 
-for (let script of scripts) {
+for (let script of allScripts) {
   let exec = program.command(script.name).description(script.desc || '')
   for (const option of script.options || []) {
     let optionStr = `--${option.name}`

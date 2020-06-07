@@ -3,7 +3,18 @@ import webpack from 'webpack'
 import loaderUtils from 'loader-utils'
 import { error } from '../utils/logger'
 
+type Info = ReturnType<typeof getCodeBlock>
+
+const map: Map<
+  string,
+  {
+    content: string
+    infos: Array<Info>
+  }
+> = new Map()
+
 const selectorLoader: webpack.loader.Loader = function (source) {
+  const content = source as string
   const callback = this.async()!
 
   const resourcePath = this.resourcePath
@@ -12,14 +23,28 @@ const selectorLoader: webpack.loader.Loader = function (source) {
 
   n = parseInt(n)
 
-  const info = getNBlocks(n, source as string, demoContainer)
+  let value = map.get(this.resourcePath)
 
-  if (!info) {
-    const msg = `file ${resourcePath}: The ${n + 1}th code block does not exist.`
+  if (!value || value.content !== source) {
+    const infos = getInfos(content, demoContainer)
+    value = {
+      content,
+      infos,
+    }
+    map.set(this.resourcePath, value)
+  }
+
+  const infos = value.infos
+
+  if (!infos.length <= n) {
+    const msg = `file ${resourcePath}: The ${
+      n + 1
+    }th code block does not exist.`
     error(msg)
     return callback(new Error(msg))
   }
-  const blocks = info.mergedBlocks.filter(it => it.lang === lang)
+  const info = infos[n]!
+  const blocks = info.mergedBlocks.filter((it) => it.lang === lang)
   if (blocks.length === 0) {
     const msg = `file ${resourcePath}(${info.startLine},0): The language '${lang}' is not supported, please check it again.`
     error(msg)
@@ -33,18 +58,20 @@ const selectorLoader: webpack.loader.Loader = function (source) {
 
 export default selectorLoader
 
-const getNBlocks = (n: number, content: string, demoContainer: string) => {
+const getInfos = (content: string, demoContainer: string) => {
+  const infos: Array<ReturnType<typeof getCodeBlock>> = []
+
   while (true) {
     const info = getCodeBlock(content, demoContainer)
 
     if (!info) {
-      return
+      break
     }
 
-    if (n === 0) {
-      return info
-    }
+    infos.push(info)
+
     content = info.nextContent
-    n--
   }
+
+  return infos
 }

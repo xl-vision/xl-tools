@@ -25,7 +25,7 @@ const selectorLoader: webpack.loader.Loader = function (source) {
 
   let value = map.get(this.resourcePath)
 
-  if (!value || value.content !== source) {
+  if (!value || value.content !== content) {
     const infos = getInfos(content, demoContainer)
     value = {
       content,
@@ -36,7 +36,7 @@ const selectorLoader: webpack.loader.Loader = function (source) {
 
   const infos = value.infos
 
-  if (!infos.length <= n) {
+  if (infos.length <= n) {
     const msg = `file ${resourcePath}: The ${
       n + 1
     }th code block does not exist.`

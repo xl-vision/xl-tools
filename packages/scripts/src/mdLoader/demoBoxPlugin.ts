@@ -101,7 +101,7 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
         i++
       }
       lines = lines.slice(0, i)
-      return lines.join('\n')
+      return lines.join('\n').trim()
     }
 
     blockTokenizers[NAME] = function (eat: any, value: string) {

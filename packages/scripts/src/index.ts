@@ -4,13 +4,13 @@ import { MDXProvider } from '@mdx-js/react'
 import { Block as BaseBlock } from './mdLoader/codeBlock'
 
 export interface Block extends BaseBlock {
-  preview: React.ReactFragment
+  preview: React.ReactElement
 }
 
 export type DemoBoxProps = {
-  children: React.ReactNode
+  children: React.ReactElement
   desc: React.ReactFragment
-  title: React.ReactFragment
+  title: React.ReactElement
   blocks: Array<Block>
 }
 

@@ -24,22 +24,33 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
   const isProduction = ctx.minimize || process.env.NODE_ENV === 'production'
   const sourceMap = ctx.sourceMap
 
-  const { demoContainer, postcssConfig, cssConfig, demoBox } = loaderUtils.getOptions(ctx)
-
+  const {
+    demoContainer,
+    postcssConfig,
+    cssConfig,
+    demoBox,
+  } = loaderUtils.getOptions(ctx)
 
   const cssOptions = JSON.stringify({ ...cssConfig, importLoaders: 1 })
   const css2Options = JSON.stringify({ ...cssConfig, importLoaders: 2 })
 
-  const styleLoader = isProduction ? 'mini-css-extract-plugin/dist/loader' : 'style-loader'
+  const styleLoader = isProduction
+    ? 'mini-css-extract-plugin/dist/loader'
+    : 'style-loader'
 
   const getRequestPath = (lang: string, n: number) => {
-
     const moduleId = getModuleId(ctx.resourcePath, n)
 
-    const postcssOptions = JSON.stringify({ ...postcssConfig, sourceMap, moduleId })
+    const postcssOptions = JSON.stringify({
+      ...postcssConfig,
+      sourceMap,
+      moduleId,
+    })
 
     const babelConfig = {
-      plugins: plugins.concat([[require.resolve('./babel/scoped'), { moduleId }]]),
+      plugins: plugins.concat([
+        [require.resolve('./babel/scoped'), { moduleId }],
+      ]),
       presets,
       babelrc: false,
       configFile: false,
@@ -48,7 +59,9 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
     const babelOptions = JSON.stringify(babelConfig)
     const tsBabelOptions = JSON.stringify({
       ...babelConfig,
-      presets: babelConfig.presets.concat(require.resolve('@babel/preset-typescript')),
+      presets: babelConfig.presets.concat(
+        require.resolve('@babel/preset-typescript')
+      ),
     })
 
     const loaders: any = {
@@ -72,7 +85,6 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
 
     return requestPath
   }
-
 
   const attacher: Attacher = function () {
     const Parser = this.Parser
@@ -135,7 +147,10 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
       const demoboxs = getDemoBox(node)
 
       if (demoBox && demoboxs.length > 0) {
-        const demoBoxPath = (path.isAbsolute(demoBox) ? demoBox : getProjectPath(demoBox)).replace(/\\/g, '\\\\')
+        const demoBoxPath = (path.isAbsolute(demoBox)
+          ? demoBox
+          : getProjectPath(demoBox)
+        ).replace(/\\/g, '\\\\')
         node.children.splice(0, 0, {
           type: 'import',
           value: `import DemoBox from '${demoBoxPath}'`,
@@ -180,7 +195,7 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
         demo.type = 'jsx'
         demo.value = `
 <DemoBox
-  title={<>${transformTitle}</>}
+  title={${transformTitle}}
   desc={<>${transformDesc}</>}
   blocks={${parsedBlocks}}
 >
@@ -214,10 +229,10 @@ const parseBlocks = (blocks: Array<Block>, render: any) => {
   let result = '['
 
   for (const block of blocks) {
-    const lang = block.lang;
-    const content = block.content.replace(/"/g, "\\\"").replace(/\n/g, "\\n");
-    const preview = render(`\`\`\`${lang}\n${block.content}\n\`\`\``);
-    result += `{"lang": "${lang}", "content": "${content}", "preview": <>${preview}</>},`;
+    const lang = block.lang
+    const content = block.content.replace(/"/g, '\\"').replace(/\n/g, '\\n')
+    const preview = render(`\`\`\`${lang}\n${block.content}\n\`\`\``)
+    result += `{"lang": "${lang}", "content": "${content}", "preview": ${preview}},`
   }
 
   result += ']'

@@ -53,12 +53,6 @@ export default (options: Options) => {
   const postcssConfigObject = getPostcssConfig(postcssConfig)
 
   const entryPath = getEntryFile(entry, ['ts', 'tsx', 'js', 'jsx'])
-  const libraryEntryPath = getEntryFile(libraryEntry, [
-    'ts',
-    'tsx',
-    'js',
-    'jsx',
-  ])
 
   const isTypescript =
     entryPath.lastIndexOf('.ts') > 0 || entryPath.lastIndexOf('.tsx') > 0
@@ -87,9 +81,9 @@ export default (options: Options) => {
       dev
         ? require.resolve('style-loader')
         : {
-            loader: MiniCssExtractPlugin.loader,
-            options: {},
-          },
+          loader: MiniCssExtractPlugin.loader,
+          options: {},
+        },
       {
         loader: require.resolve('css-loader'),
         options: cssOptions,
@@ -185,7 +179,7 @@ export default (options: Options) => {
         'react-dom': require.resolve('react-dom'),
         'react-native': 'react-native-web',
         // 项目
-        [libraryName]: libraryEntryPath,
+        [libraryName]: getProjectPath(libraryEntry),
         '@': getProjectPath(''),
       },
     },
@@ -197,9 +191,9 @@ export default (options: Options) => {
           cssProcessorOptions: {
             map: isSourceMap
               ? {
-                  inline: false,
-                  annotation: true,
-                }
+                inline: false,
+                annotation: true,
+              }
               : false,
           },
         }),
@@ -338,17 +332,17 @@ export default (options: Options) => {
     },
     plugins: [
       !dev &&
-        new webpack.LoaderOptionsPlugin({
-          minimize: true,
-        }),
+      new webpack.LoaderOptionsPlugin({
+        minimize: true,
+      }),
       isTypescript &&
-        new ForkTsCheckerWebpackPlugin({
-          async: dev,
-          useTypescriptIncrementalApi: true,
-          checkSyntacticErrors: true,
-          tsconfig: tsconfigPath,
-          // silent: true
-        }),
+      new ForkTsCheckerWebpackPlugin({
+        async: dev,
+        useTypescriptIncrementalApi: true,
+        checkSyntacticErrors: true,
+        tsconfig: tsconfigPath,
+        // silent: true
+      }),
       new CaseSensitivePathsPlugin(),
       new CleanUpStatsPlugin(),
       // Moment.js is an extremely popular library that bundles large locale files
@@ -377,25 +371,25 @@ export default (options: Options) => {
         ...(dev
           ? {}
           : {
-              minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeRedundantAttributes: true,
-                useShortDoctype: true,
-                removeEmptyAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-                keepClosingSlash: true,
-                minifyJS: true,
-                minifyCSS: true,
-                minifyURLs: true,
-              },
-            }),
+            minify: {
+              removeComments: true,
+              collapseWhitespace: true,
+              removeRedundantAttributes: true,
+              useShortDoctype: true,
+              removeEmptyAttributes: true,
+              removeStyleLinkTypeAttributes: true,
+              keepClosingSlash: true,
+              minifyJS: true,
+              minifyCSS: true,
+              minifyURLs: true,
+            },
+          }),
       }),
       !dev &&
-        new MiniCssExtractPlugin({
-          filename: 'static/css/[name].[contenthash:8].css',
-          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
-        }),
+      new MiniCssExtractPlugin({
+        filename: 'static/css/[name].[contenthash:8].css',
+        chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
+      }),
     ].filter(Boolean) as any[],
   }
 

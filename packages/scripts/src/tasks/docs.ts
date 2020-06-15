@@ -25,8 +25,6 @@ export type Alias = {
 export type Options = {
   entry: string
   dest: string
-  libraryEntry: string
-  libraryName: string
   demoContainer: string
   dev: boolean
   publicPath: string
@@ -42,8 +40,6 @@ export default (options: Options) => {
   const {
     entry,
     dest,
-    libraryEntry,
-    libraryName,
     demoContainer,
     dev,
     publicPath,
@@ -193,7 +189,6 @@ export default (options: Options) => {
         'react-dom': require.resolve('react-dom'),
         'react-native': 'react-native-web',
         // 项目
-        [libraryName]: getProjectPath(libraryEntry),
         '@': getProjectPath(''),
         ...handlerAlias
       },

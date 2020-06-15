@@ -389,16 +389,6 @@ const scripts: Command[] = [
         defaultValue: docsDir,
       },
       {
-        name: 'libraryEntry',
-        desc: 'The entry path of library.',
-        defaultValue: srcDir,
-      },
-      {
-        name: 'libraryName',
-        desc: 'The library name.',
-        defaultValue: libraryName,
-      },
-      {
         // --alias a1=a/b/c,a2=a/d/c
         name: 'alias',
         desc: 'The alias for webpack',

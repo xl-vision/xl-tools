@@ -10,10 +10,11 @@ import compileLess from '../tasks/compileLess'
 import compileScss from '../tasks/compileScss'
 import compileStylus from '../tasks/compileStylus'
 import compileJs from '../tasks/compileJs'
-import docs from '../tasks/docs'
+import docs, { Alias } from '../tasks/docs'
 import compileTs from '../tasks/compileTs'
 import copy from '../tasks/copy'
 import getScriptConfig, { Command } from '../config/getScriptConfig'
+import { error, warn } from '../utils/logger'
 
 const srcDir = 'src'
 
@@ -396,6 +397,24 @@ const scripts: Command[] = [
         name: 'libraryName',
         desc: 'The library name.',
         defaultValue: libraryName,
+      },
+      {
+        // --alias a1=a/b/c,a2=a/d/c
+        name: 'alias',
+        desc: 'The alias for webpack',
+        handler: (value) => {
+          const items = value.split(',').map(it => it.trim())
+          const alias: Alias = {}
+          for (const item of items) {
+            const keyValue = item.split('=')
+            if (keyValue.length !== 2) {
+              warn(`The alias '${item}' is not expected.`)
+              continue
+            }
+            alias[keyValue[0]] = keyValue[1]
+          }
+          return alias
+        }
       },
       {
         name: 'demoContainer',

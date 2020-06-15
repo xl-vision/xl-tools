@@ -18,6 +18,10 @@ import CleanUpStatsPlugin from '../utils/CleanUpStatsPlugin'
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import getPostcssConfig from '../config/getPostcssConfig'
 
+export type Alias = {
+  [name: string]: string
+}
+
 export type Options = {
   entry: string
   dest: string
@@ -32,6 +36,7 @@ export type Options = {
   postcssConfig?: string
   sourceMap?: boolean
   demoBox?: string
+  alias?: Alias
 }
 export default (options: Options) => {
   const {
@@ -48,7 +53,16 @@ export default (options: Options) => {
     postcssConfig,
     sourceMap,
     demoBox,
+    alias = {}
   } = options
+
+  // 处理别名，将相对路径转绝对路径
+  const handlerAlias: Alias = {}
+
+  for (const name of Object.keys(alias)) {
+    const value = getProjectPath(alias[name])
+    handlerAlias[name] = value
+  }
 
   const postcssConfigObject = getPostcssConfig(postcssConfig)
 
@@ -181,6 +195,7 @@ export default (options: Options) => {
         // 项目
         [libraryName]: getProjectPath(libraryEntry),
         '@': getProjectPath(''),
+        ...handlerAlias
       },
     },
     optimization: {

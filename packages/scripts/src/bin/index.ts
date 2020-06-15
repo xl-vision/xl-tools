@@ -14,7 +14,7 @@ import docs, { Alias } from '../tasks/docs'
 import compileTs from '../tasks/compileTs'
 import copy from '../tasks/copy'
 import getScriptConfig, { Command } from '../config/getScriptConfig'
-import { error, warn } from '../utils/logger'
+import { warn } from '../utils/logger'
 
 const srcDir = 'src'
 

@@ -1,5 +1,5 @@
 export const toCamel = (str: string, firstUpper = false) => {
-  let ret = str.replace(/-(\w)/g, function (all, letter) {
+  let ret = str.replace(/-(\w)/g, function (_all, letter) {
     return letter.toUpperCase()
   })
 

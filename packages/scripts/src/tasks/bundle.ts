@@ -82,7 +82,7 @@ export default async (options: Options) => {
     return inputOptions
   }
 
-  const name = toCamel(libraryName)
+  const name = toCamel(libraryName, true)
 
   const getOutputOption = (isDev: boolean) => {
     const outputOptions: rollup.OutputOptions = {

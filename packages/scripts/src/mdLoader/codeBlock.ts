@@ -15,7 +15,7 @@ export const getCodeBlock = (
   let startLine = 1
   let endLine = 0
 
-  let lines = content.split('\n')
+  let lines = content.split(/\r?\n/)
 
   const prevLines = []
 

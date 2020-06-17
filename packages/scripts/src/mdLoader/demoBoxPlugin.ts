@@ -195,7 +195,7 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
         demo.type = 'jsx'
         demo.value = `
 <DemoBox
-  title={${transformTitle}}
+  title={<>${transformTitle}</>}
   desc={<>${transformDesc}</>}
   blocks={${parsedBlocks}}
 >

@@ -32,7 +32,7 @@ export type Task = {
 }
 
 export default (baseCommands: Array<Command>) => {
-  const dir = getProjectPath('')
+  const dir = getProjectPath()
   const result = cosmiconfigSync('xl-script').search(dir)
 
   let conf: any

@@ -189,7 +189,7 @@ export default (options: Options) => {
         'react-dom': require.resolve('react-dom'),
         'react-native': 'react-native-web',
         // 项目
-        '@': getProjectPath(''),
+        '@': getProjectPath(),
         ...handlerAlias
       },
     },

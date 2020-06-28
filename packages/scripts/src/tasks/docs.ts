@@ -87,6 +87,17 @@ export default (options: Options) => {
     publicPath = '/'
   }
 
+  const definitions: any = {
+    'process.env.PUBLIC_PATH': publicPath,
+    'process.env.NODE_ENV': dev ? 'development' : 'production',
+  }
+
+  const envDefinitions: any = {}
+
+  for (const key of Object.keys(definitions)) {
+    envDefinitions[key] = JSON.stringify(definitions[key])
+  }
+
   const getStyleLoaders = (cssOptions: any, preProcessor?: string) => {
     const loaders = [
       dev
@@ -342,6 +353,7 @@ export default (options: Options) => {
       ],
     },
     plugins: [
+      new webpack.DefinePlugin(envDefinitions),
       !dev &&
         new webpack.LoaderOptionsPlugin({
           minimize: true,
@@ -378,8 +390,8 @@ export default (options: Options) => {
       new HtmlWebpackPlugin({
         inject: true,
         template: path.join(getProjectPath(entryPath), '../index.html'),
-        // 传递当前的publicPath给页面
-        publicPath,
+        // 传递环境变量给页面
+        ...definitions,
         ...(dev
           ? {}
           : {

@@ -88,14 +88,15 @@ export default (options: Options) => {
   }
 
   const definitions: any = {
-    'process.env.PUBLIC_PATH': publicPath,
-    'process.env.NODE_ENV': dev ? 'development' : 'production',
+    PUBLIC_PATH: publicPath,
+    NODE_ENV: dev ? 'development' : 'production',
   }
 
   const envDefinitions: any = {}
 
   for (const key of Object.keys(definitions)) {
-    envDefinitions[key] = JSON.stringify(definitions[key])
+    const newKey = `process.env.${key}`
+    envDefinitions[newKey] = JSON.stringify(definitions[key])
   }
 
   const getStyleLoaders = (cssOptions: any, preProcessor?: string) => {

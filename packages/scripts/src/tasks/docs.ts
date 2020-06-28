@@ -37,7 +37,7 @@ export type Options = {
   alias?: Alias
 }
 export default (options: Options) => {
-  const {
+  let {
     entry,
     dest,
     demoContainer,
@@ -49,7 +49,7 @@ export default (options: Options) => {
     postcssConfig,
     sourceMap,
     demoBox,
-    alias = {}
+    alias = {},
   } = options
 
   // 处理别名，将相对路径转绝对路径
@@ -84,6 +84,7 @@ export default (options: Options) => {
     if (!port) {
       return error('Please provide server port.')
     }
+    publicPath = '/'
   }
 
   const getStyleLoaders = (cssOptions: any, preProcessor?: string) => {
@@ -91,9 +92,9 @@ export default (options: Options) => {
       dev
         ? require.resolve('style-loader')
         : {
-          loader: MiniCssExtractPlugin.loader,
-          options: {},
-        },
+            loader: MiniCssExtractPlugin.loader,
+            options: {},
+          },
       {
         loader: require.resolve('css-loader'),
         options: cssOptions,
@@ -157,14 +158,14 @@ export default (options: Options) => {
   const config: webpack.Configuration = {
     entry: entryPath,
     output: {
-      path: getProjectPath(dest),
+      path: dev ? '/' : getProjectPath(dest),
       filename: dev
         ? 'static/js/[name].js'
         : 'static/js/[name].[contenthash:8].js',
       chunkFilename: dev
         ? 'static/js/[name].chunk.js'
         : 'static/js/[name].[contenthash:8].chunk.js',
-      publicPath: dev ? '/' : publicPath,
+      publicPath,
     },
     mode: dev ? 'development' : 'production',
     bail: !dev,
@@ -190,7 +191,7 @@ export default (options: Options) => {
         'react-native': 'react-native-web',
         // 项目
         '@': getProjectPath(),
-        ...handlerAlias
+        ...handlerAlias,
       },
     },
     optimization: {
@@ -201,9 +202,9 @@ export default (options: Options) => {
           cssProcessorOptions: {
             map: isSourceMap
               ? {
-                inline: false,
-                annotation: true,
-              }
+                  inline: false,
+                  annotation: true,
+                }
               : false,
           },
         }),
@@ -342,17 +343,17 @@ export default (options: Options) => {
     },
     plugins: [
       !dev &&
-      new webpack.LoaderOptionsPlugin({
-        minimize: true,
-      }),
+        new webpack.LoaderOptionsPlugin({
+          minimize: true,
+        }),
       isTypescript &&
-      new ForkTsCheckerWebpackPlugin({
-        async: dev,
-        useTypescriptIncrementalApi: true,
-        checkSyntacticErrors: true,
-        tsconfig: tsconfigPath,
-        // silent: true
-      }),
+        new ForkTsCheckerWebpackPlugin({
+          async: dev,
+          useTypescriptIncrementalApi: true,
+          checkSyntacticErrors: true,
+          tsconfig: tsconfigPath,
+          // silent: true
+        }),
       new CaseSensitivePathsPlugin(),
       new CleanUpStatsPlugin(),
       // Moment.js is an extremely popular library that bundles large locale files
@@ -365,10 +366,11 @@ export default (options: Options) => {
         patterns: [
           {
             from: path
-              .join(getProjectPath(entryPath), '../public', '**/*')
+              .join(getProjectPath(entryPath), '../public')
               .replace(/\\/g, '/'),
-            to: dev ? 'public' : path.join(getProjectPath(dest), 'public'),
-            toType: 'dir',
+            to: path
+              .join(dev ? publicPath : getProjectPath(dest), 'public')
+              .replace(/\\/g, '/'),
           },
         ],
       }),
@@ -381,25 +383,25 @@ export default (options: Options) => {
         ...(dev
           ? {}
           : {
-            minify: {
-              removeComments: true,
-              collapseWhitespace: true,
-              removeRedundantAttributes: true,
-              useShortDoctype: true,
-              removeEmptyAttributes: true,
-              removeStyleLinkTypeAttributes: true,
-              keepClosingSlash: true,
-              minifyJS: true,
-              minifyCSS: true,
-              minifyURLs: true,
-            },
-          }),
+              minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true,
+              },
+            }),
       }),
       !dev &&
-      new MiniCssExtractPlugin({
-        filename: 'static/css/[name].[contenthash:8].css',
-        chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
-      }),
+        new MiniCssExtractPlugin({
+          filename: 'static/css/[name].[contenthash:8].css',
+          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
+        }),
     ].filter(Boolean) as any[],
   }
 

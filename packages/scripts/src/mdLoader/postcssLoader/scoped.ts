@@ -57,6 +57,10 @@ export default postcss.plugin('add-id', (options: any) => (root: Root) => {
           selector.first.spaces.before = ''
         }
 
+        if (!node) {
+          return
+        }
+
         selector.insertAfter(
           node,
           selectorParser.attribute({

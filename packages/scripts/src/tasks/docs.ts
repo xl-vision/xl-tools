@@ -109,7 +109,7 @@ export default (options: Options) => {
           },
       {
         loader: require.resolve('css-loader'),
-        options: cssOptions,
+        options: { sourceMap: isSourceMap, ...cssOptions },
       },
       {
         loader: require.resolve('postcss-loader'),
@@ -148,6 +148,7 @@ export default (options: Options) => {
       test: moduleTest,
       use: getStyleLoaders(
         {
+          esModule: true,
           ...cssOptions,
           modules: {
             localIdentName: dev ? '[local]__[hash:base64]' : '[hash:base64]',
@@ -161,7 +162,14 @@ export default (options: Options) => {
     const rule2: webpack.Rule = {
       test,
       exclude: moduleTest,
-      use: getStyleLoaders({ ...cssOptions, modules: false }, preProcessor),
+      use: getStyleLoaders(
+        {
+          esModule: true,
+          ...cssOptions,
+          modules: false,
+        },
+        preProcessor
+      ),
       sideEffects: true,
     }
     return [rule1, rule2]
@@ -301,7 +309,6 @@ export default (options: Options) => {
                 postcssConfigFile:
                   postcssConfig && getProjectPath(postcssConfig),
                 cssConfig: {
-                  sourceMap: isSourceMap,
                   esModule: true,
                 },
               },
@@ -318,16 +325,12 @@ export default (options: Options) => {
         },
         ...getStyleRules(/\.css$/, /\.module\.css$/, {
           importLoaders: 1,
-          sourceMap: isSourceMap,
-          esModule: true,
         }),
         ...getStyleRules(
           /\.(scss|sass)$/,
           /\.module\.(scss|sass)$/,
           {
             importLoaders: 2,
-            sourceMap: isSourceMap,
-            esModule: true,
           },
           'sass-loader'
         ),
@@ -336,8 +339,6 @@ export default (options: Options) => {
           /\.module\.less$/,
           {
             importLoaders: 2,
-            sourceMap: isSourceMap,
-            esModule: true,
           },
           'less-loader'
         ),
@@ -346,8 +347,6 @@ export default (options: Options) => {
           /\.module\.styl$/,
           {
             importLoaders: 2,
-            sourceMap: isSourceMap,
-            esModule: true,
           },
           'stylus-loader'
         ),

@@ -15,6 +15,7 @@ const SELECTOR = require.resolve('./selector')
 
 // 这里需要使用修改后的postcss-loader,因为原本的postcss-loader不支持属性传入plugin
 const POSTCSS_LOADER = require.resolve('./postcssLoader')
+const SASS_LOADER = require.resolve('./sassLoader')
 
 const { plugins, presets } = getBabelConfig({ es: true })
 
@@ -31,8 +32,28 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
     demoBox,
   } = loaderUtils.getOptions(ctx)
 
-  const cssOptions = JSON.stringify({ ...cssConfig, importLoaders: 1 })
-  const css2Options = JSON.stringify({ ...cssConfig, importLoaders: 2 })
+  const cssOptions = JSON.stringify({
+    ...cssConfig,
+    sourceMap,
+    importLoaders: 1,
+  })
+  const css2Options = JSON.stringify({
+    ...cssConfig,
+    sourceMap,
+    importLoaders: 2,
+  })
+
+  const sassOptions = JSON.stringify({
+    sourceMap,
+  })
+
+  const stylusOptions = JSON.stringify({
+    sourceMap,
+  })
+
+  const lessOptions = JSON.stringify({
+    sourceMap,
+  })
 
   const styleLoader = isProduction
     ? 'mini-css-extract-plugin/dist/loader'
@@ -68,10 +89,10 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
       jsx: `!babel-loader?${babelOptions}`,
       tsx: `!babel-loader?${tsBabelOptions}`,
       css: `!${styleLoader}!css-loader?${cssOptions}!${POSTCSS_LOADER}?${postcssOptions}`,
-      scss: `!${styleLoader}!css-loader?${css2Options}!${POSTCSS_LOADER}?${postcssOptions}!sass-loader`,
-      sass: `!${styleLoader}!css-loader?${css2Options}!${POSTCSS_LOADER}?${postcssOptions}!sass-loader`,
-      stylus: `!${styleLoader}!css-loader?${css2Options}!${POSTCSS_LOADER}?${postcssOptions}!stylus-loader`,
-      less: `!${styleLoader}!css-loader?${css2Options}!${POSTCSS_LOADER}?${postcssOptions}!less-loader`,
+      scss: `!${styleLoader}!css-loader?${css2Options}!${POSTCSS_LOADER}?${postcssOptions}!${SASS_LOADER}?${sassOptions}`,
+      sass: `!${styleLoader}!css-loader?${css2Options}!${POSTCSS_LOADER}?${postcssOptions}!${SASS_LOADER}?${sassOptions}`,
+      stylus: `!${styleLoader}!css-loader?${css2Options}!${POSTCSS_LOADER}?${postcssOptions}!stylus-loader?${stylusOptions}`,
+      less: `!${styleLoader}!css-loader?${css2Options}!${POSTCSS_LOADER}?${postcssOptions}!less-loader?${lessOptions}`,
     }
     let loader = loaders[lang]
 

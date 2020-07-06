@@ -32,8 +32,6 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
     demoBox,
   } = loaderUtils.getOptions(ctx)
 
-  const regex = new RegExp(`^:::[\t\f ]*${demoContainer}[\t\f ]*(?<title>.*?)$`)
-
   const cssOptions = JSON.stringify({
     ...cssConfig,
     sourceMap,
@@ -140,20 +138,23 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
     }
 
     blockTokenizers[NAME] = function (eat: any, value: string) {
-      if (!regex.test(value)) {
+      if (!value.startsWith(':::')) {
         return
       }
 
       try {
-        const codeBlock = getCodeBlock(value, demoContainer)!
+        const codeBlock = getCodeBlock(value, demoContainer)
+        if (!codeBlock) {
+          return
+        }
         const node = {
           type: NAME,
-          title: codeBlock?.title,
-          desc: codeBlock?.desc,
-          blocks: codeBlock?.blocks,
-          mergedBlocks: codeBlock?.mergedBlocks,
-          startLine: codeBlock?.startLine,
-          endLine: codeBlock?.endLine,
+          title: codeBlock.title,
+          desc: codeBlock.desc,
+          blocks: codeBlock.blocks,
+          mergedBlocks: codeBlock.mergedBlocks,
+          startLine: codeBlock.startLine,
+          endLine: codeBlock.endLine,
         }
 
         eat(codeBlock.matchContent)(node)

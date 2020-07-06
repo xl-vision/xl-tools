@@ -1,84 +1,81 @@
-export type Lang = 'ts' | 'tsx' | 'js' | 'jsx' | 'css' | 'scss' | 'sass' | 'less' | 'stylus'
+export type Lang =
+  | 'ts'
+  | 'tsx'
+  | 'js'
+  | 'jsx'
+  | 'css'
+  | 'scss'
+  | 'sass'
+  | 'less'
+  | 'stylus'
 
 export type Block = { lang: Lang; content: string }
-
-let regex: RegExp
 
 export const getCodeBlock = (
   content: string,
   demoContainer: string = 'demo'
 ) => {
-  if (!regex) {
-    regex = new RegExp(`^:::[\t\f ]*${demoContainer}[\t\f ]*(?<title>.*?)$`)
-  }
-
-  let startLine = 1
-  let endLine = 0
+  const regex = new RegExp(`^:::[\t\f ]*${demoContainer}[\t\f ]*(?<title>.*?)$`)
 
   let lines = content.split(/\r?\n/)
 
-  const prevLines = []
-
-  while (lines.length > 0 && !lines[0].startsWith(':::')) {
-    prevLines.push(lines[0])
-    startLine++
-    lines = lines.slice(1)
+  let startLine = 0
+  for (; startLine < lines.length; startLine++) {
+    if (lines[startLine].startsWith(':::')) {
+      break
+    }
   }
-  if (lines.length === 0) {
+  // 没找到开始标签:::
+  if (startLine === lines.length) {
     return
   }
-  const m = regex.exec(lines[0])
+
+  const m = regex.exec(lines[startLine])
   if (!m) {
     return
   }
 
-  const title = m.groups!.title
+  const title = m.groups?.title
 
-  const matchLines = []
+  let endLine = startLine + 1
 
-  let depth = 0
-  for (const line of lines) {
-    if (/^:::[\t\f ]*\S+.*$/.exec(line)) {
-      depth++
-    } else if (line === ':::') {
-      depth--
-    }
-
-    matchLines.push(line)
-
-    if (depth !== 1) {
+  for (; endLine < lines.length; endLine++) {
+    const line = lines[endLine]
+    if (line === ':::') {
       break
     }
   }
 
-  if (depth !== 0) {
+  // 没找到结束标签:::
+  if (endLine >= lines.length) {
     return
   }
 
-  endLine = startLine + matchLines.length - 1
+  // 寻找desc范围
+  const descStartLine = startLine + 1 // +1因为第一行是:::
+  let descEndLine = descStartLine
 
-  const nextLines = lines.slice(matchLines.length)
-
-  const body = matchLines.slice(1, matchLines.length - 1)
-
-  let i = 0
-  for (; i < body.length; i++) {
-    const line = body[i]
+  for (; descEndLine < endLine - 1; descEndLine++) {
+    const line = lines[descEndLine]
     if (line.startsWith('```')) {
       break
     }
   }
 
-  const desc = body.slice(0, i).join('\n')
+  const desc = lines.slice(descStartLine, descEndLine).join('\n')
 
-  const blocks = getBlocks(body.slice(i))
+  const blocks = getBlocks(lines, descEndLine, endLine - 1) // -1因为最后一行是:::
+
+  const prevLines = lines.slice(0, startLine)
+  const matchLines = lines.slice(startLine, endLine + 1)
+  const nextLines = lines.slice(endLine + 1)
 
   return {
     title,
     desc,
     blocks,
-    startLine,
-    endLine,
+    startLine: startLine + 1, // 从1计数
+    endLine: endLine + 1, // 从1计数
     mergedBlocks: mergeBlocks(blocks),
     prevContent: prevLines.join('\n'),
     matchContent: matchLines.join('\n'),
@@ -86,11 +83,15 @@ export const getCodeBlock = (
   }
 }
 
-const getBlocks = (lines: Array<string>) => {
+const getBlocks = (
+  lines: Array<string>,
+  startLine: number,
+  endLine: number
+) => {
   let started = -1
   let lang: any = ''
   const blocks: Array<Block> = []
-  for (let i = 0; i < lines.length; i++) {
+  for (let i = startLine; i <= endLine; i++) {
     const line = lines[i]
     if (line.startsWith('```')) {
       if (started === -1) {
@@ -108,6 +109,14 @@ const getBlocks = (lines: Array<string>) => {
       }
     }
   }
+  if (started !== -1) {
+    throw new Error(
+      `The block between line ${
+        startLine + started
+      } and line ${endLine} does not have closing tag '\`\`\`'`
+    )
+  }
+
   return blocks
 }
 

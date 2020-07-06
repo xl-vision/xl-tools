@@ -32,6 +32,8 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
     demoBox,
   } = loaderUtils.getOptions(ctx)
 
+  const regex = new RegExp(`^:::[\t\f ]*${demoContainer}[\t\f ]*(?<title>.*?)$`)
+
   const cssOptions = JSON.stringify({
     ...cssConfig,
     sourceMap,
@@ -138,28 +140,26 @@ const createDemoBoxPlugin = (ctx: webpack.loader.LoaderContext) => {
     }
 
     blockTokenizers[NAME] = function (eat: any, value: string) {
-      if (!value.startsWith(':::')) {
+      if (!regex.test(value)) {
         return
       }
 
-      const codeBlock = getCodeBlock(value, demoContainer)!
+      try {
+        const codeBlock = getCodeBlock(value, demoContainer)!
+        const node = {
+          type: NAME,
+          title: codeBlock?.title,
+          desc: codeBlock?.desc,
+          blocks: codeBlock?.blocks,
+          mergedBlocks: codeBlock?.mergedBlocks,
+          startLine: codeBlock?.startLine,
+          endLine: codeBlock?.endLine,
+        }
 
-      const exit = this.enterBlock()
-
-      const add = eat(codeBlock.matchContent)
-
-      const node = {
-        type: NAME,
-        title: codeBlock?.title,
-        desc: codeBlock?.desc,
-        blocks: codeBlock?.blocks,
-        mergedBlocks: codeBlock?.mergedBlocks,
-        startLine: codeBlock?.startLine,
-        endLine: codeBlock?.endLine,
+        eat(codeBlock.matchContent)(node)
+      } catch (err) {
+        throw new Error(`The file '${ctx.resourcePath}': ${err.message}`)
       }
-
-      add(node)
-      exit()
     }
 
     blockMethods.splice(0, 0, NAME)

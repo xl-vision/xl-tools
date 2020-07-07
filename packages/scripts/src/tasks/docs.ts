@@ -361,10 +361,13 @@ export default (options: Options) => {
       isTypescript &&
         new ForkTsCheckerWebpackPlugin({
           async: dev,
-          useTypescriptIncrementalApi: true,
-          checkSyntacticErrors: true,
-          tsconfig: tsconfigPath,
-          // silent: true
+          typescript: {
+            configFile: tsconfigPath,
+            mode: 'write-references',
+            diagnosticOptions: {
+              syntactic: true,
+            },
+          },
         }),
       new CaseSensitivePathsPlugin(),
       new CleanUpStatsPlugin(),

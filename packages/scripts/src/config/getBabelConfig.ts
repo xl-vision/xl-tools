@@ -12,16 +12,6 @@ export default (options: Options) => {
       require.resolve('@babel/preset-env'),
       {
         modules: es ? false : 'commonjs',
-        targets: {
-          browsers: [
-            'last 2 versions',
-            'Firefox ESR',
-            '> 1%',
-            'ie >= 9',
-            'iOS >= 8',
-            'Android >= 4',
-          ],
-        },
       },
     ],
     require.resolve('@babel/preset-react'),

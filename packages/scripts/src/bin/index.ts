@@ -50,6 +50,7 @@ const scripts: Command[] = [
       {
         name: 'dot',
         desc: "Allow file that filename starts with '.'",
+        isBool: true,
       },
     ],
   },
@@ -83,6 +84,7 @@ const scripts: Command[] = [
       {
         name: 'dot',
         desc: "Allow file that filename starts with '.'",
+        isBool: true,
       },
     ],
   },
@@ -116,6 +118,7 @@ const scripts: Command[] = [
       {
         name: 'dot',
         desc: "Allow file that filename starts with '.'",
+        isBool: true,
       },
     ],
   },
@@ -156,6 +159,7 @@ const scripts: Command[] = [
       {
         name: 'dot',
         desc: "Allow file that filename starts with '.'",
+        isBool: true,
       },
     ],
   },
@@ -196,6 +200,7 @@ const scripts: Command[] = [
       {
         name: 'dot',
         desc: "Allow file that filename starts with '.'",
+        isBool: true,
       },
     ],
   },
@@ -236,6 +241,7 @@ const scripts: Command[] = [
       {
         name: 'dot',
         desc: "Allow file that filename starts with '.'",
+        isBool: true,
       },
     ],
   },
@@ -276,6 +282,7 @@ const scripts: Command[] = [
       {
         name: 'dot',
         desc: "Allow file that filename starts with '.'",
+        isBool: true,
       },
     ],
   },
@@ -316,6 +323,7 @@ const scripts: Command[] = [
       {
         name: 'dot',
         desc: "Allow file that filename starts with '.'",
+        isBool: true,
       },
     ],
   },
@@ -343,6 +351,7 @@ const scripts: Command[] = [
       {
         name: 'dot',
         desc: "Allow file that filename starts with '.'",
+        isBool: true,
       },
     ],
   },
@@ -376,6 +385,7 @@ const scripts: Command[] = [
       {
         name: 'dot',
         desc: "Allow file that filename starts with '.'",
+        isBool: true,
       },
     ],
   },

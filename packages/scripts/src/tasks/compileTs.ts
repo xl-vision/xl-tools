@@ -11,6 +11,7 @@ export type Options = {
   to: string
   es: boolean
   tsConfig: string
+  dot?: boolean
 }
 
 const overwriteConfig = {
@@ -19,7 +20,7 @@ const overwriteConfig = {
 }
 
 export default (options: Options) => {
-  const { from, to, es, tsConfig } = options
+  const { from, to, es, tsConfig, dot } = options
 
   const tsConfigPath = getTsconfigPath(tsConfig)
 
@@ -29,7 +30,9 @@ export default (options: Options) => {
     const errors: Array<any> = []
 
     const tsResult = gulp
-      .src(from)
+      .src(from, {
+        dot,
+      })
       .pipe(
         tsProject({
           error(err, ts) {

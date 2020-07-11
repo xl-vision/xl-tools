@@ -11,13 +11,15 @@ export type Options = {
   rename?: string
   sourceMap: boolean
   postcssConfig?: string
+  dot?: boolean
 }
 
 export default (options: Options) => {
-  const { from, to, beautify, sourceMap, postcssConfig, rename } = options
+  const { from, to, beautify, sourceMap, postcssConfig, rename, dot } = options
 
-  let stream: NodeJS.ReadWriteStream = gulp
-    .src(from)
+  let stream: NodeJS.ReadWriteStream = gulp.src(from, {
+    dot,
+  })
 
   if (sourceMap) {
     stream = stream.pipe(soucemaps.init())

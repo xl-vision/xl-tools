@@ -10,10 +10,11 @@ export type Options = {
   to?: string
   eslintConfig?: string
   fix?: boolean
+  dot?: boolean
 }
 
 export default (options: Options) => {
-  const { from, eslintConfig, fix = false, to } = options
+  const { from, eslintConfig, fix = false, to, dot } = options
 
   if (fix) {
     if (!to) {
@@ -25,7 +26,10 @@ export default (options: Options) => {
 
   if (eslintConfig) {
     const eslintConfigPath = getProjectPath(eslintConfig)
-    if (!fs.existsSync(eslintConfigPath) || !fs.statSync(eslintConfigPath).isFile()) {
+    if (
+      !fs.existsSync(eslintConfigPath) ||
+      !fs.statSync(eslintConfigPath).isFile()
+    ) {
       return error(
         `The eslint config file '${eslintConfigPath}' dose not exist, please make sure you have created it.`
       )
@@ -34,7 +38,9 @@ export default (options: Options) => {
   }
 
   let stream = gulp
-    .src(from)
+    .src(from, {
+      dot,
+    })
     .pipe(eslint(eslintOptions))
     .pipe(eslint.formatEach())
     .pipe(eslint.failAfterError())

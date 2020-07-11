@@ -47,6 +47,10 @@ const scripts: Command[] = [
         name: 'to',
         desc: 'The file path to store files copyed.',
       },
+      {
+        name: 'dot',
+        desc: "Allow file that filename starts with '.'",
+      },
     ],
   },
   {
@@ -76,6 +80,10 @@ const scripts: Command[] = [
         name: 'eslintConfig',
         desc: 'The eslint config file path.',
       },
+      {
+        name: 'dot',
+        desc: "Allow file that filename starts with '.'",
+      },
     ],
   },
   {
@@ -104,6 +112,10 @@ const scripts: Command[] = [
       {
         name: 'stylelintConfig',
         desc: 'The stylelint config file path.',
+      },
+      {
+        name: 'dot',
+        desc: "Allow file that filename starts with '.'",
       },
     ],
   },
@@ -141,6 +153,10 @@ const scripts: Command[] = [
         name: 'postcssConfig',
         desc: 'The postcss config file path.',
       },
+      {
+        name: 'dot',
+        desc: "Allow file that filename starts with '.'",
+      },
     ],
   },
   {
@@ -176,6 +192,10 @@ const scripts: Command[] = [
       {
         name: 'postcssConfig',
         desc: 'The postcss config file path.',
+      },
+      {
+        name: 'dot',
+        desc: "Allow file that filename starts with '.'",
       },
     ],
   },
@@ -213,6 +233,10 @@ const scripts: Command[] = [
         name: 'postcssConfig',
         desc: 'The postcss config file path.',
       },
+      {
+        name: 'dot',
+        desc: "Allow file that filename starts with '.'",
+      },
     ],
   },
   {
@@ -248,6 +272,10 @@ const scripts: Command[] = [
       {
         name: 'postcssConfig',
         desc: 'The postcss config file path.',
+      },
+      {
+        name: 'dot',
+        desc: "Allow file that filename starts with '.'",
       },
     ],
   },
@@ -285,6 +313,10 @@ const scripts: Command[] = [
         name: 'postcssConfig',
         desc: 'The postcss config file path.',
       },
+      {
+        name: 'dot',
+        desc: "Allow file that filename starts with '.'",
+      },
     ],
   },
   {
@@ -307,6 +339,10 @@ const scripts: Command[] = [
         name: 'es',
         desc: 'Whether if or not compile with ES6 format.',
         isBool: true,
+      },
+      {
+        name: 'dot',
+        desc: "Allow file that filename starts with '.'",
       },
     ],
   },
@@ -336,6 +372,10 @@ const scripts: Command[] = [
         desc:
           'The path of tsconfig file, you can not care this option if project does not use Typescript.',
         defaultValue: 'tsconfig.json',
+      },
+      {
+        name: 'dot',
+        desc: "Allow file that filename starts with '.'",
       },
     ],
   },
@@ -393,7 +433,7 @@ const scripts: Command[] = [
         name: 'alias',
         desc: 'The alias for webpack',
         handler: (value) => {
-          const items = value.split(',').map(it => it.trim())
+          const items = value.split(',').map((it) => it.trim())
           const alias: Alias = {}
           for (const item of items) {
             const keyValue = item.split('=')
@@ -404,7 +444,7 @@ const scripts: Command[] = [
             alias[keyValue[0]] = keyValue[1]
           }
           return alias
-        }
+        },
       },
       {
         name: 'demoContainer',

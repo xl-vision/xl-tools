@@ -7,13 +7,16 @@ export type Options = {
   from: string | Array<string>
   to: string
   es: boolean
+  dot?: boolean
 }
 
 export default (options: Options) => {
-  const { from, to, es } = options
+  const { from, to, es, dot } = options
 
   const stream = gulp
-    .src(from)
+    .src(from, {
+      dot,
+    })
     .pipe(babel(getBabelConfig({ es })))
     .pipe(gulp.dest(to))
 

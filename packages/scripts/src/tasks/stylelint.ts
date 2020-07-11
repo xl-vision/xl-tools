@@ -10,10 +10,11 @@ export type Options = {
   to?: string
   stylelintConfig?: string
   fix?: boolean
+  dot?: boolean
 }
 
 export default (options: Options) => {
-  const { from, to, stylelintConfig, fix = false } = options
+  const { from, to, stylelintConfig, fix = false, dot } = options
 
   if (fix) {
     if (!to) {
@@ -34,7 +35,10 @@ export default (options: Options) => {
 
   if (stylelintConfig) {
     const stylelintConfigPath = getProjectPath(stylelintConfig)
-    if (!fs.existsSync(stylelintConfigPath) || !fs.statSync(stylelintConfigPath).isFile()) {
+    if (
+      !fs.existsSync(stylelintConfigPath) ||
+      !fs.statSync(stylelintConfigPath).isFile()
+    ) {
       return error(
         `The stylelint config file '${stylelintConfig}' dose not exist, please make sure you have created it.`
       )
@@ -43,7 +47,9 @@ export default (options: Options) => {
   }
 
   let stream = gulp
-    .src(from)
+    .src(from, {
+      dot,
+    })
     .pipe(stylelint(stylelintOptions))
 
   if (fix) {
